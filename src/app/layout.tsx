@@ -3,6 +3,7 @@ import './globals.css';
 
 import type { Metadata } from 'next';
 import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
+import { Analytics } from '@vercel/analytics/next';
 
 // カスタムテーマ設定
 const theme = createTheme({
@@ -30,6 +31,7 @@ export default function RootLayout({
                 <MantineProvider theme={theme} defaultColorScheme="dark">
                     {children}
                 </MantineProvider>
+                <Analytics />
             </body>
         </html>
     );
