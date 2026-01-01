@@ -1,0 +1,102 @@
+import { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { DashboardShell } from '@/components/Layout';
+import { Container, Anchor, Group, Badge } from '@mantine/core';
+import { IconArrowLeft, IconCalendar } from '@tabler/icons-react';
+import { getAllPosts, getPostBySlug } from '@/lib/markdown';
+import styles from './prose.module.css';
+
+interface PageProps {
+    params: Promise<{ slug: string }>;
+}
+
+/**
+ * 静的パラメータ生成（SSG用）
+ */
+export async function generateStaticParams() {
+    const posts = await getAllPosts();
+    return posts.map((post) => ({
+        slug: post.slug,
+    }));
+}
+
+/**
+ * メタデータ生成（SEO用）
+ */
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
+
+    if (!post) {
+        return {
+            title: 'Not Found | Dashboard Portfolio',
+        };
+    }
+
+    return {
+        title: `${post.title} | Dashboard Portfolio`,
+        description: post.excerpt || `${post.title}の記事ページ`,
+    };
+}
+
+/**
+ * 記事詳細ページ
+ * MarkdownをHTMLに変換して表示
+ */
+export default async function PostPage({ params }: PageProps) {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
+
+    if (!post) {
+        notFound();
+    }
+
+    return (
+        <DashboardShell>
+            <Container size="md" py="xl">
+                {/* 戻るリンク */}
+                <Group mb="lg">
+                    <Anchor component={Link} href="/posts" size="sm" c="dimmed">
+                        <Group gap="xs">
+                            <IconArrowLeft size={16} />
+                            記事一覧に戻る
+                        </Group>
+                    </Anchor>
+                </Group>
+
+                {/* 記事ヘッダー */}
+                <header className={styles.articleHeader}>
+                    <h1 className={styles.articleTitle}>{post.title}</h1>
+                    <div className={styles.articleMeta}>
+                        <IconCalendar size={16} />
+                        <span>{post.date}</span>
+                    </div>
+                    {post.tags.length > 0 && (
+                        <Group gap="xs" mt="sm">
+                            {post.tags.map((tag) => (
+                                <Badge
+                                    key={tag}
+                                    component={Link}
+                                    href={`/tags/${encodeURIComponent(tag)}`}
+                                    size="sm"
+                                    variant="light"
+                                    color="cyan"
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    {tag}
+                                </Badge>
+                            ))}
+                        </Group>
+                    )}
+                </header>
+
+                {/* 記事本文 */}
+                <article
+                    className={styles.prose}
+                    dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+                />
+            </Container>
+        </DashboardShell>
+    );
+}
