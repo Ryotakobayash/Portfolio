@@ -1,0 +1,18 @@
+.postLink {
+    text-decoration: none;
+    color: inherit;
+}
+
+.postLink:hover {
+    opacity: 0.8;
+}
+
+.seeAllLink {
+    font-size: 0.875rem;
+    color: var(--mantine-color-cyan-5);
+    text-decoration: none;
+}
+
+.seeAllLink:hover {
+    text-decoration: underline;
+}

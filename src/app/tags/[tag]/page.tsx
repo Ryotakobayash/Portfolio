@@ -51,12 +51,12 @@ export default async function TagPage({ params }: PageProps) {
             <Container size="lg" py="xl">
                 {/* 戻るリンク */}
                 <Group mb="lg">
-                    <Anchor component={Link} href="/tags" size="sm" c="dimmed">
+                    <Link href="/tags" className={styles.backLink}>
                         <Group gap="xs">
                             <IconArrowLeft size={16} />
                             タグ一覧に戻る
                         </Group>
-                    </Anchor>
+                    </Link>
                 </Group>
 
                 {/* タイトル */}

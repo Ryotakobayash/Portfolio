@@ -51,3 +51,13 @@
     background: var(--mantine-color-blue-1);
     color: var(--mantine-color-blue-7);
 }
+
+.backLink {
+    font-size: 0.875rem;
+    color: var(--mantine-color-dimmed);
+    text-decoration: none;
+}
+
+.backLink:hover {
+    color: var(--mantine-color-cyan-5);
+}

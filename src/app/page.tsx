@@ -5,6 +5,7 @@ import { PVChart } from '@/components/Dashboard';
 import { getAllPosts, getPostCount } from '@/lib/markdown';
 import { Text, Avatar, Group, Badge, Stack, Anchor } from '@mantine/core';
 import { IconBrandGithub, IconBrandTwitter, IconArticle, IconCode } from '@tabler/icons-react';
+import styles from './page.module.css';
 
 /**
  * トップページ
@@ -45,12 +46,10 @@ export default async function HomePage() {
           <Stack gap="sm">
             {posts.length > 0 ? (
               posts.slice(0, 3).map((post) => (
-                <Anchor
+                <Link
                   key={post.slug}
-                  component={Link}
                   href={`/posts/${post.slug}`}
-                  underline="never"
-                  c="inherit"
+                  className={styles.postLink}
                 >
                   <Group gap="sm">
                     <IconArticle size={16} style={{ color: 'var(--mantine-color-cyan-5)' }} />
@@ -59,7 +58,7 @@ export default async function HomePage() {
                       <Text size="xs" c="dimmed">{post.date}</Text>
                     </Stack>
                   </Group>
-                </Anchor>
+                </Link>
               ))
             ) : (
               <Text c="dimmed" size="sm">まだ記事がありません</Text>
@@ -67,9 +66,9 @@ export default async function HomePage() {
           </Stack>
           <Group justify="space-between" mt="auto" pt="md">
             <Text size="sm" c="dimmed">Total: {postCount} posts</Text>
-            <Anchor component={Link} href="/posts" size="sm">
+            <Link href="/posts" className={styles.seeAllLink}>
               すべて見る →
-            </Anchor>
+            </Link>
           </Group>
         </BentoCard>
 

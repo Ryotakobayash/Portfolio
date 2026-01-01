@@ -130,3 +130,13 @@
     color: var(--mantine-color-dimmed);
     font-size: 0.875rem;
 }
+
+.backLink {
+    font-size: 0.875rem;
+    color: var(--mantine-color-dimmed);
+    text-decoration: none;
+}
+
+.backLink:hover {
+    color: var(--mantine-color-cyan-5);
+}

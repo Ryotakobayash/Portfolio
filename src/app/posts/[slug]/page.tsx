@@ -57,12 +57,12 @@ export default async function PostPage({ params }: PageProps) {
             <Container size="md" py="xl">
                 {/* 戻るリンク */}
                 <Group mb="lg">
-                    <Anchor component={Link} href="/posts" size="sm" c="dimmed">
+                    <Link href="/posts" className={styles.backLink}>
                         <Group gap="xs">
                             <IconArrowLeft size={16} />
                             記事一覧に戻る
                         </Group>
-                    </Anchor>
+                    </Link>
                 </Group>
 
                 {/* 記事ヘッダー */}
@@ -75,17 +75,19 @@ export default async function PostPage({ params }: PageProps) {
                     {post.tags.length > 0 && (
                         <Group gap="xs" mt="sm">
                             {post.tags.map((tag) => (
-                                <Badge
+                                <Link
                                     key={tag}
-                                    component={Link}
                                     href={`/tags/${encodeURIComponent(tag)}`}
-                                    size="sm"
-                                    variant="light"
-                                    color="cyan"
-                                    style={{ cursor: 'pointer' }}
                                 >
-                                    {tag}
-                                </Badge>
+                                    <Badge
+                                        size="sm"
+                                        variant="light"
+                                        color="cyan"
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        {tag}
+                                    </Badge>
+                                </Link>
                             ))}
                         </Group>
                     )}
