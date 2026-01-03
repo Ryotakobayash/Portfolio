@@ -9,6 +9,9 @@ import { Analytics } from '@vercel/analytics/next';
 // Google Tag Manager ID
 const GTM_ID = 'GTM-WG6RHC88';
 
+// Google Analytics 4 Measurement ID
+const GA_MEASUREMENT_ID = 'G-3XG4W5WQD1';
+
 // カスタムテーマ設定
 const theme = createTheme({
     /** ダッシュボード向けのテーマをここでカスタマイズ */
@@ -30,6 +33,25 @@ export default function RootLayout({
         <html lang="ja" suppressHydrationWarning>
             <head>
                 <ColorSchemeScript defaultColorScheme="dark" />
+
+                {/* Google Analytics 4 (gtag.js) */}
+                <Script
+                    src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+                    strategy="afterInteractive"
+                />
+                <Script
+                    id="gtag-init"
+                    strategy="afterInteractive"
+                    dangerouslySetInnerHTML={{
+                        __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_MEASUREMENT_ID}');
+            `,
+                    }}
+                />
+
                 {/* Google Tag Manager */}
                 <Script
                     id="gtm-script"
