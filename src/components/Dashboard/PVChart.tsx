@@ -1,13 +1,25 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { useMantineColorScheme, useMantineTheme } from '@mantine/core';
+import { useMantineColorScheme, useMantineTheme, Skeleton, Text } from '@mantine/core';
+
+interface PVData {
+    date: string;
+    pv: number;
+}
+
+interface PVResponse {
+    data: PVData[];
+    source: 'ga4' | 'cache' | 'dummy' | 'fallback';
+    error?: string;
+}
 
 /**
- * PV数推移グラフコンポーネント（ダミーデータ）
+ * PV数推移グラフコンポーネント
  * - Highchartsを使用したエリアチャート
+ * - /api/pvからデータ取得
  * - ダークモード対応
  */
 export function PVChart() {
@@ -16,16 +28,41 @@ export function PVChart() {
     const theme = useMantineTheme();
     const isDark = colorScheme === 'dark';
 
-    // ダミーデータ（過去7日間のPV数）
-    const dummyData = [
-        { date: '12/25', pv: 120 },
-        { date: '12/26', pv: 145 },
-        { date: '12/27', pv: 132 },
-        { date: '12/28', pv: 189 },
-        { date: '12/29', pv: 201 },
-        { date: '12/30', pv: 178 },
-        { date: '12/31', pv: 245 },
-    ];
+    const [pvData, setPvData] = useState<PVData[]>([]);
+    const [source, setSource] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // APIからPVデータを取得
+    useEffect(() => {
+        async function fetchPVData() {
+            try {
+                const res = await fetch('/api/pv');
+                if (!res.ok) throw new Error('Failed to fetch PV data');
+
+                const json: PVResponse = await res.json();
+                setPvData(json.data);
+                setSource(json.source);
+                if (json.error) setError(json.error);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Unknown error');
+                // フォールバックデータ
+                setPvData([
+                    { date: '12/29', pv: 120 },
+                    { date: '12/30', pv: 145 },
+                    { date: '12/31', pv: 98 },
+                    { date: '01/01', pv: 210 },
+                    { date: '01/02', pv: 178 },
+                    { date: '01/03', pv: 156 },
+                    { date: '01/04', pv: 189 },
+                ]);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchPVData();
+    }, []);
 
     const options: Highcharts.Options = {
         chart: {
@@ -37,7 +74,7 @@ export function PVChart() {
             text: undefined,
         },
         xAxis: {
-            categories: dummyData.map(d => d.date),
+            categories: pvData.map(d => d.date),
             labels: {
                 style: {
                     color: isDark ? '#c1c2c5' : '#495057',
@@ -82,23 +119,34 @@ export function PVChart() {
             {
                 type: 'area',
                 name: 'PV',
-                data: dummyData.map(d => d.pv),
+                data: pvData.map(d => d.pv),
             },
         ],
     };
 
     // カラースキーム変更時にチャートを更新
     useEffect(() => {
-        if (chartRef.current?.chart) {
+        if (chartRef.current?.chart && pvData.length > 0) {
             chartRef.current.chart.update(options, true, true);
         }
-    }, [colorScheme]);
+    }, [colorScheme, pvData]);
+
+    if (isLoading) {
+        return <Skeleton height={200} />;
+    }
 
     return (
-        <HighchartsReact
-            highcharts={Highcharts}
-            options={options}
-            ref={chartRef}
-        />
+        <div>
+            <HighchartsReact
+                highcharts={Highcharts}
+                options={options}
+                ref={chartRef}
+            />
+            {source && source !== 'ga4' && (
+                <Text size="xs" c="dimmed" ta="right" mt="xs">
+                    Data source: {source}
+                </Text>
+            )}
+        </div>
     );
 }
