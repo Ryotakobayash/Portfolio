@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import gfm from 'remark-gfm';
 
 /** 記事ディレクトリのパス */
 const postsDirectory = path.join(process.cwd(), 'content/posts');
@@ -84,8 +85,8 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
 
-    // Markdown→HTML変換
-    const processedContent = await remark().use(html).process(content);
+    // Markdown→HTML変換（GFMサポート：テーブル、打ち消し線など）
+    const processedContent = await remark().use(gfm).use(html).process(content);
     const contentHtml = processedContent.toString();
 
     // タグを配列として取得

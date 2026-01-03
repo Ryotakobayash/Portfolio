@@ -140,3 +140,40 @@
 .backLink:hover {
     color: var(--mantine-color-cyan-5);
 }
+
+/* テーブルスタイル */
+.prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+}
+
+.prose th,
+.prose td {
+    padding: 0.75rem;
+    text-align: left;
+    border: 1px solid var(--mantine-color-dark-4);
+}
+
+[data-mantine-color-scheme="light"] .prose th,
+[data-mantine-color-scheme="light"] .prose td {
+    border-color: var(--mantine-color-gray-3);
+}
+
+.prose th {
+    background: var(--mantine-color-dark-6);
+    font-weight: 600;
+}
+
+[data-mantine-color-scheme="light"] .prose th {
+    background: var(--mantine-color-gray-1);
+}
+
+.prose tr:nth-child(even) td {
+    background: var(--mantine-color-dark-7);
+}
+
+[data-mantine-color-scheme="light"] .prose tr:nth-child(even) td {
+    background: var(--mantine-color-gray-0);
+}
