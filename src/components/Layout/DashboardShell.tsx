@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { AppShell, Group, Title, ActionIcon, useMantineColorScheme, Container } from '@mantine/core';
 import { IconSun, IconMoon } from '@tabler/icons-react';
 import { ReactNode, useEffect, useState } from 'react';
@@ -10,7 +11,7 @@ interface DashboardShellProps {
 
 /**
  * ダッシュボード用AppShellレイアウト
- * - ヘッダー: ロゴ、カラースキーム切り替え
+ * - ヘッダー: ロゴ（TOPへリンク）、カラースキーム切り替え
  * - メイン: Bento Gridコンテンツ
  */
 export function DashboardShell({ children }: DashboardShellProps) {
@@ -32,7 +33,9 @@ export function DashboardShell({ children }: DashboardShellProps) {
             <AppShell.Header>
                 <Container size="xl" h="100%">
                     <Group h="100%" justify="space-between">
-                        <Title order={3}>📊 Dashboard Portfolio</Title>
+                        <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Title order={3} style={{ cursor: 'pointer' }}>📊 Dashboard Portfolio</Title>
+                        </Link>
                         {/* mountedを待ってからカラースキーム依存のUIをレンダリング */}
                         {mounted && (
                             <ActionIcon
