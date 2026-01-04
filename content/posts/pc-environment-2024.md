@@ -7,49 +7,164 @@ tags:
   - PC環境
   - NUTMEG
 ---
+
 こんにちは！NUTMEGでデザイナーとして活動しているryota5884です！
 
-今回は新入生にNUTMEGについて興味を持ってもらうため、NUTMEGメンバーのPC環境について調査しました！
+ついこの間まで雪が降っていたように思うのですが、いつの間にかもう4月に入り1週間近く経とうとしています。NUTMEGの活動拠点である長岡技術科学大学でも入学式がもう明日（4/5）に迫っており、NUTMEGもこれから新入生の勧誘や体験会で忙しくなる予定です。
+
+そんな中、今回は新入生にNUTMEGについて興味を持ってもらうため、入る際の不安を払拭するため、新入生向けの記事を2つ企画しました！1つは本記事「NUTMEGメンバーのPCスペック調査2024」、もう1つは「先輩NUTMEGメンバーが新入生の時に知りたかったTips」です！お楽しみに！
+
+NUTMEGメンバーからのアンケートをもとに書いているので0からNUTMEGのことを知ってもらうのにもってこい！新入生もそうでない方もぜひ最後までご覧ください！
+
+----
+
+- [そもそもNUTMEGとは？](#そもそもnutmegとは)
+- [はじめに](#はじめに)
+- [OS](#os)
+- [PCメーカー](#pcメーカー)
+- [ストレージ（記憶容量）](#ストレージ記憶容量)
+- [メモリ](#メモリ)
+- [キーボード](#キーボード)
+- [ポインティングデバイス](#ポインティングデバイス)
+- [おまけ：先輩おすすめガジェット](#おまけ先輩おすすめガジェット)
+- [おまけ：先輩のデスクレイアウト](#おまけ先輩のデスクレイアウト)
+
+----
+
+## そもそもNUTMEGとは？
+
+長岡技術科学大学の学園祭実行委員会（技大祭実行委員会）の中に存在する情報局が外部で活動する時の名称です。技大祭をより効率的に、より楽しくできるように、技大祭に向けたプロダクトの開発や技育展への参加を行っています！未経験だろうと経験者だろうとやる気次第でとことん楽しめるそんな団体です。
+
+紹介スライドを[Aboutページ](https://blog.nutmeg.cloud/about/)に用意してあるのでよければご覧ください！もうすでに興味がある方は学内に掲示されているポスター、もしくは記事の最後にあるQRコードからLINEオープンチャットにアクセスをお願いします！
+
+## はじめに
+
+今回の記事ではNUTMEGメンバーの全員に対してアンケートへの参加を依頼し、12件の回答を得られました！厳格に集計していないので重複回答などによる誤差も多分にあると思いますが、そのあたり把握の上お楽しみください！
+新入生の方はもうPC周辺機器を買い揃えてあるとは思いますが、団体のイメージを固めたり、大学の様子を見て買い替えを検討する予定の高専生には役立つかもしれませんね！
 
 ## OS
 
-MacとWindowsが半々な結果となりました。入学時点でWindowsユーザーだった人たちが開発系アルバイトや実務訓練の過程でMacに触れて良さに気づき、故障や買い替えをきっかけにMacへ乗り換えるパターンが非常に多いです。
+![image](/images/posts/pc-environment-2024/ryZWcSpJ0_1.png)
 
-**メンバーの声**
+まずはOSです！ガッツリ開発に取り組んでいる団体らしく、MacとWindowsが半々な結果となりました。個人的な体感ですが、ここ半年ほどで一気にMacユーザーの数が増えている気がします。
+
+というのも入学時点でWindowsユーザーだった人たちが開発系アルバイトや実務訓練（長岡技大特有の長期間インターンのようなもの）の過程でMacに触れて良さに気づき、故障や買い替えをきっかけにMacへ乗り換えるパターンが非常に多いです。
+
+私は技大において旧カリと呼ばれる高校からの進学組で、今年でNUTMEGに所属し4年目くらいになるのですが、毎年このような流れになってるような…？このように入る時点でのPCについてはWindowsでもMacでも問題ないので、新入生の皆さんは気にしなくて大丈夫です！
+
+＜メンバーの声＞
+
 - MacBookAirをおすすめします
-- appleのMチップは充電持ちが良いよ！
-- Macだと初心者でも環境構築が楽だから、初心者が集まる学生サークル向き
+- appleのMチップは充電持ちが良いよ！！
+- Macだと初心者でも環境構築が楽だから、初心者が集まる学生サークル向きな気がする
+- Macの方がいいぞ！単純にMac利用者多いから・ショートカットキーとか環境構築とか操作が結構違う（windows利用者より）
+- プログラマ目指すならMac!!
 
-あえてMacをおすすめしない理由も書いておきます。学部で行う学生実験の説明資料は基本的にWindows基準で書かれていますし、研究室で使用しているファイルサーバーに接続できないなどの問題が起こることもあります。
+Mac派は声がでかいですね〜。私も学部3年にWindowsからMacへ切り替えたため、気持ちは十二分に理解できます。
+
+あえてMacをおすすめしない理由を書いておきます。学部で行う学生実験の説明資料などは基本的にWindows基準で書かれてますし、研究室で使用しているファイルサーバーに接続できないなどの問題が起こることもあります。こうした問題を自力で解決する必要が出てくるため、やはりWindowsの方がトラブルなく学生生活を送ることができますね。
+
+とはいえ単位取得に致命的な問題が出るほどのことはそうそうありませんし、今後の人生で急にMacを使わなければいけない場面もあるでしょう。そうした場面に備えて、大学期間中に経験しておくのも面白いと思います。この先4,
+50年もWindowsしか使わないなんてつまらないですよ。
+
+私は詳しい先輩が多いNUTMEGに所属していたので、トラブルなく乗り換えられました。
+
+## PCメーカー
+
+![image](/images/posts/pc-environment-2024/HJmME8TyC_2.png)
+
+続いてメーカーの集計結果です。Windows勢の票が割れましたね〜。HPが2票で16.7%、その他がLenovo、富士通、VAIO、ASUSの結果です。
+
+個人的には安価かつトラックポイントが便利なThinkpadを販売しているLenovoが多くなるかと予想していたので、結構意外な結果でした。トラックポイントはいいぞ…。
 
 ## ストレージ（記憶容量）
 
-得票数トップは512GB、256GBがそれぞれ5名でタイになりました。開発をやっているとあれこれソフトをインストールすることになるので256GBは結構ギリギリなラインとなるでしょう。
+![image](/images/posts/pc-environment-2024/H1kiNL6yC_3.png)
+
+どうやらデスクトップPCで開発している勢がいるようですね…。得票数トップは512GB、256GBがそれぞれ5名でタイになりました。
+
+開発をやっているとあれこれソフトをインストールすることになるので256GBは結構ギリギリなラインとなるでしょう。趣味でカメラやPCゲームをやられている方だと256GBは厳しいかもしれませんね。CPUに余裕があってもメモリがカツカツになってしまいます。
+
+256GBや128GBでPCの本体価格を抑えて、容量大きめなファイルはUSBやSSDに全て保管する人も見かけるのでそういった工夫したら戦えるかも？
 
 ## メモリ
 
-16GBがトップですね。大学の課題をこなす程度であれば8GBでも十分だと思いますが、開発する際には複数のウィンドウを開きっぱなしにしたり、重めのアプリを動かしたりすることもままあります。
+![image](/images/posts/pc-environment-2024/S1sMrU6kC_4.png)
 
-**メンバーの声**
+メンバーの思想が強く現れるメモリです。今回、その他の形式で多く集まったものをまとめると、40GB 1名、24GB 3名、16GB 5名、8GB2名、16GBがトップですね。
+
+大学の課題をこなす程度であれば8GBでも十分だと思いますが、開発する際には複数のウィンドウを開きっぱなしにしたり、重めのアプリを動かしたりすることもままあります。何かとメモリ不足を感じることも多くなってくるので、増設しておくと快適ですよ！
+
+ほら、メンバーの皆さんもこういってます。
+
 - メモリは偉大なので削っては行けない
 - メモリなんかなんぼあってもええですからね
 - メモリの余裕は心の余裕
 
 ## キーボード
 
-ガジェット好きな人もそうじゃない人も共存しているのがNUTMEGのいいところです。NUTMEGにはHHKB、自作キーボードなど多様なキーボードを使う人がいます。
+![image](/images/posts/pc-environment-2024/B18KrU6JC_5.png)
 
-## おすすめガジェット
+PCで使用するキーボードについてのアンケートです！私が新入生の頃はキーボードに種類があるなんて知りませんでした。記号関係の配置がJIS（日本語）とUS（英語圏）で大きく異なり、比較的シンプルな配置や、ひらがながキーキャップにないことによるシンプルさからUS版を好む人たちもいます。NUTMEGではご覧の通り少数派ですね。
 
-デスク環境にガジェットとしておすすめされていたもの：
+ガジェット好きな人もそうじゃない人も共存しているのがNUTMEGのいいところだと思います。
 
-- **サブモニター** - まず買うものとして個人的なおすすめ
-- **iPad mini** - MacユーザーならサブモニターとしてもOK
-- **外付けキーボード** - Keyball44、HHKB Studioなど
+グラフ上には一人しか現れていませんが、NUTMEGには多様なキーボードを使う人がいます。HHKB、自作キーボードなどなど様々です。パソコンに触れている時間が長い人にとってキーボードは脳とPCを繋ぐデバイスなのでお金かけても損はありません！
 
-**メンバーの声**
+新潟県で高級キーボードと言われるような類のものを試したいと思っても難しいですが、NUTMEGメンバーに聞いたら大体のものは触れます。ガジェット系が好きな人はぜひ雑談しにくるためだけでもOKなので説明会にお越しください！
+
+## ポインティングデバイス
+
+![image](/images/posts/pc-environment-2024/rJYgUUayR_6.png)
+
+なんか普通…。
+
+開発に参加し、キーボードに触れる時間が長くなってくると徐々にキーボードからマウスまで手を伸ばすことが億劫になっていきます。その結果NUTMEGメンバーの80％以上がタッチパッドで操作するようになっているのでしょう。私も最初の頃はマウスを持ち歩いていましたが、出したりしまったりが手間なんですよね…。
+
+## おまけ：先輩おすすめガジェット
+
+デスク環境にガジェットとしておすすめされていたものは以下の3点。
+
+- サブモニター(モニター)
+- iPad mini
+- 外付けキーボード
+  - Keyball44
+  - HHKB Studio
+
+このあたりはどれもQOLを上がるのでぜひ検討してみてください！
+どれもおすすめですが、まず買うものとして個人的なおすすめはサブモニターです。モニターを買うのには少し躊躇するかもしれませんが、安いものであれば1000円から入手できますし、なんならテレビをモニターとして使ってみて使用感を確かめてみるのもいいかもしれません。
+
+MacユーザーであればiPadをサブモニターとして使うこともできるので、iPadも同じくらいおすすめですね。オンライン授業との相性も本当にいい…。講義までに資料を印刷して持参する機会も多いと思うのですが、iPad1つでその手間を格段に減らすことができます。
+
+知り合いから無料で手にいれる機会も結構あります。
+
+＜先輩からの生の声＞
+
 - サブモニターはマストですね
+- ipad miniもおすすめします
+- Keyball44
 - モバイルディスプレイがあると、どこでも複数画面で開発できる
-- HHKB Studio欲しい
+- [hhkb studio](https://happyhackingkb.com/jp/products/studio/)欲しい
+- モバイルモニター
 
-ここまで読んだの？ありがとう！君もうNUTMEG入った方がいいよ。
+## おまけ：先輩のデスクレイアウト
+
+ここまで色々紹介してきましたが、結局悩むのはデスク周りのレイアウトだったりします。アンケートついでにこだわりを持った先輩からデスク画像を提供してもらったのでそちらの紹介を最後にこの記事を終わろうと思います。
+
+Windowsのデスクトップのカスタムが好み。技術系バイト用？なのかノートパソコンが2台もある特殊な配置が綺麗にまとまってますね。
+![スクリーンショット 2024-04-05 20.29.13（大）](/images/posts/pc-environment-2024/r1usgwT10_7.jpg)
+
+机の上に置くことでスタンディングデスクのようにすることができる便利商品の利用者ですね。ノートパソコンを浮かせるだけでデスクを広く使えるのでおすすめです。
+![IMG_9258](/images/posts/pc-environment-2024/BJzDpITyA_8.jpg)
+
+デスクとは何か。まさにlap（ひざ）top（上）PC。
+![IMG_7946](/images/posts/pc-environment-2024/HyQc6L6JC_9.jpg)
+![IMG_7947](/images/posts/pc-environment-2024/H1Fc68TkR_10.jpg)
+
+私の。モニター関連、マウス、後おき昇降デスクはNUTMEG関係で譲ってもらいました。このブログもこの環境で書いています。HHKB Studioまじ便利。
+![IMG_8269（大）](/images/posts/pc-environment-2024/B1eoWDay0_11.jpg)
+
+こんなところまで読んだの？ありがとう！君もうNUTMEG入った方がいいよ。
+はい。このQRコードで新入生勧誘用のLINEオープンチャット入れるから。またあとでね。
+
+<blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/C5XU2ckLUV6/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"><div style="padding:16px;"> <a href="https://www.instagram.com/p/C5XU2ckLUV6/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank"> <div style=" display: flex; flex-direction: row; align-items: center;"> <div style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;"></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 100px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 60px;"></div></div></div><div style="padding: 19% 0;"></div> <div style="display:block; height:50px; margin:0 auto 12px; width:50px;"><svg width="50px" height="50px" viewBox="0 0 60 60" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-511.000000, -20.000000)" fill="#000000"><g><path d="M556.869,30.41 C554.814,30.41 553.148,32.076 553.148,34.131 C553.148,36.186 554.814,37.852 556.869,37.852 C558.924,37.852 560.59,36.186 560.59,34.131 C560.59,32.076 558.924,30.41 556.869,30.41 M541,60.657 C535.114,60.657 530.342,55.887 530.342,50 C530.342,44.114 535.114,39.342 541,39.342 C546.887,39.342 551.658,44.114 551.658,50 C551.658,55.887 546.887,60.657 541,60.657 M541,33.886 C532.1,33.886 524.886,41.1 524.886,50 C524.886,58.899 532.1,66.113 541,66.113 C549.9,66.113 557.115,58.899 557.115,50 C557.115,41.1 549.9,33.886 541,33.886 M565.378,62.101 C565.244,65.022 564.756,66.606 564.346,67.663 C563.803,69.06 563.154,70.057 562.106,71.106 C561.058,72.155 560.06,72.803 558.662,73.347 C557.607,73.757 556.021,74.244 553.102,74.378 C549.944,74.521 548.997,74.552 541,74.552 C533.003,74.552 532.056,74.521 528.898,74.378 C525.979,74.244 524.393,73.757 523.338,73.347 C521.94,72.803 520.942,72.155 519.894,71.106 C518.846,70.057 518.197,69.06 517.654,67.663 C517.244,66.606 516.755,65.022 516.623,62.101 C516.479,58.943 516.448,57.996 516.448,50 C516.448,42.003 516.479,41.056 516.623,37.899 C516.755,34.978 517.244,33.391 517.654,32.338 C518.197,30.938 518.846,29.942 519.894,28.894 C520.942,27.846 521.94,27.196 523.338,26.654 C524.393,26.244 525.979,25.756 528.898,25.623 C532.057,25.479 533.004,25.448 541,25.448 C548.997,25.448 549.943,25.479 553.102,25.623 C556.021,25.756 557.607,26.244 558.662,26.654 C560.06,27.196 561.058,27.846 562.106,28.894 C563.154,29.942 563.803,30.938 564.346,32.338 C564.756,33.391 565.244,34.978 565.378,37.899 C565.522,41.056 565.552,42.003 565.552,50 C565.552,57.996 565.522,58.943 565.378,62.101 M570.82,37.631 C570.674,34.438 570.167,32.258 569.425,30.349 C568.659,28.377 567.633,26.702 565.965,25.035 C564.297,23.368 562.623,22.342 560.652,21.575 C558.743,20.834 556.562,20.326 553.369,20.18 C550.169,20.033 549.148,20 541,20 C532.853,20 531.831,20.033 528.631,20.18 C525.438,20.326 523.257,20.834 521.349,21.575 C519.376,22.342 517.703,23.368 516.035,25.035 C514.368,26.702 513.342,28.377 512.574,30.349 C511.834,32.258 511.326,34.438 511.181,37.631 C511.035,40.831 511,41.851 511,50 C511,58.147 511.035,59.17 511.181,62.369 C511.326,65.562 511.834,67.743 512.574,69.651 C513.342,71.625 514.368,73.296 516.035,74.965 C517.703,76.634 519.376,77.658 521.349,78.425 C523.257,79.167 525.438,79.673 528.631,79.82 C531.831,79.965 532.853,80.001 541,80.001 C549.148,80.001 550.169,79.965 553.369,79.82 C556.562,79.673 558.743,79.167 560.652,78.425 C562.623,77.658 564.297,76.634 565.965,74.965 C567.633,73.296 568.659,71.625 569.425,69.651 C570.167,67.743 570.674,65.562 570.82,62.369 C570.966,59.17 571,58.147 571,50 C571,41.851 570.966,40.831 570.82,37.631"></path></g></g></g></svg></div><div style="padding-top: 8px;"> <div style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">この投稿をInstagramで見る</div></div><div style="padding: 12.5% 0;"></div> <div style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;"><div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);"></div> <div style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;"></div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);"></div></div><div style="margin-left: 8px;"> <div style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;"></div> <div style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)"></div></div><div style="margin-left: auto;"> <div style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);"></div> <div style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);"></div> <div style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);"></div></div></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center; margin-bottom: 24px;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 224px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 144px;"></div></div></a><p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://www.instagram.com/p/C5XU2ckLUV6/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_blank">長岡技術科学大学_技大祭実行委員会(@nutfes)がシェアした投稿</a></p></div></blockquote> <script async src="//www.instagram.com/embed.js"></script>

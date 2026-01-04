@@ -7,9 +7,27 @@ tags:
   - HTML/CSS
   - NUTMEG
 ---
-NUTMEGデザイナーチーム 修士2年のryota5884です。この度ふと思い立って後回しにしていたブログの改修をしてみました。
 
-改修作業後にこのブログを書こうと思い立ったため、Beforeの画像はありません！
+NUTMEGデザイナーチーム 修士2年のryota5884です。この度ふと思い立って後回しにしていたブログの改修をしてみました。多少苦戦したのでその解決方法を後輩への引き継ぎも兼ねてまとめようと思います。
+
+改修作業後にこのブログを書こうと思い立ったため、Beforeの画像はありません！タイトル詐欺かも…。
+
+## 目次
+
+- [目次](#目次)
+- [やったこと](#やったこと)
+- [ブログの記事ごとに別々の著者名を表示する](#ブログの記事ごとに別々の著者名を表示する)
+  - [条件分岐の概要](#条件分岐の概要)
+  - [具体的な例](#具体的な例)
+    - [例1: `authors`が設定されている場合](#例1-authorsが設定されている場合)
+    - [例2: `authors`が設定されているが、該当するキーが存在しない場合](#例2-authorsが設定されているが該当するキーが存在しない場合)
+    - [例3: `authors`が設定されていない場合](#例3-authorsが設定されていない場合)
+  - [日付の表示](#日付の表示)
+- [著者一覧（authors）ページの作成する](#著者一覧authorsページの作成する)
+- [メンバーページのアップデートと管理方法の変更](#メンバーページのアップデートと管理方法の変更)
+- [Productページのアップデート](#productページのアップデート)
+- [Memberページのアップデート](#memberページのアップデート)
+- [最後に](#最後に)
 
 ## やったこと
 
@@ -21,31 +39,267 @@ NUTMEGデザイナーチーム 修士2年のryota5884です。この度ふと思
 
 ## ブログの記事ごとに別々の著者名を表示する
 
-従来のブログでは実際の著者が誰であろうと「By NUTMEG」と表示していました。今回はconfig.tomlにメンバーの人数分`[params.authors.member-name]`を作成し、layouts/index.htmlに少し手を加えることで実現しました。
+![image](/images/posts/blog-refactoring-2024/HyiZI9eNC_1.png)
+
+従来のブログでは実際の著者が誰であろうとBy NUTMEGと表示していました。Hugoは一人で運営するサイトを想定しているのかデフォルトではconfig.tomlで設定したauthorの値を表示することしかできません。
 
 ```toml
+[params]
+    author = "NUTMEG"
+```
+
+今回はconfig.tomlにメンバーの人数分`[params.authors.member-name]`を作成し、これを表示するlayouts/index.htmlに少し手を加えることで実現しました。
+
+```toml
+**config.toml**
+
 [params.authors]
   [params.authors.ryota5884]
     name = "ryota5884"
     bio = "Designer"
+    
+  [params.authors.ryota5884(2)]
+    name = "ryota5884(2)"
+    bio = "Designer(2)"
+    
+  [params.authors.ryota5884(3)]
+    name = "ryota5884(3)"
+    bio = "Designer(3)"
+    
+    ...
+
 ```
+
+```html
+**layouts/index.html**
+
+<!-- featured post -->
+<section class="section-sm">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-10 featured-post-slider">
+        <!-- slider item -->
+        {{ range ( where .Site.RegularPages "Type" "featured" )}}
+        <article class="card featured-post">
+          <div class="row no-gutters align-items-center">
+            <div class="col-md-5">
+              {{ if .Params.Image }}
+              <img src="{{ .Params.Image | absURL }}" class="card-img" alt="{{ .Title | markdownify }}">
+              {{ end }}
+            </div>
+            <div class="col-md-6 offset-md-1">
+              <div class="card-body">
+                <div class="mb-3 post-meta">
+
+                  <!-- ↓↓↓ 著者名の表示に関する部分 ↓↓↓ -->
+
+                  <span class="author">
+                    {{ if .Params.authors }}
+                    {{ $author := index .Site.Params.Authors .Params.authors}}
+                    <p>
+                      {{ if $author }}
+                      <!-- ブログ記事のmarkdownで書かれたauthorがconfig.tomlで設定されているとき -->
+                      By {{ $author.name }}
+                      {{ else }}
+                      <!-- ブログ記事のmarkdownで書かれたauthorがconfig.tomlで設定されていないとき -->
+                      By {{ .Params.authors }}
+                      {{ end }}
+                      {{ else }}
+                      <!-- ブログ記事のmarkdownにauthorの記入欄がないとき -->
+                      By {{ .Site.Params.defaultAuthor}}
+                      {{ end }}
+                      {{ if not .Params.HideDate }}
+                      <span class="border-bottom border-primary px-2 mx-1"></span>
+                      {{ .PublishDate.Format "02 January 2006" }}
+                      {{ end }}
+                    </p>
+                  </span>
+                  
+                <!-- ↑↑↑ 著者名の表示に関する部分 ↑↑↑ -->
+                  
+                </div>
+                <a href="{{ .Permalink }}"
+                  class="h1 font-weight-bold d-block text-dark mb-4 card-title">{{ .Title | markdownify }}</a>
+                <p class="card-text">{{.Summary}}...</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /featured post -->
+```
+
+コード中にコメントで囲まれている部分以外は使用しているhugoのtheme、liva-hugoのlayouts/index.htmlと同様です。このコードはみぜさんの[Hugoの執筆者を複数人で切り分ける方法](https://tec-on.net/2017/02/how-to-make-multiple-author-on-hugo/)をベースにカスタマイズしています。
+
+この条件分岐は、ブログ記事のMarkdownファイルにおける`authors`の設定に基づいて、どのように著者名を表示するかを決定します。
 
 ### 条件分岐の概要
 
-1. ブログ記事に`authors`が設定されている場合 → 著者名を表示
-2. 設定されているが存在しない場合 → 直接キー名を表示
-3. 設定されていない場合 → デフォルト著者名を表示
+1. ブログ記事に`authors`が設定されている場合
 
-## 著者一覧ページの作成
+   **→`.Site.Params.Authors`から対応する著者オブジェクトを取得し、その名前を表示。**
 
-config.tomlの`[taxonomies]`に`author = "authors"`を追加して、ブログ記事のmarkdownファイルに`authors: 著者名`を記述するだけでページを作ることができます。
+2. ブログ記事の`authors`が設定されているが、`.Site.Params.Authors`にそのキーが存在しない場合
 
-## メンバーページの管理方法変更
+   **→直接`authors`の値（著者のキー名）を表示**
 
-メンバープロフィールはNUTMEGのNotionページで管理しています。新入生も簡単にアクセスでき、学年などで管理しやすいことがメリットです。
+3. ブログ記事に`authors`が設定されていない場合
 
-NotionのデータベースをChatGPTでHugoで使える形に変換することで、NotionからMemberページに反映させています。ChatGPT-4oの登場により無料で高性能なLLMを誰でも利用できるようになったため採用しました。
+   **→サイト全体のデフォルトの著者名（`.Site.Params.defaultAuthor`）を表示**
+
+4. 日付表示の条件
+
+   **→`HideDate`が設定されていない場合、記事の公開日を表示**
+
+### 具体的な例
+
+#### 例1: `authors`が設定されている場合
+
+Markdownファイルのメタデータ部分（Front Matter）:
+
+```yaml
+---
+title: "記事のタイトル"
+date: 2024-01-01
+authors: "ryota5884"
+---
+```
+
+この場合、`ryota5884`は`config.toml`に定義されていると仮定して、`.Site.Params.Authors`から`ryota5884`に関連する著者情報を取得し、その`name`属性（例えば "小林諒大"）を表示します。出力されるブログページでは「By小林諒大」と表示されます。
+
+#### 例2: `authors`が設定されているが、該当するキーが存在しない場合
+
+Markdownファイルのメタデータ部分：
+
+```yaml
+---
+title: "別の記事のタイトル"
+date: 2024-02-01
+authors: "unknown_author"
+---
+```
+
+この場合、`unknown_author`が`config.toml`に存在しないため、直接`authors`の値「unknown_author」を表示します。出力は「By [unknown_author]」とブラケットがついた状態で表示されます。
+
+#### 例3: `authors`が設定されていない場合
+
+Markdownファイルのメタデータ部分：
+
+```yaml
+---
+title: "さらに別の記事"
+date: 2024-03-01
+---
+```
+
+この場合、`.Params.authors`が存在しないため、サイト全体のデフォルト著者名（ここでは仮に"NUTMEG"とします）が表示されます。出力は「By NUTMEG」となります。
+
+### 日付の表示
+
+ここでは著者名に続いて記事を作成した日付を表示しています。記事に`HideDate`が`false`または設定されていない場合、公開日が「02 January 2006」の形式で表示されます。この部分は記事の公開日時をユーザーに知らせるためのものです。海外では主流の表示形式ですが、日本だと見慣れないのでそのうち変えたいですねー。がんばれ後輩！
+
+## 著者一覧（authors）ページの作成する
+
+![image](/images/posts/blog-refactoring-2024/r1RwvqlER_2.png)
+
+一応昔から存在はしてたのですが、author一覧ページのデザインを整え、Memberページから飛べるようにしました。
+
+作り方はconfig.tomlの`[taxonomies]`に`author = "authors"`を追加して、プログ記事のmarkdowファイルに`authors: 著者名`を記述するだけです。それだけでページを作ることが出来ます。
+
+正直あまり理解していないのですが、使用しているliva-hugoではauthorページをpost.html（postページのコンポーネント）を使用して作ります。そのため、layouts/_default/post.htmlの著者名表示部分を前述した`layouts/index.html`と同じように書くと日付の表示がおかしくなるので注意しましょう！
+
+```html
+
+**layouts/_default/post.html**
+
+<div class="col-md-6 mb-4">
+    <article class="card">
+        {{ if .Params.Image }}
+        <img src="{{ .Params.Image | absURL }}" class="card-img-top" alt="{{ .Title | markdownify }}">
+        {{ end }}
+        <div class="card-body px-0">
+        {{ range .Params.Categories }}
+        <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}"
+            class="text-primary">{{ . | title | humanize }}</a>
+        {{ end }}
+        <a href="{{ .Permalink }}" class="h5 d-block my-3">{{ .Title | markdownify }}</a>
+        <div class="mb-3 post-meta">
+          
+            <!--  著者名の表示に関する部分 ↓↓↓ -->
+          
+            <span class="author">
+                {{ if isset .Params "authors" }} <!-- .Params.authors が存在するかチェック -->
+                 <!-- .Params.authors の最初の要素を取得 -->
+                    {{ $authorKey := index .Params.authors 0 }}
+                 <!-- .Site.Params.Authors から著者情報を取得 -->
+                    {{ $author := index .Site.Params.Authors $authorKey }}
+                    <p>
+                    {{ if $author }}
+                        <!-- Front Matterのauthorがauthors中にあるとき -->
+                        By {{ $author.name }}
+                        {{ if not .Params.HideDate }}
+                            <span class="border-bottom border-primary px-2 mx-1"></span>
+                            {{ .PublishDate.Format "02 January 2006" }}
+                        {{ end }}
+                    {{ else }}
+                        <!-- Front Matterのauthorがauthorsに無かったとき -->
+                        By {{ .Site.Params.defaultAuthor }}
+                        {{ if not .Params.HideDate }}
+                            <span class="border-bottom border-primary px-2 mx-1"></span>
+                            {{ .PublishDate.Format "02 January 2006" }}
+                        {{ end }}
+                    {{ end }}
+                {{ else }}
+                    <!-- .Params.authors が存在しないとき -->
+                    最終更新日:{{ .Date.Format "02 January 2006" }}
+                {{ end }}
+                </p>
+            </span>
+          
+            <!-- ↑↑↑ 著者名の表示に関する部分 ↑↑↑ -->
+          
+        </div>
+        <p class="card-text">{{ .Summary }}</p>
+        <a href="{{ .Permalink }}" class="btn btn-outline-primary">read more</a>
+        </div>
+    </article>
+</div>
+```
+
+## メンバーページのアップデートと管理方法の変更
+
+従来のメンバーページからOBを除き、作業日までにプロフィールを提出してくれた人を追加しましたー。NUTMEGにはまだまだメンバーがいますが、ブログに名前を出したくない人もいると思うので強制はしていません。メンバーリストに名前が追加され次第、逐次追加する予定です。
+
+何かしらDBを作って動的に参照してくれたら楽なのですが、簡単に実装できる方法が思いつかなかったのでメンバープロフィールはNUTMEGのNotionページで管理しています。新入生も簡単にアクセス出来ますし、学年などで管理しやすいことがメリットです。本名や学年などもプロパティとして存在していますが、画像では隠しています。
+
+画像のようなデータベースをchatGPTにhugoで使えるような形に変換してもらうことで、NotionからMemberページに反映させています。これまでは後輩にchatGPTユーザーがいないと破綻してしまうため避けてきましたが、chatGPT-4oの登場により無料で高性能なLLMを誰でも利用するようになったため採用へ踏み切りました。
+
+もちろん、完璧に変換してくれるわけではありませんが、十分許容できる範囲内です。
+
+![image](/images/posts/blog-refactoring-2024/HJlnIO9xE0_3.png)
+
+![image](/images/posts/blog-refactoring-2024/r1iOu9gVC_4.png)
+
+## Productページのアップデート
+
+![image](/images/posts/blog-refactoring-2024/rkOQFceNC_5.png)
+
+情報が古かったので2024年の新入生勧誘資料をベースにアップデートしました。
+
+画像を貼り付けただけですが以前のページより使用技術がわかりやすくなったので便利そう。毎年スライドは作るでしょうし、こっちの方がブログの担当者も楽ですね。
+
+## Memberページのアップデート
+
+![image](/images/posts/blog-refactoring-2024/rkrTOqg4C_6.png)
+
+情報の更新とメンバーごとの投稿記事へ簡単にアクセスできるようにしました。
+
+別に大したアップデートではありませんが、メンバーが就活する際、自分が書いた記事の一覧を簡単に提示できるようになります。便利…かも？
 
 ## 最後に
 
-まだまだ改善点は多いですが、疲れたのでこの辺でひと段落つけました。この記事がHugoを使って団体のブログを作ろうとしている人や、NUTMEGブログを引き継ぐ後輩の役に立つと幸いです。
+まだまだ改善点は多いですが、疲れたのでこの辺でひと段落つけました。この記事がhugoを使って団体のブログを作ろうとしている人や、NUTMEGブログを引き継ぐ後輩の役に立つと幸いです。
