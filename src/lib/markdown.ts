@@ -4,6 +4,14 @@ import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
 import gfm from 'remark-gfm';
+import { visit } from 'unist-util-visit';
+
+/** TOC項目の型 */
+export interface TocItem {
+    id: string;
+    text: string;
+    level: number;
+}
 
 /** 記事ディレクトリのパス */
 const postsDirectory = path.join(process.cwd(), 'content/posts');
@@ -20,6 +28,7 @@ export interface PostMeta {
 /** 記事の完全データ型 */
 export interface Post extends PostMeta {
     contentHtml: string;
+    toc: TocItem[];
 }
 
 /** タグと件数の型 */
@@ -67,6 +76,61 @@ export async function getAllPosts(): Promise<PostMeta[]> {
 }
 
 /**
+ * Markdownから見出しを抽出してTOCを生成
+ */
+function extractToc(content: string): TocItem[] {
+    const toc: TocItem[] = [];
+
+    // ASTを解析して見出しを抽出
+    const tree = remark().use(gfm).parse(content);
+
+    visit(tree, 'heading', (node: any) => {
+        // h1は除外（記事タイトルのため）
+        if (node.depth === 1) return;
+
+        // 見出しのテキストを抽出
+        let text = '';
+        visit(node, 'text', (textNode: any) => {
+            text += textNode.value;
+        });
+
+        // IDを生成（slugify）
+        const id = text
+            .toLowerCase()
+            .replace(/[^\w\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+
+        toc.push({
+            id,
+            text,
+            level: node.depth,
+        });
+    });
+
+    return toc;
+}
+
+/**
+ * HTMLの見出しにIDを付与
+ */
+function addIdsToHeadings(html: string, toc: TocItem[]): string {
+    let result = html;
+    let tocIndex = 0;
+
+    // h2-h6タグにIDを付与
+    result = result.replace(/<h([2-6])>(.*?)<\/h\1>/g, (match, level, text) => {
+        if (tocIndex < toc.length) {
+            const { id } = toc[tocIndex];
+            tocIndex++;
+            return `<h${level} id="${id}">${text}</h${level}>`;
+        }
+        return match;
+    });
+
+    return result;
+}
+
+/**
  * スラッグから単一記事を取得
  */
 export async function getPostBySlug(slug: string): Promise<Post | null> {
@@ -85,9 +149,18 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
 
-    // Markdown→HTML変換（GFMサポート：テーブル、打ち消し線など）
-    const processedContent = await remark().use(gfm).use(html).process(content);
-    const contentHtml = processedContent.toString();
+    // TOCを抽出
+    const toc = extractToc(content);
+
+    // Markdown→HTML変換（GFMサポート）
+    const processedContent = await remark()
+        .use(gfm)
+        .use(html)
+        .process(content);
+    let contentHtml = processedContent.toString();
+
+    // HTMLの見出しにIDを付与
+    contentHtml = addIdsToHeadings(contentHtml, toc);
 
     // タグを配列として取得
     const tags = Array.isArray(data.tags) ? data.tags : [];
@@ -99,6 +172,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
         excerpt: data.excerpt || '',
         tags,
         contentHtml,
+        toc,
     };
 }
 

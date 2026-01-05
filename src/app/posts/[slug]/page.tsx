@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DashboardShell } from '@/components/Layout';
-import { Container, Anchor, Group, Badge } from '@mantine/core';
+import { Container, Group, Badge } from '@mantine/core';
 import { IconArrowLeft, IconCalendar } from '@tabler/icons-react';
 import { getAllPosts, getPostBySlug } from '@/lib/markdown';
 import styles from './prose.module.css';
@@ -93,6 +93,26 @@ export default async function PostPage({ params }: PageProps) {
                     )}
                 </header>
 
+                {/* 目次 */}
+                {post.toc.length > 0 && (
+                    <nav className={styles.tableOfContents}>
+                        <h2 className={styles.tocTitle}>目次</h2>
+                        <ul className={styles.tocList}>
+                            {post.toc.map((item) => (
+                                <li
+                                    key={item.id}
+                                    className={styles.tocItem}
+                                    style={{ paddingLeft: `${(item.level - 2) * 1}rem` }}
+                                >
+                                    <a href={`#${item.id}`} className={styles.tocLink}>
+                                        {item.text}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                )}
+
                 {/* 記事本文 */}
                 <article
                     className={styles.prose}
@@ -102,3 +122,4 @@ export default async function PostPage({ params }: PageProps) {
         </DashboardShell>
     );
 }
+
