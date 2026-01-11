@@ -133,21 +133,63 @@
     background: var(--mantine-color-gray-1);
 }
 
+/* コードブロック（rehype-pretty-code） */
 .prose pre {
-    background: var(--mantine-color-dark-7);
+    background: #282c34;
     padding: 1rem;
     border-radius: 0.5rem;
     overflow-x: auto;
     margin-bottom: 1rem;
+    border: 1px solid var(--mantine-color-dark-4);
 }
 
 [data-mantine-color-scheme="light"] .prose pre {
-    background: var(--mantine-color-gray-1);
+    background: #f6f8fa;
+    border-color: var(--mantine-color-gray-3);
 }
 
 .prose pre code {
     background: transparent;
     padding: 0;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    display: block;
+}
+
+/* rehype-pretty-code: ダークモード用 */
+.prose pre [data-theme="dark"] {
+    display: block;
+}
+
+.prose pre [data-theme="light"] {
+    display: none;
+}
+
+[data-mantine-color-scheme="light"] .prose pre [data-theme="dark"] {
+    display: none;
+}
+
+[data-mantine-color-scheme="light"] .prose pre [data-theme="light"] {
+    display: block;
+}
+
+/* コードブロック内のスパン（トークン）スタイル */
+.prose pre code span {
+    font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+}
+
+/* Shikiシンタックスハイライトのカラー適用 */
+.prose pre code span[style] {
+    color: var(--shiki-dark) !important;
+}
+
+[data-mantine-color-scheme="light"] .prose pre code span[style] {
+    color: var(--shiki-light) !important;
+}
+
+/* 行番号やファイル名表示（オプション） */
+.prose [data-rehype-pretty-code-figure] {
+    margin: 1rem 0;
 }
 
 .prose blockquote {

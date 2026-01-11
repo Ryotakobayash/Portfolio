@@ -1,8 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypePrettyCode from 'rehype-pretty-code';
+import rehypeStringify from 'rehype-stringify';
 import { remark } from 'remark';
-import html from 'remark-html';
 import gfm from 'remark-gfm';
 import { visit } from 'unist-util-visit';
 
@@ -152,10 +157,19 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     // TOCを抽出
     const toc = extractToc(content);
 
-    // Markdown→HTML変換（GFMサポート）
-    const processedContent = await remark()
-        .use(gfm)
-        .use(html)
+    // Markdown→HTML変換（GFMサポート + シンタックスハイライト）
+    const processedContent = await unified()
+        .use(remarkParse)
+        .use(remarkGfm)
+        .use(remarkRehype, { allowDangerousHtml: true })
+        .use(rehypePrettyCode, {
+            theme: {
+                dark: 'one-dark-pro',
+                light: 'github-light',
+            },
+            keepBackground: false,
+        })
+        .use(rehypeStringify, { allowDangerousHtml: true })
         .process(content);
     let contentHtml = processedContent.toString();
 
