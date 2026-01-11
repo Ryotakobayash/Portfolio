@@ -28,6 +28,7 @@ export interface PostMeta {
     date: string;
     excerpt?: string;
     tags: string[];
+    contentText?: string; // 全文検索用のプレーンテキスト
 }
 
 /** 記事の完全データ型 */
@@ -59,10 +60,18 @@ export async function getAllPosts(): Promise<PostMeta[]> {
             const slug = fileName.replace(/\.(md|mdx)$/, '');
             const fullPath = path.join(postsDirectory, fileName);
             const fileContents = fs.readFileSync(fullPath, 'utf8');
-            const { data } = matter(fileContents);
+            const { data, content } = matter(fileContents);
 
             // タグを配列として取得（未定義の場合は空配列）
             const tags = Array.isArray(data.tags) ? data.tags : [];
+
+            // Markdownからプレーンテキストを抽出（全文検索用）
+            const contentText = content
+                .replace(/^#{1,6}\s+/gm, '') // 見出しマーカーを削除
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // リンクをテキストに
+                .replace(/[*_`~]/g, '') // 装飾記号を削除
+                .replace(/\n+/g, ' ') // 改行をスペースに
+                .trim();
 
             return {
                 slug,
@@ -70,6 +79,7 @@ export async function getAllPosts(): Promise<PostMeta[]> {
                 date: data.date || '',
                 excerpt: data.excerpt || '',
                 tags,
+                contentText,
             } as PostMeta;
         });
 
