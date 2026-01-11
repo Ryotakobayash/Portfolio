@@ -9,21 +9,56 @@ import mediumZoom from 'medium-zoom';
  */
 export function ImageZoom() {
     useEffect(() => {
-        // .prose内の画像を取得
-        const images = document.querySelectorAll('.prose img');
+        // 画像要素を取得するためのセレクタ
+        const selector = '.prose img';
 
-        if (images.length > 0) {
-            const zoom = mediumZoom(images as unknown as HTMLElement[], {
-                margin: 24,
-                background: 'rgba(0, 0, 0, 0.9)',
-                scrollOffset: 0,
+        // オプション設定
+        const options = {
+            margin: 24,
+            background: 'rgba(0, 0, 0, 0.9)',
+            scrollOffset: 0,
+            zIndex: 9999, // 最前面に表示
+        };
+
+        // 初期化関数
+        const initZoom = () => {
+            const images = document.querySelectorAll(selector);
+            if (images.length > 0) {
+                mediumZoom(images as unknown as HTMLElement[], options);
+            }
+        };
+
+        // 即時実行
+        initZoom();
+
+        // 少し遅延させて再実行（他のスクリプトによるDOM変更を考慮）
+        const timeoutId = setTimeout(initZoom, 500);
+
+        // MutationObserverでDOM変更を監視
+        const observer = new MutationObserver((mutations) => {
+            let shouldUpdate = false;
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length > 0) {
+                    shouldUpdate = true;
+                }
             });
+            if (shouldUpdate) {
+                initZoom();
+            }
+        });
 
-            // クリーンアップ
-            return () => {
-                zoom.detach();
-            };
+        const proseElement = document.querySelector('.prose');
+        if (proseElement) {
+            observer.observe(proseElement, { childList: true, subtree: true });
         }
+
+        // クリーンアップ
+        return () => {
+            clearTimeout(timeoutId);
+            observer.disconnect();
+            const zoom = mediumZoom(document.querySelectorAll(selector) as unknown as HTMLElement[]);
+            zoom.detach();
+        };
     }, []);
 
     return null;
