@@ -1,0 +1,71 @@
+.stickyToc {
+    padding: 1rem;
+    background: var(--mantine-color-dark-7);
+    border: 1px solid var(--mantine-color-dark-4);
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+}
+
+[data-mantine-color-scheme="light"] .stickyToc {
+    background: var(--mantine-color-gray-0);
+    border-color: var(--mantine-color-gray-3);
+}
+
+.tocTitle {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+    color: var(--mantine-color-cyan-5);
+}
+
+.tocList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tocItem {
+    margin-bottom: 0.375rem;
+    border-left: 2px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.tocItem.active {
+    border-left-color: var(--mantine-color-cyan-5);
+}
+
+.tocLink {
+    display: block;
+    padding: 0.25rem 0 0.25rem 0.5rem;
+    color: var(--mantine-color-dimmed);
+    text-decoration: none;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+}
+
+.tocItem.active .tocLink {
+    color: var(--mantine-color-cyan-5);
+    font-weight: 500;
+}
+
+.tocLink:hover {
+    color: var(--mantine-color-cyan-5);
+}
+
+/* スクロールバーのスタイリング */
+.stickyToc::-webkit-scrollbar {
+    width: 4px;
+}
+
+.stickyToc::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.stickyToc::-webkit-scrollbar-thumb {
+    background: var(--mantine-color-dark-4);
+    border-radius: 2px;
+}
+
+.stickyToc::-webkit-scrollbar-thumb:hover {
+    background: var(--mantine-color-dark-3);
+}

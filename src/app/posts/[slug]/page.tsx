@@ -7,6 +7,7 @@ import { IconArrowLeft, IconCalendar, IconClock } from '@tabler/icons-react';
 import { getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/markdown';
 import { CodeCopyButton } from '@/components/CodeCopyButton';
 import { ImageZoom } from '@/components/ImageZoom';
+import { StickyToc } from '@/components/StickyToc';
 import styles from './prose.module.css';
 
 interface PageProps {
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 /**
  * 記事詳細ページ
- * MarkdownをHTMLに変換して表示
+ * 2カラムレイアウト（デスクトップ）: 左に記事本文、右にサイドバーTOC
  */
 export default async function PostPage({ params }: PageProps) {
     const { slug } = await params;
@@ -59,7 +60,7 @@ export default async function PostPage({ params }: PageProps) {
 
     return (
         <DashboardShell>
-            <Container size="md" py="xl">
+            <Container size="xl" py="xl">
                 {/* 戻るリンク */}
                 <Group mb="lg">
                     <Link href="/posts" className={styles.backLink}>
@@ -70,89 +71,101 @@ export default async function PostPage({ params }: PageProps) {
                     </Link>
                 </Group>
 
-                {/* 記事ヘッダー */}
-                <header className={styles.articleHeader}>
-                    <h1 className={styles.articleTitle}>{post.title}</h1>
-                    <div className={styles.articleMeta}>
-                        <IconCalendar size={16} />
-                        <span>{post.date}</span>
-                        <span className={styles.metaSeparator}>•</span>
-                        <IconClock size={16} />
-                        <span>{post.readingTimeMinutes}分で読めます</span>
-                    </div>
-                    {post.tags.length > 0 && (
-                        <Group gap="xs" mt="sm">
-                            {post.tags.map((tag) => (
-                                <Link
-                                    key={tag}
-                                    href={`/tags/${encodeURIComponent(tag)}`}
-                                >
-                                    <Badge
-                                        size="sm"
-                                        variant="light"
-                                        color="cyan"
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        {tag}
-                                    </Badge>
-                                </Link>
-                            ))}
-                        </Group>
+                {/* 2カラムレイアウト */}
+                <div className={styles.articleLayout}>
+                    {/* メインコンテンツ */}
+                    <main className={styles.mainContent}>
+                        {/* 記事ヘッダー */}
+                        <header className={styles.articleHeader}>
+                            <h1 className={styles.articleTitle}>{post.title}</h1>
+                            <div className={styles.articleMeta}>
+                                <IconCalendar size={16} />
+                                <span>{post.date}</span>
+                                <span className={styles.metaSeparator}>•</span>
+                                <IconClock size={16} />
+                                <span>{post.readingTimeMinutes}分で読めます</span>
+                            </div>
+                            {post.tags.length > 0 && (
+                                <Group gap="xs" mt="sm">
+                                    {post.tags.map((tag) => (
+                                        <Link
+                                            key={tag}
+                                            href={`/tags/${encodeURIComponent(tag)}`}
+                                        >
+                                            <Badge
+                                                size="sm"
+                                                variant="light"
+                                                color="cyan"
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                {tag}
+                                            </Badge>
+                                        </Link>
+                                    ))}
+                                </Group>
+                            )}
+                        </header>
+
+                        {/* モバイル用目次 */}
+                        {post.toc.length > 0 && (
+                            <nav className={styles.tableOfContents}>
+                                <h2 className={styles.tocTitle}>目次</h2>
+                                <ul className={styles.tocList}>
+                                    {post.toc.map((item) => (
+                                        <li
+                                            key={item.id}
+                                            className={styles.tocItem}
+                                            style={{ paddingLeft: `${(item.level - 2) * 1}rem` }}
+                                        >
+                                            <a href={`#${item.id}`} className={styles.tocLink}>
+                                                {item.text}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </nav>
+                        )}
+
+                        {/* 記事本文 */}
+                        <article
+                            className={styles.prose}
+                            dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+                        />
+
+                        {/* コードブロックコピーボタン */}
+                        <CodeCopyButton />
+
+                        {/* 画像ズーム機能 */}
+                        <ImageZoom />
+
+                        {/* 関連記事 */}
+                        {relatedPosts.length > 0 && (
+                            <section className={styles.relatedPosts}>
+                                <h2 className={styles.relatedTitle}>関連記事</h2>
+                                <div className={styles.relatedGrid}>
+                                    {relatedPosts.map((related) => (
+                                        <Link
+                                            key={related.slug}
+                                            href={`/posts/${related.slug}`}
+                                            className={styles.relatedCard}
+                                        >
+                                            <span className={styles.relatedDate}>{related.date}</span>
+                                            <span className={styles.relatedName}>{related.title}</span>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+                    </main>
+
+                    {/* サイドバー（デスクトップのみ） */}
+                    {post.toc.length > 0 && (
+                        <aside className={styles.sidebar}>
+                            <StickyToc toc={post.toc} />
+                        </aside>
                     )}
-                </header>
-
-                {/* 目次 */}
-                {post.toc.length > 0 && (
-                    <nav className={styles.tableOfContents}>
-                        <h2 className={styles.tocTitle}>目次</h2>
-                        <ul className={styles.tocList}>
-                            {post.toc.map((item) => (
-                                <li
-                                    key={item.id}
-                                    className={styles.tocItem}
-                                    style={{ paddingLeft: `${(item.level - 2) * 1}rem` }}
-                                >
-                                    <a href={`#${item.id}`} className={styles.tocLink}>
-                                        {item.text}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </nav>
-                )}
-
-                {/* 記事本文 */}
-                <article
-                    className={styles.prose}
-                    dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-                />
-
-                {/* コードブロックコピーボタン */}
-                <CodeCopyButton />
-
-                {/* 画像ズーム機能 */}
-                <ImageZoom />
-
-                {/* 関連記事 */}
-                {relatedPosts.length > 0 && (
-                    <section className={styles.relatedPosts}>
-                        <h2 className={styles.relatedTitle}>関連記事</h2>
-                        <div className={styles.relatedGrid}>
-                            {relatedPosts.map((related) => (
-                                <Link
-                                    key={related.slug}
-                                    href={`/posts/${related.slug}`}
-                                    className={styles.relatedCard}
-                                >
-                                    <span className={styles.relatedDate}>{related.date}</span>
-                                    <span className={styles.relatedName}>{related.title}</span>
-                                </Link>
-                            ))}
-                        </div>
-                    </section>
-                )}
+                </div>
             </Container>
         </DashboardShell>
     );
 }
-
