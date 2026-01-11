@@ -4,8 +4,9 @@ import { notFound } from 'next/navigation';
 import { DashboardShell } from '@/components/Layout';
 import { Container, Group, Badge } from '@mantine/core';
 import { IconArrowLeft, IconCalendar, IconClock } from '@tabler/icons-react';
-import { getAllPosts, getPostBySlug } from '@/lib/markdown';
+import { getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/markdown';
 import { CodeCopyButton } from '@/components/CodeCopyButton';
+import { ImageZoom } from '@/components/ImageZoom';
 import styles from './prose.module.css';
 
 interface PageProps {
@@ -52,6 +53,9 @@ export default async function PostPage({ params }: PageProps) {
     if (!post) {
         notFound();
     }
+
+    // 関連記事を取得
+    const relatedPosts = await getRelatedPosts(slug, post.tags, 3);
 
     return (
         <DashboardShell>
@@ -125,6 +129,28 @@ export default async function PostPage({ params }: PageProps) {
 
                 {/* コードブロックコピーボタン */}
                 <CodeCopyButton />
+
+                {/* 画像ズーム機能 */}
+                <ImageZoom />
+
+                {/* 関連記事 */}
+                {relatedPosts.length > 0 && (
+                    <section className={styles.relatedPosts}>
+                        <h2 className={styles.relatedTitle}>関連記事</h2>
+                        <div className={styles.relatedGrid}>
+                            {relatedPosts.map((related) => (
+                                <Link
+                                    key={related.slug}
+                                    href={`/posts/${related.slug}`}
+                                    className={styles.relatedCard}
+                                >
+                                    <span className={styles.relatedDate}>{related.date}</span>
+                                    <span className={styles.relatedName}>{related.title}</span>
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+                )}
             </Container>
         </DashboardShell>
     );

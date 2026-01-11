@@ -34,6 +34,14 @@ export default function RootLayout({
             <head>
                 <ColorSchemeScript defaultColorScheme="dark" />
 
+                {/* RSSフィード */}
+                <link
+                    rel="alternate"
+                    type="application/rss+xml"
+                    title="Dashboard Portfolio RSS"
+                    href="/rss.xml"
+                />
+
                 {/* Google Analytics 4 (gtag.js) */}
                 <Script
                     src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}

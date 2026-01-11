@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dashboard Portfolio</title>
+    <link>https://portfolio-eight-rust-11.vercel.app</link>
+    <description>ryota5884のポートフォリオサイト</description>
+    <language>ja</language>
+    <lastBuildDate>Sun, 11 Jan 2026 16:40:03 GMT</lastBuildDate>
+    <atom:link href="https://portfolio-eight-rust-11.vercel.app/rss.xml" rel="self" type="application/rss+xml"/>
+
+    <item>
+      <title><![CDATA[勉強勉強会]]></title>
+      <link>https://portfolio-eight-rust-11.vercel.app/posts/study-tips-2024</link>
+      <guid isPermaLink="true">https://portfolio-eight-rust-11.vercel.app/posts/study-tips-2024</guid>
+      <pubDate>Thu, 19 Dec 2024 00:00:00 GMT</pubDate>
+      <description><![CDATA[IT関係のことを独学するのに役立つ知識やメソッドを紹介。メモの取り方、インプットとアウトプットの比率、質問の仕方など。]]></description>
+      <category>学習法</category>
+      <category>Tips</category>
+      <category>NUTMEG</category>
+    </item>
+
+    <item>
+      <title><![CDATA[Hackathonステッカー作成記]]></title>
+      <link>https://portfolio-eight-rust-11.vercel.app/posts/hackathon-sticker-2024</link>
+      <guid isPermaLink="true">https://portfolio-eight-rust-11.vercel.app/posts/hackathon-sticker-2024</guid>
+      <pubDate>Sat, 05 Oct 2024 00:00:00 GMT</pubDate>
+      <description><![CDATA[NUTMEGハッカソンの賞品としてステッカーを制作しました。リッチブラックやトラッピング処理など、印刷データ作成の工夫点を紹介。]]></description>
+      <category>デザイン</category>
+      <category>印刷</category>
+      <category>NUTMEG</category>
+    </item>
+
+    <item>
+      <title><![CDATA[NUTMEGブログ大改造ビフォーアフター]]></title>
+      <link>https://portfolio-eight-rust-11.vercel.app/posts/blog-refactoring-2024</link>
+      <guid isPermaLink="true">https://portfolio-eight-rust-11.vercel.app/posts/blog-refactoring-2024</guid>
+      <pubDate>Sun, 26 May 2024 00:00:00 GMT</pubDate>
+      <description><![CDATA[Hugoで作成しているNUTMEGブログの改修を行いました。著者名表示、著者一覧ページ作成などconfig.tomlやlayouts/index.htmlの編集方法を紹介。]]></description>
+      <category>Hugo</category>
+      <category>HTML/CSS</category>
+      <category>NUTMEG</category>
+    </item>
+
+    <item>
+      <title><![CDATA[先輩NUTMEGメンバーが新入生の時に知りたかったTips]]></title>
+      <link>https://portfolio-eight-rust-11.vercel.app/posts/tips-for-freshmen</link>
+      <guid isPermaLink="true">https://portfolio-eight-rust-11.vercel.app/posts/tips-for-freshmen</guid>
+      <pubDate>Sat, 06 Apr 2024 00:00:00 GMT</pubDate>
+      <description><![CDATA[学業、研究室、アルバイト、生活の4つのジャンルについて、先輩から集めた新入生に教えたいTipsを紹介します。]]></description>
+      <category>大学生活</category>
+      <category>Tips</category>
+      <category>NUTMEG</category>
+    </item>
+
+    <item>
+      <title><![CDATA[NUTMEGメンバーのPC環境調査2024]]></title>
+      <link>https://portfolio-eight-rust-11.vercel.app/posts/pc-environment-2024</link>
+      <guid isPermaLink="true">https://portfolio-eight-rust-11.vercel.app/posts/pc-environment-2024</guid>
+      <pubDate>Fri, 05 Apr 2024 00:00:00 GMT</pubDate>
+      <description><![CDATA[新入生向け！NUTMEGメンバー12名のPC環境をアンケート調査しました。OS、メーカー、ストレージ、メモリ、キーボードなど詳しく紹介。]]></description>
+      <category>ガジェット</category>
+      <category>PC環境</category>
+      <category>NUTMEG</category>
+    </item>
+
+    <item>
+      <title><![CDATA[NUTMEGブログのこれまでとこれから]]></title>
+      <link>https://portfolio-eight-rust-11.vercel.app/posts/nutmeg-blog-history</link>
+      <guid isPermaLink="true">https://portfolio-eight-rust-11.vercel.app/posts/nutmeg-blog-history</guid>
+      <pubDate>Fri, 16 Feb 2024 00:00:00 GMT</pubDate>
+      <description><![CDATA[NUTMEGブログが生まれた背景と、Hugoを使用した具体的な運営方法についてまとめました。]]></description>
+      <category>Hugo</category>
+      <category>ブログ運営</category>
+      <category>NUTMEG</category>
+    </item>
+
+    <item>
+      <title><![CDATA[独学デザイナー、就活をする（第一部：インターン編）]]></title>
+      <link>https://portfolio-eight-rust-11.vercel.app/posts/job-hunting-intern-2023</link>
+      <guid isPermaLink="true">https://portfolio-eight-rust-11.vercel.app/posts/job-hunting-intern-2023</guid>
+      <pubDate>Wed, 06 Dec 2023 00:00:00 GMT</pubDate>
+      <description><![CDATA[工学部出身の独学デザイナーが就活で行ったこと。逆求人サイト登録、ポートフォリオ作成、インターン応募の流れを紹介。]]></description>
+      <category>就活</category>
+      <category>デザイナー</category>
+      <category>ポートフォリオ</category>
+    </item>
+
+    <item>
+      <title><![CDATA[NUTMEGにデザインシステムを導入したい話]]></title>
+      <link>https://portfolio-eight-rust-11.vercel.app/posts/design-system-2023</link>
+      <guid isPermaLink="true">https://portfolio-eight-rust-11.vercel.app/posts/design-system-2023</guid>
+      <pubDate>Thu, 20 Apr 2023 00:00:00 GMT</pubDate>
+      <description><![CDATA[サークル規模でデザインシステムを導入する検討過程をまとめました。メリット・デメリットと、実際に作成したTerraStyleについて紹介します。]]></description>
+      <category>デザインシステム</category>
+      <category>Figma</category>
+      <category>NUTMEG</category>
+    </item>
+
+    <item>
+      <title><![CDATA[Figmaの学生プラン・FigJamを導入します]]></title>
+      <link>https://portfolio-eight-rust-11.vercel.app/posts/figma-education-2022</link>
+      <guid isPermaLink="true">https://portfolio-eight-rust-11.vercel.app/posts/figma-education-2022</guid>
+      <pubDate>Wed, 26 Oct 2022 00:00:00 GMT</pubDate>
+      <description><![CDATA[NUTMEGでFigmaの学生プランおよびFigJamをメンバー全員に導入する流れと使い方をまとめました。]]></description>
+      <category>Figma</category>
+      <category>デザイン</category>
+      <category>NUTMEG</category>
+    </item>
+
+    <item>
+      <title><![CDATA[LT会を開催しました]]></title>
+      <link>https://portfolio-eight-rust-11.vercel.app/posts/lt-meeting-2021</link>
+      <guid isPermaLink="true">https://portfolio-eight-rust-11.vercel.app/posts/lt-meeting-2021</guid>
+      <pubDate>Wed, 01 Sep 2021 00:00:00 GMT</pubDate>
+      <description><![CDATA[夏季休業前から企画していたNUTMEG初のLT会を開催しました！テーマは自由、各々が興味を持ったことを発表しました。]]></description>
+      <category>イベント</category>
+      <category>LT</category>
+      <category>NUTMEG</category>
+    </item>
+  </channel>
+</rss>

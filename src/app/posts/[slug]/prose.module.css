@@ -291,3 +291,64 @@
 [data-mantine-color-scheme="light"] .prose tr:nth-child(even) td {
     background: var(--mantine-color-gray-0);
 }
+
+/* 関連記事セクション */
+.relatedPosts {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--mantine-color-dark-4);
+}
+
+[data-mantine-color-scheme="light"] .relatedPosts {
+    border-color: var(--mantine-color-gray-3);
+}
+
+.relatedTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--mantine-color-cyan-5);
+}
+
+.relatedGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.relatedCard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--mantine-color-dark-6);
+    border: 1px solid var(--mantine-color-dark-4);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.relatedCard:hover {
+    border-color: var(--mantine-color-cyan-5);
+    background: var(--mantine-color-dark-5);
+}
+
+[data-mantine-color-scheme="light"] .relatedCard {
+    background: var(--mantine-color-gray-0);
+    border-color: var(--mantine-color-gray-3);
+}
+
+[data-mantine-color-scheme="light"] .relatedCard:hover {
+    background: var(--mantine-color-gray-1);
+}
+
+.relatedDate {
+    font-size: 0.75rem;
+    color: var(--mantine-color-dimmed);
+}
+
+.relatedName {
+    font-size: 0.9rem;
+    color: var(--mantine-color-text);
+    font-weight: 500;
+}

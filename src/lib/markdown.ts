@@ -267,3 +267,29 @@ export async function getPostsByTag(tag: string): Promise<PostMeta[]> {
     const posts = await getAllPosts();
     return posts.filter((post) => post.tags.includes(tag));
 }
+
+/**
+ * 関連記事を取得（タグが共通する記事）
+ * @param currentSlug 現在の記事のスラッグ
+ * @param currentTags 現在の記事のタグ
+ * @param limit 取得する記事数（デフォルト3）
+ */
+export async function getRelatedPosts(
+    currentSlug: string,
+    currentTags: string[],
+    limit: number = 3
+): Promise<PostMeta[]> {
+    const allPosts = await getAllPosts();
+
+    // 現在の記事を除外し、共通タグ数でスコアリング
+    const scoredPosts = allPosts
+        .filter((post) => post.slug !== currentSlug)
+        .map((post) => {
+            const commonTags = post.tags.filter((tag) => currentTags.includes(tag));
+            return { post, score: commonTags.length };
+        })
+        .filter(({ score }) => score > 0) // タグが1つ以上共通している記事のみ
+        .sort((a, b) => b.score - a.score); // スコア降順
+
+    return scoredPosts.slice(0, limit).map(({ post }) => post);
+}

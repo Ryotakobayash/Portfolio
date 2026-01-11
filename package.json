@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && npm run generate-rss",
     "start": "next start",
     "lint": "next lint",
-    "download-images": "node scripts/download-images.js"
+    "download-images": "node scripts/download-images.js",
+    "generate-rss": "npx tsx scripts/generate-rss.ts"
   },
   "dependencies": {
     "@google-analytics/data": "^5.2.1",
@@ -19,9 +20,11 @@
     "gray-matter": "^4.0.3",
     "highcharts": "^11.4.8",
     "highcharts-react-official": "^3.2.1",
+    "medium-zoom": "^1.1.0",
     "next": "^15.5.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-medium-image-zoom": "^5.4.0",
     "rehype-parse": "^9.0.1",
     "rehype-pretty-code": "^0.14.1",
     "rehype-react": "^8.0.0",
@@ -46,6 +49,7 @@
     "postcss": "^8.4.49",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
