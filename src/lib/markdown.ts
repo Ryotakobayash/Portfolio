@@ -34,6 +34,7 @@ export interface PostMeta {
 export interface Post extends PostMeta {
     contentHtml: string;
     toc: TocItem[];
+    readingTimeMinutes: number;
 }
 
 /** タグと件数の型 */
@@ -136,6 +137,35 @@ function addIdsToHeadings(html: string, toc: TocItem[]): string {
 }
 
 /**
+ * 画像タグに最適化属性を追加（lazy loading, decoding）
+ */
+function optimizeImages(html: string): string {
+    return html.replace(
+        /<img([^>]*)>/g,
+        (match, attrs) => {
+            // 既にloading属性がある場合はスキップ
+            if (attrs.includes('loading=')) {
+                return match;
+            }
+            return `<img${attrs} loading="lazy" decoding="async">`;
+        }
+    );
+}
+
+/**
+ * 読了時間を計算（分）
+ * 日本語の平均読書速度: 約400-600文字/分
+ */
+function calculateReadingTime(content: string): number {
+    // HTMLタグを除去して文字数をカウント
+    const textOnly = content.replace(/<[^>]*>/g, '').replace(/\s+/g, '');
+    const charCount = textOnly.length;
+    const wordsPerMinute = 500; // 日本語の平均的な読書速度
+    const minutes = Math.ceil(charCount / wordsPerMinute);
+    return Math.max(1, minutes); // 最低1分
+}
+
+/**
  * スラッグから単一記事を取得
  */
 export async function getPostBySlug(slug: string): Promise<Post | null> {
@@ -176,6 +206,12 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     // HTMLの見出しにIDを付与
     contentHtml = addIdsToHeadings(contentHtml, toc);
 
+    // 画像タグに最適化属性を追加
+    contentHtml = optimizeImages(contentHtml);
+
+    // 読了時間を計算
+    const readingTimeMinutes = calculateReadingTime(contentHtml);
+
     // タグを配列として取得
     const tags = Array.isArray(data.tags) ? data.tags : [];
 
@@ -187,6 +223,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
         tags,
         contentHtml,
         toc,
+        readingTimeMinutes,
     };
 }
 

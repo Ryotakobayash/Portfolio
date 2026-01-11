@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DashboardShell } from '@/components/Layout';
 import { Container, Group, Badge } from '@mantine/core';
-import { IconArrowLeft, IconCalendar } from '@tabler/icons-react';
+import { IconArrowLeft, IconCalendar, IconClock } from '@tabler/icons-react';
 import { getAllPosts, getPostBySlug } from '@/lib/markdown';
+import { CodeCopyButton } from '@/components/CodeCopyButton';
 import styles from './prose.module.css';
 
 interface PageProps {
@@ -71,6 +72,9 @@ export default async function PostPage({ params }: PageProps) {
                     <div className={styles.articleMeta}>
                         <IconCalendar size={16} />
                         <span>{post.date}</span>
+                        <span className={styles.metaSeparator}>•</span>
+                        <IconClock size={16} />
+                        <span>{post.readingTimeMinutes}分で読めます</span>
                     </div>
                     {post.tags.length > 0 && (
                         <Group gap="xs" mt="sm">
@@ -118,6 +122,9 @@ export default async function PostPage({ params }: PageProps) {
                     className={styles.prose}
                     dangerouslySetInnerHTML={{ __html: post.contentHtml }}
                 />
+
+                {/* コードブロックコピーボタン */}
+                <CodeCopyButton />
             </Container>
         </DashboardShell>
     );

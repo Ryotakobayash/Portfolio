@@ -1,0 +1,41 @@
+.copyButton {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    background: var(--mantine-color-dark-5);
+    color: var(--mantine-color-dimmed);
+    border: 1px solid var(--mantine-color-dark-4);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+pre:hover .copyButton {
+    opacity: 1;
+}
+
+.copyButton:hover {
+    background: var(--mantine-color-dark-4);
+    color: var(--mantine-color-text);
+}
+
+.copied {
+    background: var(--mantine-color-green-7) !important;
+    color: white !important;
+    border-color: var(--mantine-color-green-7) !important;
+}
+
+/* ライトモード */
+[data-mantine-color-scheme="light"] .copyButton {
+    background: var(--mantine-color-gray-1);
+    border-color: var(--mantine-color-gray-3);
+    color: var(--mantine-color-gray-6);
+}
+
+[data-mantine-color-scheme="light"] .copyButton:hover {
+    background: var(--mantine-color-gray-2);
+    color: var(--mantine-color-gray-8);
+}
