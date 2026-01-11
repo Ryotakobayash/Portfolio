@@ -7,6 +7,7 @@ import { IconArrowLeft, IconCalendar, IconClock } from '@tabler/icons-react';
 import { getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/markdown';
 import { CodeCopyButton } from '@/components/CodeCopyButton';
 import { ImageZoom } from '@/components/ImageZoom';
+import { ImageBlurLoader } from '@/components/ImageBlurLoader';
 import { StickyToc } from '@/components/StickyToc';
 import styles from './prose.module.css';
 
@@ -137,6 +138,9 @@ export default async function PostPage({ params }: PageProps) {
 
                         {/* 画像ズーム機能 */}
                         <ImageZoom />
+
+                        {/* 画像ブラーローディング */}
+                        <ImageBlurLoader />
 
                         {/* 関連記事 */}
                         {relatedPosts.length > 0 && (
