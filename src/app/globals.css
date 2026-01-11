@@ -41,3 +41,14 @@ body {
 * {
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+/* medium-zoom修正: 画像をオーバーレイより前面に表示 */
+.medium-zoom-overlay {
+  z-index: 9999 !important;
+}
+
+.medium-zoom-image--opened {
+  z-index: 10000 !important;
+  position: relative;
+  /* スタックコンテキスト生成のため */
+}
