@@ -3,8 +3,8 @@ import { DashboardShell } from '@/components/Layout';
 import { BentoGrid, BentoCard } from '@/components/BentoGrid';
 import { PVChart, PostCalendar } from '@/components/Dashboard';
 import { getAllPosts, getPostCount } from '@/lib/markdown';
-import { Text, Avatar, Group, Badge, Stack, Button } from '@mantine/core';
-import { IconArticle, IconArrowRight } from '@tabler/icons-react';
+import { Text, Avatar, Group, Badge, Stack } from '@mantine/core';
+import { IconArticle } from '@tabler/icons-react';
 import styles from './page.module.css';
 
 /**
@@ -34,15 +34,8 @@ export default async function HomePage() {
               </Group>
             </Stack>
           </Group>
-          <Link href="/about" style={{ marginTop: 'auto', paddingTop: '1rem', display: 'block' }}>
-            <Button
-              variant="subtle"
-              color="cyan"
-              rightSection={<IconArrowRight size={16} />}
-              fullWidth
-            >
-              詳細プロフィール
-            </Button>
+          <Link href="/about" className={styles.drillDownLink} style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+            詳細プロフィール →
           </Link>
         </BentoCard>
 
