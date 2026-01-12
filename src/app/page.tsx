@@ -3,8 +3,8 @@ import { DashboardShell } from '@/components/Layout';
 import { BentoGrid, BentoCard } from '@/components/BentoGrid';
 import { PVChart, PostCalendar } from '@/components/Dashboard';
 import { getAllPosts, getPostCount } from '@/lib/markdown';
-import { Text, Avatar, Group, Badge, Stack, Anchor } from '@mantine/core';
-import { IconBrandGithub, IconArticle, IconPalette, IconCode, IconNote } from '@tabler/icons-react';
+import { Text, Avatar, Group, Badge, Stack, Button } from '@mantine/core';
+import { IconArticle, IconArrowRight } from '@tabler/icons-react';
 import styles from './page.module.css';
 
 /**
@@ -25,15 +25,25 @@ export default async function HomePage() {
               KR
             </Avatar>
             <Stack gap="xs">
-              <Text fw={700} size="lg">Kobayashi Ryota</Text>
-              <Text c="dimmed" size="sm">Cybozu プロダクトデザイナー 25新卒</Text>
+              <Text fw={700} size="lg">小林 諒大</Text>
+              <Text c="dimmed" size="sm">Cybozu プロダクトデザイナー</Text>
               <Group gap="xs">
+                <Badge variant="light" color="cyan">kintone</Badge>
                 <Badge variant="light" color="pink">Figma</Badge>
                 <Badge variant="light" color="grape">Next.js</Badge>
-                <Badge variant="light" color="cyan">React</Badge>
               </Group>
             </Stack>
           </Group>
+          <Link href="/about" style={{ marginTop: 'auto', paddingTop: '1rem', display: 'block' }}>
+            <Button
+              variant="subtle"
+              color="cyan"
+              rightSection={<IconArrowRight size={16} />}
+              fullWidth
+            >
+              詳細プロフィール
+            </Button>
+          </Link>
         </BentoCard>
 
         {/* PV数グラフカード（ワイド） */}
@@ -75,69 +85,6 @@ export default async function HomePage() {
               すべて見る →
             </Link>
           </Group>
-        </BentoCard>
-
-        {/* GitHub活動カード */}
-        <BentoCard title="GitHub Activity">
-          <Stack gap="sm">
-            <Group gap="sm">
-              <IconBrandGithub size={20} />
-              <Text size="sm" fw={500}>This Week</Text>
-            </Group>
-            <Group gap="lg">
-              <Stack gap={0} align="center">
-                <Text size="xl" fw={700} c="cyan">24</Text>
-                <Text size="xs" c="dimmed">Commits</Text>
-              </Stack>
-              <Stack gap={0} align="center">
-                <Text size="xl" fw={700} c="green">5</Text>
-                <Text size="xs" c="dimmed">PRs</Text>
-              </Stack>
-              <Stack gap={0} align="center">
-                <Text size="xl" fw={700} c="yellow">12</Text>
-                <Text size="xs" c="dimmed">Reviews</Text>
-              </Stack>
-            </Group>
-          </Stack>
-        </BentoCard>
-
-        {/* スキルセットカード */}
-        <BentoCard title="Skills">
-          <Stack gap="xs">
-            <Text size="xs" c="dimmed" fw={500}>Design Tools</Text>
-            <Group gap="xs" wrap="wrap">
-              <Badge leftSection={<IconPalette size={12} />} variant="outline" color="pink">Figma</Badge>
-              <Badge leftSection={<IconPalette size={12} />} variant="outline" color="orange">Illustrator</Badge>
-              <Badge leftSection={<IconPalette size={12} />} variant="outline" color="blue">Photoshop</Badge>
-              <Badge leftSection={<IconPalette size={12} />} variant="outline" color="cyan">Affinity Designer</Badge>
-            </Group>
-            <Text size="xs" c="dimmed" fw={500} mt="xs">Development</Text>
-            <Group gap="xs" wrap="wrap">
-              <Badge leftSection={<IconCode size={12} />} variant="outline" color="grape">Next.js</Badge>
-              <Badge leftSection={<IconCode size={12} />} variant="outline" color="cyan">React</Badge>
-              <Badge leftSection={<IconCode size={12} />} variant="outline" color="green">Vue.js</Badge>
-              <Badge leftSection={<IconCode size={12} />} variant="outline" color="teal">Hugo</Badge>
-              <Badge leftSection={<IconCode size={12} />} variant="outline" color="blue">HTML/CSS</Badge>
-            </Group>
-          </Stack>
-        </BentoCard>
-
-        {/* SNSリンクカード */}
-        <BentoCard title="Connect">
-          <Stack gap="sm">
-            <Group gap="sm">
-              <IconBrandGithub size={20} />
-              <Anchor href="https://github.com/Ryotakobayash?tab=repositories" target="_blank" size="sm">
-                GitHub
-              </Anchor>
-            </Group>
-            <Group gap="sm">
-              <IconNote size={20} />
-              <Anchor href="https://note.com/tender_hyssop572" target="_blank" size="sm">
-                note
-              </Anchor>
-            </Group>
-          </Stack>
         </BentoCard>
       </BentoGrid>
     </DashboardShell>
