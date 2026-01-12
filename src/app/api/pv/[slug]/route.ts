@@ -45,6 +45,11 @@ async function getAuthClient() {
         },
     });
 
+    // Analytics Data APIに必要なスコープを設定
+    if (authClient) {
+        authClient.scopes = ['https://www.googleapis.com/auth/analytics.readonly'];
+    }
+
     return authClient;
 }
 
