@@ -27,11 +27,6 @@ export default async function HomePage() {
             <Stack gap="xs">
               <Text fw={700} size="lg">小林 諒大</Text>
               <Text c="dimmed" size="sm">Cybozu プロダクトデザイナー</Text>
-              <Group gap="xs">
-                <Badge variant="light" color="cyan">kintone</Badge>
-                <Badge variant="light" color="pink">Figma</Badge>
-                <Badge variant="light" color="grape">Next.js</Badge>
-              </Group>
             </Stack>
           </Group>
           <Group justify="flex-end" mt="auto" pt="md">
