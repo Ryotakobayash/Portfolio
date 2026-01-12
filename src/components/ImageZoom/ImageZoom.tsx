@@ -5,12 +5,12 @@ import mediumZoom from 'medium-zoom';
 
 /**
  * 記事内の画像にズーム機能を追加するコンポーネント
- * マウント時に.prose内のすべての画像にmedium-zoomを適用
+ * マウント時に#article-content内のすべての画像にmedium-zoomを適用
  */
 export function ImageZoom() {
     useEffect(() => {
-        // 画像要素を取得するためのセレクタ
-        const selector = '.prose img';
+        // 画像要素を取得するためのセレクタ（IDベースに変更）
+        const selector = '#article-content img';
 
         // オプション設定
         const options = {
@@ -47,9 +47,9 @@ export function ImageZoom() {
             }
         });
 
-        const proseElement = document.querySelector('.prose');
-        if (proseElement) {
-            observer.observe(proseElement, { childList: true, subtree: true });
+        const contentElement = document.getElementById('article-content');
+        if (contentElement) {
+            observer.observe(contentElement, { childList: true, subtree: true });
         }
 
         // クリーンアップ

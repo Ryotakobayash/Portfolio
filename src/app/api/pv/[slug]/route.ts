@@ -3,12 +3,11 @@ import { BetaAnalyticsDataClient } from '@google-analytics/data';
 import { ExternalAccountClient } from 'google-auth-library';
 
 /**
- * GA4 Data APIからPVデータを取得するAPI Route
- * Workload Identity Federationを使用してキーレス認証
+ * 記事別PVを取得するAPI Route
+ * GA4 Data APIを使用
  */
 
 // 環境変数から設定を取得
-const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID || 'portfolio-483013';
 const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
 const GCP_WORKLOAD_IDENTITY_POOL_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_ID || 'portfolio-vercel';
 const GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID || 'portfolio-vercel';
@@ -16,23 +15,21 @@ const GCP_SERVICE_ACCOUNT_EMAIL = process.env.GCP_SERVICE_ACCOUNT_EMAIL || 'verc
 const GA4_PROPERTY_ID = process.env.GA4_PROPERTY_ID;
 
 // キャッシュ用（1時間）
-let cachedData: { data: PVData[]; timestamp: number } | null = null;
+const cache = new Map<string, { pv: number; timestamp: number }>();
 const CACHE_DURATION = 60 * 60 * 1000; // 1時間
 
-interface PVData {
-    date: string;
-    pv: number;
+interface PageProps {
+    params: Promise<{ slug: string }>;
 }
 
 /**
  * Workload Identity Federationを使用してGCP認証クライアントを作成
  */
 async function getAuthClient() {
-    // Vercel OIDC token取得
     const oidcToken = process.env.VERCEL_OIDC_TOKEN;
 
     if (!oidcToken || !GCP_PROJECT_NUMBER) {
-        throw new Error('Missing OIDC configuration. Required: VERCEL_OIDC_TOKEN, GCP_PROJECT_NUMBER');
+        throw new Error('Missing OIDC configuration');
     }
 
     const authClient = ExternalAccountClient.fromJSON({
@@ -50,9 +47,9 @@ async function getAuthClient() {
 }
 
 /**
- * GA4からPVデータを取得
+ * GA4から特定記事のPVを取得
  */
-async function fetchGA4Data(): Promise<PVData[]> {
+async function fetchArticlePV(slug: string): Promise<number> {
     if (!GA4_PROPERTY_ID) {
         throw new Error('GA4_PROPERTY_ID is not configured');
     }
@@ -63,18 +60,18 @@ async function fetchGA4Data(): Promise<PVData[]> {
         authClient: authClient as any,
     });
 
-    // 過去7日間のPVを取得
+    // 全期間の該当記事PVを取得
     const [response] = await analyticsDataClient.runReport({
         property: `properties/${GA4_PROPERTY_ID}`,
         dateRanges: [
             {
-                startDate: '7daysAgo',
+                startDate: '2020-01-01',
                 endDate: 'today',
             },
         ],
         dimensions: [
             {
-                name: 'date',
+                name: 'pagePath',
             },
         ],
         metrics: [
@@ -82,99 +79,75 @@ async function fetchGA4Data(): Promise<PVData[]> {
                 name: 'screenPageViews',
             },
         ],
-        orderBys: [
-            {
-                dimension: {
-                    dimensionName: 'date',
+        dimensionFilter: {
+            filter: {
+                fieldName: 'pagePath',
+                stringFilter: {
+                    matchType: 'CONTAINS',
+                    value: `/posts/${slug}`,
                 },
             },
-        ],
+        },
     });
 
-    // レスポンスをフォーマット
-    const pvData: PVData[] = (response.rows || []).map((row) => {
-        const dateStr = row.dimensionValues?.[0]?.value || '';
-        // YYYYMMDD形式をMM/DD形式に変換
-        const formattedDate = dateStr.length === 8
-            ? `${dateStr.slice(4, 6)}/${dateStr.slice(6, 8)}`
-            : dateStr;
-
-        return {
-            date: formattedDate,
-            pv: parseInt(row.metricValues?.[0]?.value || '0', 10),
-        };
+    // PV数を集計
+    let totalPV = 0;
+    (response.rows || []).forEach((row) => {
+        totalPV += parseInt(row.metricValues?.[0]?.value || '0', 10);
     });
 
-    return pvData;
+    return totalPV;
 }
 
-export async function GET() {
+export async function GET(request: Request, { params }: PageProps) {
+    const { slug } = await params;
+
     try {
         // 開発環境またはGA4未設定時はダミーデータを返す
         if (!GA4_PROPERTY_ID || process.env.NODE_ENV === 'development') {
-            const dummyData: PVData[] = [
-                { date: '12/29', pv: 120 },
-                { date: '12/30', pv: 145 },
-                { date: '12/31', pv: 98 },
-                { date: '01/01', pv: 210 },
-                { date: '01/02', pv: 178 },
-                { date: '01/03', pv: 156 },
-                { date: '01/04', pv: 189 },
-            ];
-            const totalPV = dummyData.reduce((sum, d) => sum + d.pv, 0);
+            // slugのハッシュに基づいたダミー閲覧数（100-500の範囲）
+            const dummyPV = 100 + (slug.length * 37) % 400;
             return NextResponse.json({
-                data: dummyData,
-                totalPV,
+                slug,
+                pv: dummyPV,
                 source: 'dummy',
-                message: 'GA4_PROPERTY_ID not configured or development mode'
             });
         }
 
         // キャッシュチェック
-        if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
-            const totalPV = cachedData.data.reduce((sum, d) => sum + d.pv, 0);
+        const cached = cache.get(slug);
+        if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
             return NextResponse.json({
-                data: cachedData.data,
-                totalPV,
-                source: 'cache'
+                slug,
+                pv: cached.pv,
+                source: 'cache',
             });
         }
 
         // GA4からデータ取得
-        const pvData = await fetchGA4Data();
+        const pv = await fetchArticlePV(slug);
 
         // キャッシュ更新
-        cachedData = {
-            data: pvData,
+        cache.set(slug, {
+            pv,
             timestamp: Date.now(),
-        };
+        });
 
-        const totalPV = pvData.reduce((sum, d) => sum + d.pv, 0);
         return NextResponse.json({
-            data: pvData,
-            totalPV,
-            source: 'ga4'
+            slug,
+            pv,
+            source: 'ga4',
         });
     } catch (error) {
-        console.error('GA4 API Error:', error);
+        console.error('GA4 Article PV API Error:', error);
 
         // エラー時はダミーデータを返す
-        const fallbackData: PVData[] = [
-            { date: '12/29', pv: 120 },
-            { date: '12/30', pv: 145 },
-            { date: '12/31', pv: 98 },
-            { date: '01/01', pv: 210 },
-            { date: '01/02', pv: 178 },
-            { date: '01/03', pv: 156 },
-            { date: '01/04', pv: 189 },
-        ];
-        const totalPV = fallbackData.reduce((sum, d) => sum + d.pv, 0);
-
+        const fallbackPV = 100 + (slug.length * 37) % 400;
         return NextResponse.json({
-            data: fallbackData,
-            totalPV,
+            slug,
+            pv: fallbackPV,
             source: 'fallback',
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
         });
     }
 }

@@ -9,6 +9,7 @@ import { CodeCopyButton } from '@/components/CodeCopyButton';
 import { ImageZoom } from '@/components/ImageZoom';
 import { ImageBlurLoader } from '@/components/ImageBlurLoader';
 import { StickyToc } from '@/components/StickyToc';
+import { ViewCount } from '@/components/ViewCount';
 import styles from './prose.module.css';
 
 interface PageProps {
@@ -85,6 +86,8 @@ export default async function PostPage({ params }: PageProps) {
                                 <span className={styles.metaSeparator}>•</span>
                                 <IconClock size={16} />
                                 <span>{post.readingTimeMinutes}分で読めます</span>
+                                <span className={styles.metaSeparator}>•</span>
+                                <ViewCount slug={slug} />
                             </div>
                             {post.tags.length > 0 && (
                                 <Group gap="xs" mt="sm">
@@ -129,6 +132,7 @@ export default async function PostPage({ params }: PageProps) {
 
                         {/* 記事本文 */}
                         <article
+                            id="article-content"
                             className={styles.prose}
                             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
                         />

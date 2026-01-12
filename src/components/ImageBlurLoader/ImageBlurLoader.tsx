@@ -8,7 +8,7 @@ import { useEffect } from 'react';
  */
 export function ImageBlurLoader() {
     useEffect(() => {
-        const images = document.querySelectorAll('.prose img') as NodeListOf<HTMLImageElement>;
+        const images = document.querySelectorAll('#article-content img') as NodeListOf<HTMLImageElement>;
 
         images.forEach((img) => {
             // 既にロード済みの場合はスキップ

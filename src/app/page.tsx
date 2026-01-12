@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { DashboardShell } from '@/components/Layout';
 import { BentoGrid, BentoCard } from '@/components/BentoGrid';
-import { PVChart } from '@/components/Dashboard';
+import { PVChart, PostCalendar } from '@/components/Dashboard';
 import { getAllPosts, getPostCount } from '@/lib/markdown';
 import { Text, Avatar, Group, Badge, Stack, Anchor } from '@mantine/core';
 import { IconBrandGithub, IconArticle, IconPalette, IconCode, IconNote } from '@tabler/icons-react';
@@ -39,6 +39,11 @@ export default async function HomePage() {
         {/* PV数グラフカード（ワイド） */}
         <BentoCard title="Page Views (Last 7 Days)" wide>
           <PVChart />
+        </BentoCard>
+
+        {/* 投稿カレンダーカード（ワイド） */}
+        <BentoCard title="Post Activity" wide>
+          <PostCalendar posts={posts.map((p) => ({ slug: p.slug, title: p.title, date: p.date }))} />
         </BentoCard>
 
         {/* 最新記事リストカード */}

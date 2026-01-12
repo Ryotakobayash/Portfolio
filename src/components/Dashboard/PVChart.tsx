@@ -12,6 +12,7 @@ interface PVData {
 
 interface PVResponse {
     data: PVData[];
+    totalPV: number;
     source: 'ga4' | 'cache' | 'dummy' | 'fallback';
     error?: string;
 }
@@ -29,6 +30,7 @@ export function PVChart() {
     const isDark = colorScheme === 'dark';
 
     const [pvData, setPvData] = useState<PVData[]>([]);
+    const [totalPV, setTotalPV] = useState<number>(0);
     const [source, setSource] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -42,6 +44,7 @@ export function PVChart() {
 
                 const json: PVResponse = await res.json();
                 setPvData(json.data);
+                setTotalPV(json.totalPV);
                 setSource(json.source);
                 if (json.error) setError(json.error);
             } catch (err) {
@@ -137,6 +140,12 @@ export function PVChart() {
 
     return (
         <div>
+            <Text size="xl" fw={700} c="cyan" mb="xs">
+                {totalPV.toLocaleString()} views
+                <Text span size="sm" c="dimmed" ml="xs">
+                    (過去7日間)
+                </Text>
+            </Text>
             <HighchartsReact
                 highcharts={Highcharts}
                 options={options}
