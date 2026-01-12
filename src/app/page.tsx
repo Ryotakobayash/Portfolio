@@ -34,9 +34,11 @@ export default async function HomePage() {
               </Group>
             </Stack>
           </Group>
-          <Link href="/about" className={styles.drillDownLink} style={{ marginTop: 'auto', paddingTop: '1rem' }}>
-            詳細プロフィール →
-          </Link>
+          <Group justify="flex-end" mt="auto" pt="md">
+            <Link href="/about" className={styles.drillDownLink}>
+              詳細プロフィール →
+            </Link>
+          </Group>
         </BentoCard>
 
         {/* PV数グラフカード（ワイド） */}
