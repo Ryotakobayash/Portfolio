@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
 import { ExternalAccountClient } from 'google-auth-library';
+import { getVercelOidcToken } from '@vercel/functions/oidc';
 
 /**
  * GA4 Data APIからPVデータを取得するAPI Route
@@ -28,12 +29,12 @@ interface PVData {
  * Workload Identity Federationを使用してGCP認証クライアントを作成
  */
 async function getAuthClient() {
-    // Vercel OIDC token取得
-    const oidcToken = process.env.VERCEL_OIDC_TOKEN;
-
-    if (!oidcToken || !GCP_PROJECT_NUMBER) {
-        throw new Error('Missing OIDC configuration. Required: VERCEL_OIDC_TOKEN, GCP_PROJECT_NUMBER');
+    if (!GCP_PROJECT_NUMBER) {
+        throw new Error('GCP_PROJECT_NUMBER is not configured');
     }
+
+    // @vercel/functions を使用してOIDCトークンを取得
+    const oidcToken = await getVercelOidcToken();
 
     const authClient = ExternalAccountClient.fromJSON({
         type: 'external_account',
