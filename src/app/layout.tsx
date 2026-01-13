@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 // Google Tag Manager ID
 const GTM_ID = 'GTM-WG6RHC88';
@@ -89,6 +90,7 @@ export default function RootLayout({
                     {children}
                 </MantineProvider>
                 <Analytics />
+                <SpeedInsights />
             </body>
         </html>
     );
