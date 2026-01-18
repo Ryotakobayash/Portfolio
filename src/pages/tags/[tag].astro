@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  const tagSet = new Set<string>();
+  posts.forEach((post) => {
+    (post.data.tags || []).forEach((tag: string) => tagSet.add(tag));
+  });
+
+  return Array.from(tagSet).map((tag) => ({
+    // スラッシュを含むタグはハイフンに置換してURLセーフにする
+    params: { tag: tag.replace(/\//g, '-') },
+    props: { tag, urlTag: tag.replace(/\//g, '-') },
+  }));
+}
+
+interface Props {
+  tag: string;
+}
+
+const { tag } = Astro.props;
+const posts = await getCollection('posts');
+const filteredPosts = posts
+  .filter((post) => (post.data.tags || []).includes(tag))
+  .map((post) => ({
+    slug: post.id.replace(/\.mdx?$/, ''),
+    title: post.data.title,
+    date: post.data.date,
+  }))
+  .sort((a, b) => (a.date < b.date ? 1 : -1));
+---
+
+<BaseLayout title={`${tag} の記事 | Dashboard Portfolio`}>
+  <div class="page-header">
+    <a href="/tags" class="back-link">← タグ一覧に戻る</a>
+    <h1 class="page-title">#{tag}</h1>
+    <p class="page-description">{filteredPosts.length} 件の記事</p>
+  </div>
+
+  <div class="post-list">
+    {filteredPosts.map((post) => (
+      <a href={`/posts/${post.slug}`} class="post-item">
+        <span class="post-item__date">{post.date}</span>
+        <span class="post-item__title">{post.title}</span>
+      </a>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.875rem;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .page-description {
+    color: var(--color-text-muted);
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .post-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .post-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .post-item__date {
+    flex-shrink: 0;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .post-item__title {
+    font-weight: 500;
+  }
+</style>

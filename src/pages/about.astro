@@ -1,0 +1,342 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About | Dashboard Portfolio" description="小林 諒大のプロフィール">
+  <div class="about">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="avatar avatar--large">KR</div>
+      <div class="hero-text">
+        <h1 class="hero-name">小林 諒大</h1>
+        <p class="hero-subtitle">Kobayashi Ryota</p>
+        <p class="hero-role">サイボウズ株式会社 プロダクトデザイナー</p>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- Education Section -->
+    <section class="section">
+      <h2 class="section-title">🎓 学歴</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">長岡技術科学大学 大学院</h3>
+            <p class="timeline-subtitle">工学専攻科 機械工学分野 / 知的計測制御研究室</p>
+            <p class="timeline-date">2023/4 〜 2025/3</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">長岡技術科学大学</h3>
+            <p class="timeline-subtitle">工学部 機械創造工学分野 / ナノ・原子レベル解析研究室</p>
+            <p class="timeline-date">2019/4 〜 2023/3</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">新潟県立新潟工業高等学校</h3>
+            <p class="timeline-subtitle">機械科</p>
+            <p class="timeline-date">〜 2019/3</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- Work Section -->
+    <section class="section">
+      <h2 class="section-title">💼 職歴</h2>
+      <div class="timeline">
+        <div class="timeline-item timeline-item--active">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">サイボウズ株式会社</h3>
+            <p class="timeline-subtitle">開発本部 プロダクトデザイナー / kintoneプラットフォーム</p>
+            <p class="timeline-date">2025/4 〜 現在</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- Skills Section -->
+    <section class="section">
+      <h2 class="section-title">💻 スキル</h2>
+
+      <h3 class="subsection-title">デザインスキル</h3>
+      <div class="skill-grid">
+        <div class="skill-item">
+          <div class="skill-header">
+            <span>UIデザイン</span>
+            <span class="skill-level">Lv.2.5/5</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar__fill" style="width: 50%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-header">
+            <span>ウェブアクセシビリティ</span>
+            <span class="skill-level">Lv.2/5</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar__fill" style="width: 40%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-header">
+            <span>情報設計</span>
+            <span class="skill-level">Lv.2/5</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar__fill" style="width: 40%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-header">
+            <span>プロトタイピング</span>
+            <span class="skill-level">Lv.2/5</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar__fill" style="width: 40%"></div></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">技術スキル</h3>
+      <div class="tech-grid">
+        <div class="tech-card">
+          <h4 class="tech-card__name">Figma</h4>
+          <span class="badge">3年程度</span>
+          <p class="tech-card__desc">アプリUIデザイン、プロトタイプ作成、コンポーネントライブラリ作成</p>
+        </div>
+        <div class="tech-card">
+          <h4 class="tech-card__name">Adobe Illustrator</h4>
+          <span class="badge">5年程度</span>
+          <p class="tech-card__desc">ロゴデザイン、印刷物作成、SVG書き出し</p>
+        </div>
+        <div class="tech-card">
+          <h4 class="tech-card__name">HTML/CSS/SCSS</h4>
+          <span class="badge">4年程度</span>
+          <p class="tech-card__desc">Webサイト作成、フロントエンド実装</p>
+        </div>
+        <div class="tech-card">
+          <h4 class="tech-card__name">TypeScript</h4>
+          <span class="badge">1年未満</span>
+          <p class="tech-card__desc">Vue, React, Next.js を使用したフロントエンド開発</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- Links Section -->
+    <section class="section">
+      <h2 class="section-title">🔗 外部リンク</h2>
+      <div class="links">
+        <a href="https://github.com/Ryotakobayash" target="_blank" rel="noopener" class="link-item">
+          GitHub
+        </a>
+        <a href="https://speakerdeck.com/ryota5884" target="_blank" rel="noopener" class="link-item">
+          Speaker Deck
+        </a>
+        <a href="https://zenn.dev/ryota5884" target="_blank" rel="noopener" class="link-item">
+          Zenn
+        </a>
+        <a href="https://note.com/tender_hyssop572" target="_blank" rel="noopener" class="link-item">
+          note
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: var(--spacing-xl) 0;
+  }
+
+  /* Hero */
+  .hero {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-xl);
+  }
+
+  .avatar--large {
+    width: 100px;
+    height: 100px;
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .hero-name {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .hero-subtitle {
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .hero-role {
+    font-size: 1rem;
+  }
+
+  /* Section */
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .subsection-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: var(--spacing-lg) 0 var(--spacing-md);
+  }
+
+  /* Timeline */
+  .timeline {
+    padding-left: var(--spacing-lg);
+    border-left: 2px solid var(--color-border);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: var(--spacing-lg);
+  }
+
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-marker {
+    position: absolute;
+    left: calc(-1 * var(--spacing-lg) - 6px);
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--color-border);
+    border: 2px solid var(--color-bg);
+  }
+
+  .timeline-item--active .timeline-marker {
+    background-color: var(--color-accent);
+  }
+
+  .timeline-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .timeline-subtitle {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .timeline-date {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Skills */
+  .skill-grid {
+    display: grid;
+    gap: var(--spacing-md);
+  }
+
+  .skill-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .skill-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+  }
+
+  .skill-level {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+  }
+
+  .skill-bar {
+    height: 8px;
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .skill-bar__fill {
+    height: 100%;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-lg);
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .tech-card {
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+  }
+
+  .tech-card__name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .tech-card__desc {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-top: var(--spacing-sm);
+  }
+
+  /* Links */
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+  }
+
+  .link-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: border-color var(--transition-fast);
+  }
+
+  .link-item:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+</style>
