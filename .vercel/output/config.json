@@ -20,11 +20,27 @@
 			"dest": "_render"
 		},
 		{
+			"src": "^/about/?$",
+			"dest": "_render"
+		},
+		{
 			"src": "^/api/pv/([^/]+?)/?$",
 			"dest": "_render"
 		},
 		{
 			"src": "^/api/pv/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/posts/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/tags/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/$",
 			"dest": "_render"
 		}
 	]

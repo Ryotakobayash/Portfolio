@@ -6,6 +6,8 @@ import CodeCopyButton from '../../components/CodeCopyButton';
 import ImageZoom from '../../components/ImageZoom';
 import ViewCount from '../../components/ViewCount';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
   return posts.map((post) => ({

@@ -1,35 +1,34 @@
-import '@google-analytics/data';
-import 'google-auth-library';
 export { renderers } from '../../renderers.mjs';
 
-const GA4_PROPERTY_ID = undefined                               ;
-let cachedData = null;
-const CACHE_DURATION = 60 * 60 * 1e3;
-const dummyData = [
-  { date: "01/12", pv: 120 },
-  { date: "01/13", pv: 145 },
-  { date: "01/14", pv: 98 },
-  { date: "01/15", pv: 210 },
-  { date: "01/16", pv: 178 },
-  { date: "01/17", pv: 156 },
-  { date: "01/18", pv: 189 }
-];
-async function fetchGA4Data() {
-  {
-    throw new Error("GA4_PROPERTY_ID is not configured");
-  }
+function getDummyData() {
+  const today = /* @__PURE__ */ new Date();
+  return Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(today);
+    date.setDate(date.getDate() - (6 - i));
+    return {
+      date: `${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`,
+      pv: Math.floor(Math.random() * 150) + 80
+    };
+  });
 }
 const prerender = false;
 const GET = async () => {
   try {
-    if (!GA4_PROPERTY_ID || false) {
-      const totalPV2 = dummyData.reduce((sum, d) => sum + d.pv, 0);
+    const GA4_PROPERTY_ID = undefined                               ;
+    const GCP_PROJECT_NUMBER = undefined                                  ;
+    if (!GA4_PROPERTY_ID || !GCP_PROJECT_NUMBER) {
+      const dummyData2 = getDummyData();
+      const totalPV2 = dummyData2.reduce((sum, d) => sum + d.pv, 0);
       return new Response(
         JSON.stringify({
-          data: dummyData,
+          data: dummyData2,
           totalPV: totalPV2,
           source: "dummy",
-          message: "GA4_PROPERTY_ID not configured or development mode"
+          message: "GA4_PROPERTY_ID or GCP_PROJECT_NUMBER not configured",
+          debug: {
+            hasGA4: !!GA4_PROPERTY_ID,
+            hasGCP: !!GCP_PROJECT_NUMBER
+          }
         }),
         {
           status: 200,
@@ -40,34 +39,14 @@ const GET = async () => {
         }
       );
     }
-    if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
-      const totalPV2 = cachedData.data.reduce((sum, d) => sum + d.pv, 0);
-      return new Response(
-        JSON.stringify({
-          data: cachedData.data,
-          totalPV: totalPV2,
-          source: "cache"
-        }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "public, max-age=3600"
-          }
-        }
-      );
-    }
-    const pvData = await fetchGA4Data();
-    cachedData = {
-      data: pvData,
-      timestamp: Date.now()
-    };
-    const totalPV = pvData.reduce((sum, d) => sum + d.pv, 0);
+    const dummyData = getDummyData();
+    const totalPV = dummyData.reduce((sum, d) => sum + d.pv, 0);
     return new Response(
       JSON.stringify({
-        data: pvData,
+        data: dummyData,
         totalPV,
-        source: "ga4"
+        source: "placeholder",
+        message: "GA4 API implementation pending"
       }),
       {
         status: 200,
@@ -78,13 +57,11 @@ const GET = async () => {
       }
     );
   } catch (error) {
-    console.error("GA4 API Error:", error);
-    const totalPV = dummyData.reduce((sum, d) => sum + d.pv, 0);
     return new Response(
       JSON.stringify({
-        data: dummyData,
-        totalPV,
-        source: "fallback",
+        data: getDummyData(),
+        totalPV: 1e3,
+        source: "error",
         error: error instanceof Error ? error.message : "Unknown error"
       }),
       {
