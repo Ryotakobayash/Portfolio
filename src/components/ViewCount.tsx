@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface ViewCountProps {
     slug: string;
@@ -6,41 +6,18 @@ interface ViewCountProps {
 
 /**
  * 記事のPV数を表示するコンポーネント
- * /api/pv/[slug] からデータ取得
+ * ダミーデータを表示（GA4 API連携は後で追加）
  */
 export function ViewCount({ slug }: ViewCountProps) {
-    const [count, setCount] = useState<number | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        async function fetchViewCount() {
-            try {
-                const res = await fetch(`/api/pv/${slug}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setCount(data.count);
-                }
-            } catch (err) {
-                console.error('Failed to fetch view count:', err);
-            } finally {
-                setIsLoading(false);
-            }
+    // slugのハッシュ値からダミー数値を生成（一貫性のため）
+    const [count] = useState<number>(() => {
+        let hash = 0;
+        for (let i = 0; i < slug.length; i++) {
+            hash = ((hash << 5) - hash) + slug.charCodeAt(i);
+            hash = hash & hash;
         }
-
-        fetchViewCount();
-    }, [slug]);
-
-    if (isLoading) {
-        return (
-            <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-                👁️ ...
-            </span>
-        );
-    }
-
-    if (count === null) {
-        return null;
-    }
+        return Math.abs(hash % 500) + 50;
+    });
 
     return (
         <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
