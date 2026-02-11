@@ -26,8 +26,8 @@ function generateDummyData(): PVData[] {
  * エラー時はダミーデータにフォールバック
  */
 export const GET: APIRoute = async () => {
-    const GA4_PROPERTY_ID = import.meta.env.GA4_PROPERTY_ID;
-    const GCP_PROJECT_NUMBER = import.meta.env.GCP_PROJECT_NUMBER;
+    const GA4_PROPERTY_ID = process.env.GA4_PROPERTY_ID;
+    const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
 
     // 環境変数未設定 or 開発モード → ダミーデータ
     if (!GA4_PROPERTY_ID || !GCP_PROJECT_NUMBER || import.meta.env.DEV) {
@@ -41,20 +41,12 @@ export const GET: APIRoute = async () => {
 
     try {
         // --- Vercel OIDC トークン取得 ---
-        const tokenUrl = process.env.VERCEL_OIDC_TOKEN_URL;
-        if (!tokenUrl) {
-            throw new Error('VERCEL_OIDC_TOKEN_URL not set');
-        }
-        const oidcRes = await fetch(tokenUrl);
-        if (!oidcRes.ok) throw new Error(`OIDC fetch failed: ${oidcRes.status}`);
-        const oidcJson = await oidcRes.json();
-        const oidcToken = oidcJson.token || oidcJson.access_token;
-        if (!oidcToken) throw new Error('No OIDC token in response');
+        const { getVercelOidcToken } = await import('@vercel/oidc');
 
         // --- GCP Workload Identity Federation ---
-        const GCP_POOL_ID = import.meta.env.GCP_WORKLOAD_IDENTITY_POOL_ID || 'portfolio-vercel';
-        const GCP_PROVIDER_ID = import.meta.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID || 'portfolio-vercel';
-        const GCP_SA_EMAIL = import.meta.env.GCP_SERVICE_ACCOUNT_EMAIL || 'vercelportfolio@portfolio-483013.iam.gserviceaccount.com';
+        const GCP_POOL_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_ID || 'portfolio-vercel';
+        const GCP_PROVIDER_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID || 'portfolio-vercel';
+        const GCP_SA_EMAIL = process.env.GCP_SERVICE_ACCOUNT_EMAIL || 'vercelportfolio@portfolio-483013.iam.gserviceaccount.com';
 
         const { ExternalAccountClient } = await import('google-auth-library');
         const authClient = ExternalAccountClient.fromJSON({
@@ -64,7 +56,7 @@ export const GET: APIRoute = async () => {
             token_url: 'https://sts.googleapis.com/v1/token',
             service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SA_EMAIL}:generateAccessToken`,
             subject_token_supplier: {
-                getSubjectToken: async () => oidcToken,
+                getSubjectToken: getVercelOidcToken,
             },
         });
 
