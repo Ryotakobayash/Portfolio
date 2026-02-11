@@ -1,1 +1,0 @@
-import{j as s}from"./jsx-runtime.D_zvdyIk.js";import{r as a}from"./index.WFquGv8Z.js";function c({slug:r}){const[o]=a.useState(()=>{let t=0;for(let e=0;e<r.length;e++)t=(t<<5)-t+r.charCodeAt(e),t=t&t;return Math.abs(t%500)+50});return s.jsxs("span",{style:{color:"var(--color-text-muted)",fontSize:"0.875rem"},children:["👁️ ",o.toLocaleString()," views"]})}export{c as default};
