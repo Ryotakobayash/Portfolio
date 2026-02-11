@@ -130,6 +130,30 @@ a:hover {
 
 .main {
     padding: var(--spacing-xl) 0;
+    position: relative;
+}
+
+/* Mesh gradient background */
+.main::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(34, 139, 230, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(34, 184, 207, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+[data-theme="dark"] .main::before {
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(34, 139, 230, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(34, 184, 207, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 80%, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
 }
 
 /* ===== Theme Toggle ===== */
@@ -161,17 +185,25 @@ a:hover {
 }
 
 .bento-card {
-    background-color: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-sm);
-    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+[data-theme="dark"] .bento-card {
+    background-color: rgba(44, 46, 51, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .bento-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
+    border-color: rgba(34, 184, 207, 0.3);
 }
 
 .bento-card--wide {
