@@ -24,6 +24,11 @@ const { post } = Astro.props;
 const slug = post.id.replace(/\.mdx?$/, '');
 const { Content, headings } = await post.render();
 
+// 読了時間を推定（日本語は1分あたり約500文字、英語は200語）
+const body = post.body || '';
+const charCount = body.length;
+const readingTime = Math.max(1, Math.ceil(charCount / 500));
+
 // TOC用にheadingsをフォーマット
 const toc = headings
   .filter((h) => h.depth >= 2 && h.depth <= 3)
@@ -43,6 +48,8 @@ const toc = headings
         <h1 class="article-title">{post.data.title}</h1>
         <div class="article-meta">
           <span>📅 {post.data.date}</span>
+          <span class="meta-separator">•</span>
+          <span>⏱️ 約{readingTime}分</span>
           <span class="meta-separator">•</span>
           <ViewCount client:load slug={slug} />
         </div>
