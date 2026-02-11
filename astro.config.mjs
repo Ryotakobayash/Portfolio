@@ -6,6 +6,7 @@ import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://portfolio-ryotakobayashi.vercel.app',
   output: 'server',
   integrations: [react()],
   adapter: vercel(),

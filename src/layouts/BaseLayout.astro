@@ -5,6 +5,7 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
@@ -29,6 +30,18 @@ const GTM_ID = 'GTM-WG6RHC88';
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/rss+xml" title="Dashboard Portfolio RSS" href="/rss.xml" />
+    
+    <!-- OGP Tags -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    {Astro.props.ogImage && <meta property="og:image" content={new URL(Astro.props.ogImage, Astro.site)} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {Astro.props.ogImage && <meta name="twitter:image" content={new URL(Astro.props.ogImage, Astro.site)} />}
+
     <ClientRouter />
 
     <!-- Dark mode script (run before render to prevent flash) -->

@@ -39,7 +39,10 @@ const toc = headings
   }));
 ---
 
-<BaseLayout title={`${post.data.title} | Dashboard Portfolio`}>
+<BaseLayout
+  title={`${post.data.title} | Dashboard Portfolio`}
+  ogImage={`/og/${slug}.png`}
+>
   <div class="article-layout">
     <!-- メインコンテンツ -->
     <article class="article">

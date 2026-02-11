@@ -12,6 +12,7 @@
     "@astrojs/react": "^4.4.2",
     "@astrojs/vercel": "^9.0.4",
     "@google-analytics/data": "^5.2.1",
+    "@resvg/resvg-js": "^2.6.2",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vercel/analytics": "^1.6.1",
@@ -31,6 +32,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
+    "satori": "^0.19.2",
     "shiki": "^3.21.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0"
