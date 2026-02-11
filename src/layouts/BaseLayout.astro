@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 
 interface Props {
@@ -25,6 +26,7 @@ const GTM_ID = 'GTM-WG6RHC88';
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/rss+xml" title="Dashboard Portfolio RSS" href="/rss.xml" />
+    <ClientRouter />
 
     <!-- Dark mode script (run before render to prevent flash) -->
     <script is:inline>
