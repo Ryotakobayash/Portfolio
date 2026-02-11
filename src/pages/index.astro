@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import PVChart from '../components/PVChart';
 import PostCalendar from '../components/PostCalendar';
+import PopularPosts from '../components/PopularPosts';
 
 // 全記事を取得
 const posts = await getCollection('posts');
@@ -49,6 +50,12 @@ const postCount = posts.length;
         client:load
         posts={sortedPosts.map((p) => ({ slug: p.slug, title: p.title, date: p.date }))}
       />
+    </div>
+
+    <!-- 人気記事ランキングカード -->
+    <div class="bento-card">
+      <div class="bento-card__title">Popular Posts (30 Days)</div>
+      <PopularPosts client:load />
     </div>
 
     <!-- 最新記事リストカード -->
