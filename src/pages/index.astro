@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import PVChart from '../components/PVChart';
 import PostCalendar from '../components/PostCalendar';
 import PopularPosts from '../components/PopularPosts';
+import GitHubActivity from '../components/GitHubActivity';
 
 // 全記事を取得
 const posts = await getCollection('posts');
@@ -50,6 +51,12 @@ const postCount = posts.length;
         client:load
         posts={sortedPosts.map((p) => ({ slug: p.slug, title: p.title, date: p.date }))}
       />
+    </div>
+
+    <!-- GitHub Activity カード -->
+    <div class="bento-card bento-card--wide">
+      <div class="bento-card__title">GitHub Activity</div>
+      <GitHubActivity client:load />
     </div>
 
     <!-- 人気記事ランキングカード -->
