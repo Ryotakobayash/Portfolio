@@ -86,13 +86,34 @@ const GTM_ID = 'GTM-WG6RHC88';
     </main>
 
     <script>
-      // Dark mode toggle
-      const toggle = document.getElementById('theme-toggle');
-      toggle?.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
+      function initTheme() {
+        const theme = localStorage.getItem('theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+
+      function setupThemeToggle() {
+        const toggle = document.getElementById('theme-toggle');
+        // クリーンアップ（イベントリスナーの重複防止）はAstroが要素置換するため基本的に不要だが、
+        // 念のため新しい要素に対してのみリスナーを設定する形になる。
+        toggle?.addEventListener('click', () => {
+          const current = document.documentElement.getAttribute('data-theme');
+          const next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('theme', next);
+        });
+      }
+
+      // 初期化とイベントリスナー設定
+      // astro:page-load は初回ロード時とページ遷移後に発火する
+      document.addEventListener('astro:page-load', () => {
+        setupThemeToggle();
+      });
+
+      // astro:after-swap は新しいHTMLに入れ替わった直後（表示前）に発火
+      // ここでテーマを再適用しないと、一瞬デフォルトテーマに戻るチラつきや、属性消失によるアイコン重複が起きる
+      document.addEventListener('astro:after-swap', () => {
+        initTheme();
       });
     </script>
 
