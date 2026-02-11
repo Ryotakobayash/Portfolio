@@ -14,6 +14,17 @@ const sortedPosts = posts
     tags: post.data.tags || [],
   }))
   .sort((a, b) => (a.date < b.date ? 1 : -1));
+
+// 全タグリスト（出現回数順）
+const tagCount = new Map<string, number>();
+sortedPosts.forEach((post) => {
+  post.tags.forEach((tag) => {
+    tagCount.set(tag, (tagCount.get(tag) || 0) + 1);
+  });
+});
+const allTags = Array.from(tagCount.entries())
+  .sort((a, b) => b[1] - a[1])
+  .map(([tag]) => tag);
 ---
 
 <BaseLayout title="記事一覧 | Dashboard Portfolio">
@@ -22,8 +33,7 @@ const sortedPosts = posts
     <p class="page-description">{sortedPosts.length} 件の記事</p>
   </div>
 
-  <!-- 検索機能付き記事リスト -->
-  <PostSearch client:load posts={sortedPosts} />
+  <PostSearch client:load posts={sortedPosts} allTags={allTags} />
 </BaseLayout>
 
 <style>
