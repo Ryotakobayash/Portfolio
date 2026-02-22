@@ -1,0 +1,17 @@
+{
+    "posts": {
+        "yearlyTarget": 24,
+        "period": "2026"
+    },
+    "pv": {
+        "monthlyTarget": 30
+    },
+    "lifeExpectancy": {
+        "birthYear": 2000,
+        "expectedAge": 81
+    },
+    "creativeLife": {
+        "start": "2025-04-01",
+        "end": "2035-03-31"
+    }
+}

@@ -2,143 +2,320 @@
 export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import PVChart from '../components/PVChart';
-import PostCalendar from '../components/PostCalendar';
+import ArticleTreemap from '../components/ArticleTreemap';
 import PopularPosts from '../components/PopularPosts';
-import GitHubActivity from '../components/GitHubActivity';
+import careerData from '../data/career.json';
 
 // 全記事を取得
 const posts = await getCollection('posts');
 const sortedPosts = posts
-  .map((post) => ({
-    slug: post.id.replace(/\.mdx?$/, ''),
-    title: post.data.title,
-    date: post.data.date,
-    tags: post.data.tags || [],
-  }))
-  .sort((a, b) => (a.date < b.date ? 1 : -1));
+    .map((post) => ({
+        slug: post.id.replace(/\.mdx?$/, ''),
+        title: post.data.title,
+        date: post.data.date,
+        tags: post.data.tags || [],
+    }))
+    .sort((a, b) => (a.date < b.date ? 1 : -1));
 
 const postCount = posts.length;
+
+// Treemap用: 各記事の文字数を計算（Markdownのbody長で近似）
+const treemapPosts = await Promise.all(
+    posts.map(async (post) => {
+        const slug = post.id.replace(/\.mdx?$/, '');
+        const { body } = post;
+        // Markdownタグ等を除いた粗い文字数カウント
+        const wordCount = (body || '').replace(/[#*\-\[\]()>|`~]/g, '').replace(/\s+/g, '').length;
+        return {
+            slug,
+            title: post.data.title,
+            tags: post.data.tags || [],
+            wordCount: wordCount || 100,
+            date: post.data.date,
+        };
+    }),
+);
 ---
 
 <BaseLayout>
-  <div class="bento-grid">
-    <!-- プロフィールカード -->
-    <div class="bento-card">
-      <div class="bento-card__title">Profile</div>
-      <div class="flex items-center gap-lg">
-        <div class="avatar">KR</div>
-        <div class="flex flex-col gap-sm">
-          <span class="text-lg font-bold">小林 諒大</span>
-          <span class="text-secondary text-sm">Cybozu プロダクトデザイナー</span>
+    <!-- ===== Hero ===== -->
+    <div class="hero-section">
+        <!-- Identity -->
+        <div class="bento-card identity-card">
+            <div class="identity">
+                <div class="avatar">KR</div>
+                <div class="identity__info">
+                    <span class="text-lg font-bold">小林 諒大</span>
+                    <span class="text-secondary text-sm">{careerData.currentCompany}</span>
+                    <span class="text-secondary text-sm">{careerData.currentRole}</span>
+                </div>
+            </div>
+            <div class="identity__links">
+                <a href="https://github.com/Ryotakobayash" target="_blank" rel="noopener" class="identity__link" title="GitHub">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                <a href="https://speakerdeck.com/ryota5884" target="_blank" rel="noopener" class="identity__link" title="Speaker Deck">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1 15v-4H7l6-8v4h4l-6 8z"/></svg>
+                </a>
+                <a href="https://zenn.dev/ryota5884" target="_blank" rel="noopener" class="identity__link" title="Zenn">Z</a>
+                <a href="/about" class="link-arrow">詳細 →</a>
+            </div>
         </div>
-      </div>
-      <div class="card-footer">
-        <a href="/about" class="link-arrow">詳細プロフィール →</a>
-      </div>
-    </div>
 
-    <!-- PV数グラフカード（ワイド） -->
-    <div class="bento-card bento-card--wide">
-      <div class="bento-card__title">Page Views (Last 7 Days)</div>
-      <PVChart client:only="react" />
-    </div>
+        <!-- KPI Cards -->
+        <div class="bento-card kpi-mini">
+            <span class="kpi-mini__value">{postCount}</span>
+            <span class="kpi-mini__label">Posts</span>
+        </div>
 
-    <!-- 投稿カレンダーカード（ワイド） -->
-    <div class="bento-card bento-card--wide">
-      <div class="bento-card__title">Post Activity</div>
-      <PostCalendar
-        client:load
-        posts={sortedPosts.map((p) => ({ slug: p.slug, title: p.title, date: p.date }))}
-      />
-    </div>
+        <div class="bento-card kpi-mini">
+            <span class="kpi-mini__value" id="total-pv-hero">—</span>
+            <span class="kpi-mini__label">Total PV</span>
+        </div>
 
-    <!-- GitHub Activity カード -->
-    <div class="bento-card bento-card--wide">
-      <div class="bento-card__title">GitHub Activity</div>
-      <GitHubActivity client:load />
-    </div>
-
-    <!-- 人気記事ランキングカード -->
-    <div class="bento-card">
-      <div class="bento-card__title">Popular Posts (30 Days)</div>
-      <PopularPosts client:load />
-    </div>
-
-    <!-- 最新記事リストカード -->
-    <div class="bento-card">
-      <div class="bento-card__title">Latest Posts</div>
-      <div class="post-list">
-        {sortedPosts.length > 0 ? (
-          sortedPosts.slice(0, 3).map((post) => (
-            <a href={`/posts/${post.slug}`} class="post-list__item">
-              <span class="post-list__icon">📝</span>
-              <div class="post-list__content">
-                <span class="post-list__title">{post.title}</span>
-                <span class="post-list__date">{post.date}</span>
-              </div>
+        <div class="bento-card kpi-mini kpi-mini--link">
+            <a href="/me" class="kpi-mini__link-inner">
+                <span class="kpi-mini__value">📊</span>
+                <span class="kpi-mini__label">My KPI →</span>
             </a>
-          ))
-        ) : (
-          <p class="text-muted text-sm">まだ記事がありません</p>
-        )}
-      </div>
-      <div class="card-footer flex justify-between items-center">
-        <span class="text-muted text-sm">Total: {postCount} posts</span>
-        <a href="/posts" class="link-arrow">すべて見る →</a>
-      </div>
+        </div>
     </div>
-  </div>
+
+    <!-- ===== Explore: Treemap ===== -->
+    <div class="section-divider">Explore</div>
+
+    <div class="bento-card bento-card--wide treemap-card">
+        <div class="bento-card__title">記事マップ</div>
+        <ArticleTreemap client:only="react" posts={treemapPosts} />
+    </div>
+
+    <!-- ===== Proof ===== -->
+    <div class="section-divider">Proof</div>
+
+    <div class="bento-grid">
+        <!-- 人気記事ランキング -->
+        <div class="bento-card">
+            <div class="bento-card__title">Popular Posts (30 Days)</div>
+            <PopularPosts client:load />
+        </div>
+
+        <!-- 最新記事リスト -->
+        <div class="bento-card">
+            <div class="bento-card__title">Latest Posts</div>
+            <div class="post-list">
+                {sortedPosts.length > 0 ? (
+                    sortedPosts.slice(0, 5).map((post) => (
+                        <a href={`/posts/${post.slug}`} class="post-list__item">
+                            <span class="post-list__icon">📝</span>
+                            <div class="post-list__content">
+                                <span class="post-list__title">{post.title}</span>
+                                <span class="post-list__date">{post.date}</span>
+                            </div>
+                        </a>
+                    ))
+                ) : (
+                    <p class="text-muted text-sm">まだ記事がありません</p>
+                )}
+            </div>
+            <div class="card-footer flex justify-between items-center">
+                <span class="text-muted text-sm">Total: {postCount} posts</span>
+                <a href="/posts" class="link-arrow">記事を探す →</a>
+            </div>
+        </div>
+    </div>
 </BaseLayout>
 
+<!-- Total PV のクライアントサイド取得 -->
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const el = document.getElementById('total-pv-hero');
+        if (!el) return;
+        fetch('/api/pv/treemap')
+            .then((res) => res.json())
+            .then((json) => {
+                el.textContent = (json.totalPV || 0).toLocaleString();
+            })
+            .catch(() => {
+                el.textContent = '—';
+            });
+    });
+</script>
+
 <style>
-  .card-footer {
-    margin-top: auto;
-    padding-top: var(--spacing-md);
-  }
+    /* === Hero Section === */
+    .hero-section {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: var(--spacing-lg);
+        margin-bottom: 0;
+    }
 
-  .post-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
+    @media (max-width: 900px) {
+        .hero-section {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
 
-  .post-list__item {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    color: inherit;
-    transition: background-color var(--transition-fast);
-  }
+    @media (max-width: 500px) {
+        .hero-section {
+            grid-template-columns: 1fr;
+        }
+    }
 
-  .post-list__item:hover {
-    background-color: var(--color-bg-secondary);
-  }
+    /* Identity */
+    .identity {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+    }
 
-  .post-list__icon {
-    flex-shrink: 0;
-  }
+    .identity__info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
 
-  .post-list__content {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
+    .identity__links {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        margin-top: auto;
+    }
 
-  .post-list__title {
-    font-size: 0.875rem;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+    .identity__link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-md);
+        background-color: var(--color-bg-secondary);
+        color: var(--color-text-secondary);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
 
-  .post-list__date {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-  }
+    .identity__link:hover {
+        background-color: var(--color-primary-light);
+        color: var(--color-primary);
+    }
+
+    /* Mini KPI Cards */
+    .kpi-mini {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-height: 100px;
+    }
+
+    .kpi-mini__value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--color-accent);
+        line-height: 1.2;
+    }
+
+    .kpi-mini__label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .kpi-mini--link {
+        padding: 0;
+    }
+
+    .kpi-mini__link-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: 100%;
+        height: 100%;
+        padding: var(--spacing-md);
+        text-decoration: none;
+        color: inherit;
+        border-radius: var(--radius-lg);
+        transition: background-color var(--transition-fast);
+    }
+
+    .kpi-mini__link-inner:hover {
+        background-color: var(--color-bg-secondary);
+    }
+
+    /* Section Divider */
+    .section-divider {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        margin: var(--spacing-xl) 0 var(--spacing-md);
+        padding-bottom: var(--spacing-xs);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    /* Treemap card */
+    .treemap-card {
+        width: 100%;
+    }
+
+    /* Card footer */
+    .card-footer {
+        margin-top: auto;
+        padding-top: var(--spacing-md);
+    }
+
+    .post-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    .post-list__item {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        color: inherit;
+        transition: background-color var(--transition-fast);
+    }
+
+    .post-list__item:hover {
+        background-color: var(--color-bg-secondary);
+    }
+
+    .post-list__icon {
+        flex-shrink: 0;
+    }
+
+    .post-list__content {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    .post-list__title {
+        font-size: 0.875rem;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .post-list__date {
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+    }
 </style>

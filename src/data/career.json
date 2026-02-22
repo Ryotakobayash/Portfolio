@@ -1,0 +1,39 @@
+{
+    "designerSince": 2021,
+    "currentRole": "プロダクトデザイナー",
+    "currentCompany": "サイボウズ株式会社",
+    "projects": 8,
+    "talks": 3,
+    "roles": {
+        "Product Design": 45,
+        "UX Research": 20,
+        "Visual Design": 15,
+        "Frontend Dev": 20
+    },
+    "yearlyOutput": [
+        {
+            "year": 2022,
+            "posts": 2,
+            "talks": 0,
+            "projects": 1
+        },
+        {
+            "year": 2023,
+            "posts": 3,
+            "talks": 1,
+            "projects": 2
+        },
+        {
+            "year": 2024,
+            "posts": 4,
+            "talks": 1,
+            "projects": 3
+        },
+        {
+            "year": 2025,
+            "posts": 1,
+            "talks": 1,
+            "projects": 2
+        }
+    ]
+}

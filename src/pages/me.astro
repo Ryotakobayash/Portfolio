@@ -1,0 +1,123 @@
+---
+export const prerender = true;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import LifeProgress from '../components/LifeProgress';
+import CreativeLifeCountdown from '../components/CreativeLifeCountdown';
+import PostBurndown from '../components/PostBurndown';
+import PVProgress from '../components/PVProgress';
+import CumulativeStats from '../components/CumulativeStats';
+import GitHubActivity from '../components/GitHubActivity';
+import ActivityHealth from '../components/ActivityHealth';
+import goalsData from '../data/goals.json';
+import careerData from '../data/career.json';
+
+// 全記事の日付を取得（バーンダウン用）
+const posts = await getCollection('posts');
+const postDates = posts.map((post) => ({
+    slug: post.id.replace(/\.mdx?$/, ''),
+    date: post.data.date,
+}));
+
+const postCount = posts.length;
+---
+
+<BaseLayout title="My Dashboard | Dashboard Portfolio" description="モチベーションダッシュボード">
+    <!-- 残り時間 セクション -->
+    <div class="section-header">残り時間</div>
+    <div class="me-grid me-grid--2col">
+        <div class="bento-card">
+            <LifeProgress
+                client:load
+                birthYear={goalsData.lifeExpectancy.birthYear}
+                expectedAge={goalsData.lifeExpectancy.expectedAge}
+            />
+        </div>
+        <div class="bento-card">
+            <CreativeLifeCountdown
+                client:load
+                startDate={goalsData.creativeLife.start}
+                endDate={goalsData.creativeLife.end}
+            />
+        </div>
+    </div>
+
+    <!-- KGIバーンダウン セクション -->
+    <div class="section-header">{goalsData.posts.period}年 KGIバーンダウン</div>
+    <div class="me-grid me-grid--1col">
+        <div class="bento-card">
+            <PostBurndown
+                client:only="react"
+                posts={postDates}
+                yearlyTarget={goalsData.posts.yearlyTarget}
+                period={goalsData.posts.period}
+            />
+        </div>
+        <div class="bento-card">
+            <PVProgress
+                client:only="react"
+                monthlyTarget={goalsData.pv.monthlyTarget}
+            />
+        </div>
+    </div>
+
+    <!-- 累計実績 セクション -->
+    <div class="section-header">累計実績</div>
+    <div class="bento-card">
+        <CumulativeStats
+            client:only="react"
+            postCount={postCount}
+            talks={careerData.talks}
+            projects={careerData.projects}
+        />
+    </div>
+
+    <!-- GitHub Activity セクション -->
+    <div class="section-header">GitHub Activity</div>
+    <div class="me-grid me-grid--2col">
+        <div class="bento-card">
+            <div class="bento-card__title">GitHub Contributions</div>
+            <GitHubActivity client:load />
+        </div>
+        <div class="bento-card">
+            <ActivityHealth client:load />
+        </div>
+    </div>
+</BaseLayout>
+
+<style>
+    .section-header {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-top: var(--spacing-xl);
+        margin-bottom: var(--spacing-md);
+        padding-bottom: var(--spacing-xs);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .section-header:first-child {
+        margin-top: 0;
+    }
+
+    .me-grid {
+        display: grid;
+        gap: var(--spacing-lg);
+    }
+
+    .me-grid--2col {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .me-grid--1col {
+        grid-template-columns: 1fr;
+    }
+
+    @media (max-width: 700px) {
+        .me-grid--2col {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
