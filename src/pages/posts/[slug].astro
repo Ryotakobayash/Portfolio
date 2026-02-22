@@ -5,6 +5,8 @@ import StickyToc from '../../components/StickyToc';
 import CodeCopyButton from '../../components/CodeCopyButton';
 import ImageZoom from '../../components/ImageZoom';
 import ViewCount from '../../components/ViewCount';
+import ShareButtons from '../../components/ShareButtons';
+import RelatedPosts from '../../components/RelatedPosts';
 
 export const prerender = true;
 
@@ -37,6 +39,15 @@ const toc = headings
     text: h.text,
     level: h.depth,
   }));
+
+// 関連記事用に全記事メタデータを取得
+const allPosts = await getCollection('posts');
+const allPostsMeta = allPosts.map((p) => ({
+  slug: p.id.replace(/\.mdx?$/, ''),
+  title: p.data.title,
+  tags: p.data.tags || [],
+  date: p.data.date,
+}));
 ---
 
 <BaseLayout
@@ -82,6 +93,21 @@ const toc = headings
       <div class="prose">
         <Content />
       </div>
+
+      <!-- 記事フッター -->
+      <footer class="article-footer">
+        <ShareButtons
+          client:load
+          title={post.data.title}
+          url={`https://dashboard-portfolio.vercel.app/posts/${slug}`}
+        />
+        <RelatedPosts
+          client:load
+          currentSlug={slug}
+          currentTags={post.data.tags || []}
+          allPosts={allPostsMeta}
+        />
+      </footer>
 
       <!-- クライアントサイド機能 -->
       <CodeCopyButton client:load />

@@ -30,7 +30,13 @@ const allTags = Array.from(tagCount.entries())
 <BaseLayout title="記事一覧 | Dashboard Portfolio">
   <div class="page-header">
     <h1 class="page-title">記事一覧</h1>
-    <p class="page-description">{sortedPosts.length} 件の記事</p>
+    <div class="stats-row">
+      <span class="stat-item">📝 {sortedPosts.length} Posts</span>
+      <span class="stat-separator">·</span>
+      <span class="stat-item">🏷️ {allTags.length} Tags</span>
+      <span class="stat-separator">·</span>
+      <span class="stat-item">🕐 最新: {sortedPosts[0]?.date}</span>
+    </div>
   </div>
 
   <PostSearch client:load posts={sortedPosts} allTags={allTags} />
@@ -47,7 +53,19 @@ const allTags = Array.from(tagCount.entries())
     margin-bottom: var(--spacing-sm);
   }
 
-  .page-description {
+  .stats-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    font-size: 0.85rem;
     color: var(--color-text-muted);
+  }
+
+  .stat-separator {
+    color: var(--color-border);
   }
 </style>
