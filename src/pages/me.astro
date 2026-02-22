@@ -9,6 +9,7 @@ import PVProgress from '../components/PVProgress';
 import CumulativeStats from '../components/CumulativeStats';
 import GitHubActivity from '../components/GitHubActivity';
 import ActivityHealth from '../components/ActivityHealth';
+import PVTimeline from '../components/PVTimeline';
 import goalsData from '../data/goals.json';
 import careerData from '../data/career.json';
 
@@ -59,6 +60,15 @@ const postCount = posts.length;
                 monthlyTarget={goalsData.pv.monthlyTarget}
             />
         </div>
+    </div>
+
+    <!-- PVタイムライン セクション -->
+    <div class="section-header">PV推移と投稿イベント (過去6ヶ月)</div>
+    <div class="bento-card" style="margin-bottom: var(--spacing-lg);">
+        <PVTimeline
+            client:only="react"
+            posts={postDates}
+        />
     </div>
 
     <!-- 累計実績 セクション -->

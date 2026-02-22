@@ -4,7 +4,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import StickyToc from '../../components/StickyToc';
 import CodeCopyButton from '../../components/CodeCopyButton';
 import ImageZoom from '../../components/ImageZoom';
-import ViewCount from '../../components/ViewCount';
+import ArticlePerformance from '../../components/ArticlePerformance';
 import ShareButtons from '../../components/ShareButtons';
 import RelatedPosts from '../../components/RelatedPosts';
 
@@ -62,10 +62,6 @@ const allPostsMeta = allPosts.map((p) => ({
         <h1 class="article-title">{post.data.title}</h1>
         <div class="article-meta">
           <span>📅 {post.data.date}</span>
-          <span class="meta-separator">•</span>
-          <span>⏱️ 約{readingTime}分</span>
-          <span class="meta-separator">•</span>
-          <ViewCount client:load slug={slug} />
         </div>
         {post.data.tags && post.data.tags.length > 0 && (
           <div class="article-tags">
@@ -75,6 +71,14 @@ const allPostsMeta = allPosts.map((p) => ({
           </div>
         )}
       </header>
+
+      <ArticlePerformance
+        client:load
+        slug={slug}
+        wordCount={charCount}
+        readingTime={readingTime}
+        publishDate={post.data.date}
+      />
 
       <!-- モバイル用TOC -->
       {toc.length > 0 && (

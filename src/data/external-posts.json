@@ -1,0 +1,52 @@
+{
+    "posts": [
+        {
+            "service": "zenn",
+            "title": "issue/PRのURLをmarkdown形式で綺麗にコピーするブックマークレット作った",
+            "url": "https://zenn.dev/ryota5884/articles/498c5f6dcec42c",
+            "date": "2023-01-01"
+        },
+        {
+            "service": "note",
+            "title": "年末“Recap”の20年史──Last.fmから現在まで【前編】｜kobaryo",
+            "url": "https://note.com/tender_hyssop572/n/na0ce90f733bc",
+            "date": "2025-01-01"
+        },
+        {
+            "service": "note",
+            "title": "Figmaでグラフをどう作るか —プラグインに依存しないFigma Make協業ワークフロー｜kobaryo",
+            "url": "https://note.com/tender_hyssop572/n/nbfa61f38e2a2",
+            "date": "2024-01-01"
+        },
+        {
+            "service": "note",
+            "title": "【新卒1年目】サイボウズ プロダクトデザイナーの1年【学生向け】｜kobaryo",
+            "url": "https://note.com/tender_hyssop572/n/na9a8210ffd9d",
+            "date": "2024-01-01"
+        },
+        {
+            "service": "note",
+            "title": "GitHubのリンクをいいかんじにコピーするブックマークレットを作りました。｜kobaryo",
+            "url": "https://note.com/tender_hyssop572/n/nf2fe9b0fe8bf",
+            "date": "2023-01-01"
+        },
+        {
+            "service": "note",
+            "title": "サイボウズ プロダクトデザイナーの内定者アルバイト体験記｜kobaryo",
+            "url": "https://note.com/tender_hyssop572/n/n467af59326c4",
+            "date": "2023-01-01"
+        },
+        {
+            "service": "note",
+            "title": "Hackathonステッカー作成記｜kobaryo",
+            "url": "https://note.com/tender_hyssop572/n/n40b152a319aa",
+            "date": "2022-01-01"
+        },
+        {
+            "service": "note",
+            "title": "独学デザイナー、就活をする（第一部：インターン編）｜kobaryo",
+            "url": "https://note.com/tender_hyssop572/n/n6ee43aa0a653",
+            "date": "2022-01-01"
+        }
+    ]
+}

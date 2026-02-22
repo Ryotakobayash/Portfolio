@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import ArticleTreemap from '../components/ArticleTreemap';
 import PopularPosts from '../components/PopularPosts';
+import ExternalPosts from '../components/ExternalPosts';
 import careerData from '../data/career.json';
 
 // 全記事を取得
@@ -121,6 +122,11 @@ const treemapPosts = await Promise.all(
                 <span class="text-muted text-sm">Total: {postCount} posts</span>
                 <a href="/posts" class="link-arrow">記事を探す →</a>
             </div>
+        </div>
+
+        <!-- 外部サービス記事 -->
+        <div class="bento-card bento-card--wide">
+            <ExternalPosts />
         </div>
     </div>
 </BaseLayout>
