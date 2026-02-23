@@ -11,6 +11,14 @@ interface APIResponse {
     days: ContributionDay[];
 }
 
+// Retro contribution color scale (4 levels, no GitHub green dependency)
+function retroColor(count: number, isDark: boolean): string {
+    if (count === 0) return isDark ? '#2A2A2A' : '#E0D8CC';
+    if (count <= 2) return isDark ? '#3D5C52' : '#8AB8A8';
+    if (count <= 5) return isDark ? '#5C7F71' : '#5C7F71';
+    return isDark ? '#7AA090' : '#3A6357';
+}
+
 /**
  * GitHub草グラフコンポーネント
  * GitHub GraphQL APIから正確なコントリビューションカレンダーを取得して表示
@@ -20,6 +28,15 @@ export function GitHubActivity({ username = 'Ryotakobayash' }: { username?: stri
     const [totalContributions, setTotalContributions] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        const check = () => setIsDark(document.documentElement.getAttribute('data-theme') === 'dark');
+        check();
+        const obs = new MutationObserver(check);
+        obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        return () => obs.disconnect();
+    }, []);
 
     useEffect(() => {
         fetch('/api/github/contributions')
@@ -170,9 +187,7 @@ export function GitHubActivity({ username = 'Ryotakobayash' }: { username?: stri
                                     y={labelHeight + rowIndex * (cellSize + cellGap)}
                                     width={cellSize}
                                     height={cellSize}
-                                    rx={2}
-                                    ry={2}
-                                    fill={day.color}
+                                    fill={retroColor(day.count, isDark)}
                                     style={{ cursor: 'default' }}
                                 >
                                     <title>{`${day.date}: ${day.count} contributions`}</title>
@@ -184,14 +199,15 @@ export function GitHubActivity({ username = 'Ryotakobayash' }: { username?: stri
             </div>
             <div style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                marginTop: '8px', fontSize: '0.75rem', color: 'var(--color-text-muted)',
+                marginTop: '8px', fontSize: '0.65rem', color: 'var(--color-text-muted)',
+                fontFamily: 'var(--font-mono)', letterSpacing: '0.06em',
             }}>
                 <span>{totalContributions} contributions in the last year</span>
                 <a
                     href={`https://github.com/${username}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ color: 'var(--color-primary)', textDecoration: 'none', fontSize: '0.75rem' }}
+                    style={{ color: 'var(--color-primary)', textDecoration: 'none', fontSize: '0.65rem', fontFamily: 'var(--font-mono)' }}
                 >
                     @{username} →
                 </a>
