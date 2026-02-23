@@ -236,17 +236,17 @@ a:hover {
     position: relative;
 }
 
-/* Dot-grid background: evokes punch cards and data tapes */
+/* Crossed-square geometric background: evokes drafting paper / wireframes */
 .main::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: radial-gradient(circle, var(--color-border) 1px, transparent 1px);
-    background-size: 28px 28px;
-    opacity: 0.35;
+    inset: 0;
+    background-color: var(--color-border);
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 L60 0 L60 60 L0 60 Z M0 0 L60 60 M60 0 L0 60' stroke='black' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 L60 0 L60 60 L0 60 Z M0 0 L60 60 M60 0 L0 60' stroke='black' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+    -webkit-mask-size: 60px 60px;
+    mask-size: 60px 60px;
+    opacity: 0.15;
     pointer-events: none;
     z-index: -1;
 }
