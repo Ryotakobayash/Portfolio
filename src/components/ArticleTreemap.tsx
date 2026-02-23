@@ -21,30 +21,31 @@ const VIEW_LABELS: Record<ViewMode, string> = {
     timeline: '時系列 × ジャンル',
 };
 
-/** タグ→色のパレット（実際の記事タグに合わせて日英両対応） */
+/** タグ→色のパレット — レトロフューチャー設計システム準拠 */
 const TAG_COLORS: Record<string, string> = {
     // 日本語タグ
-    'デザイン': '#4C6EF5',
-    'デザインシステム': '#5C7CFA',
-    'ガジェット': '#15AABF',
-    'イベント': '#FA5252',
-    'ハッカソン': '#F76707',
-    '大学生活': '#AE3EC9',
-    '学習法': '#40C057',
-    '就活': '#E8590C',
-    'PC環境': '#228BE6',
+    'デザイン': '#7B5E52', // テラコッタ茶
+    'デザインシステム': '#5C7F71', // プライマリグリーン
+    'ガジェット': '#4A7A8A', // スレートティール
+    'イベント': '#A03030', // アクセントレッド
+    'ハッカソン': '#C07050', // アクセントオレンジ
+    '大学生活': '#7A5C8A', // ダスティパープル
+    '学習法': '#5C7F71', // プライマリグリーン
+    '就活': '#C99040', // アクセントアンバー
+    'PC環境': '#4A7A8A', // スレートティール
     // 英語タグ
-    'Hugo': '#FD7E14',
-    'HTML/CSS': '#228BE6',
-    'Figma': '#A855F7',
-    'NUTMEG': '#20C997',
+    'Hugo': '#8A6A3A', // ウォームブラウン
+    'HTML/CSS': '#4A7A8A', // スレートティール
+    'Figma': '#7A5C8A', // ダスティパープル
+    'NUTMEG': '#5C7F71', // プライマリグリーン
     // 汎用フォールバック
-    'Design': '#4C6EF5',
-    'Tech': '#228BE6',
-    'Blog': '#FD7E14',
+    'Design': '#7B5E52',
+    'Tech': '#4A7A8A',
+    'Blog': '#8A6A3A',
 };
 
-const DEFAULT_COLOR = '#868E96';
+const DEFAULT_COLOR = '#6B6050'; // muted border tone
+
 
 function getTagColor(tag: string): string {
     // 完全一致を優先
@@ -126,7 +127,7 @@ export default function ArticleTreemap({ posts }: Props) {
                 type: 'treemap',
                 backgroundColor: 'transparent',
                 height: 380,
-                style: { fontFamily: 'Inter, "Noto Sans JP", sans-serif' },
+                style: { fontFamily: 'Outfit, "Noto Sans JP", sans-serif' },
             },
             title: { text: undefined },
             credits: { enabled: false },
@@ -153,10 +154,11 @@ export default function ArticleTreemap({ posts }: Props) {
                 dataLabels: {
                     enabled: true,
                     style: {
-                        color: '#ffffff',
-                        fontSize: '12px',
-                        fontWeight: '500',
-                        textOutline: '1px contrast',
+                        color: '#F5EDDC',
+                        fontSize: '11px',
+                        fontWeight: '600',
+                        textOutline: 'none',
+                        letterSpacing: '0.02em',
                     },
                 },
                 levels: [{
@@ -166,12 +168,14 @@ export default function ArticleTreemap({ posts }: Props) {
                         align: 'left',
                         verticalAlign: 'top',
                         style: {
-                            fontSize: '13px',
-                            fontWeight: '600',
+                            fontSize: '11px',
+                            fontWeight: '700',
+                            letterSpacing: '0.08em',
+                            textTransform: 'uppercase',
                         },
                     },
-                    borderWidth: 2,
-                    borderColor: isDark ? '#1a1b1e' : '#ffffff',
+                    borderWidth: 1,
+                    borderColor: isDark ? '#2A2A2A' : '#C8BAA0',
                 }],
                 cursor: 'pointer',
                 point: {
@@ -211,22 +215,21 @@ export default function ArticleTreemap({ posts }: Props) {
         <div>
             {/* ビュー切替 */}
             <div style={{
-                display: 'flex', gap: '4px', marginBottom: '16px',
-                background: 'var(--color-bg-secondary)', borderRadius: 'var(--radius-md)',
-                padding: '4px',
+                display: 'flex', gap: '2px', marginBottom: '16px',
+                background: 'var(--color-border)', padding: '1px',
             }}>
                 {(Object.keys(VIEW_LABELS) as ViewMode[]).map((mode) => (
                     <button
                         key={mode}
                         onClick={() => setViewMode(mode)}
                         style={{
-                            flex: 1, padding: '6px 12px',
-                            fontSize: '0.8rem', fontWeight: viewMode === mode ? 600 : 400,
-                            border: 'none', borderRadius: 'var(--radius-sm)',
+                            flex: 1, padding: '6px 10px',
+                            fontSize: '0.65rem', fontWeight: 700,
+                            border: 'none',
+                            letterSpacing: '0.12em', textTransform: 'uppercase',
                             cursor: 'pointer',
-                            backgroundColor: viewMode === mode ? 'var(--color-bg-card)' : 'transparent',
-                            color: viewMode === mode ? 'var(--color-text)' : 'var(--color-text-muted)',
-                            boxShadow: viewMode === mode ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                            backgroundColor: viewMode === mode ? 'var(--color-primary)' : 'var(--color-bg-card)',
+                            color: viewMode === mode ? 'var(--color-bg)' : 'var(--color-text-muted)',
                             transition: 'all 150ms ease',
                         }}
                     >
@@ -244,10 +247,11 @@ export default function ArticleTreemap({ posts }: Props) {
                 marginTop: '12px', fontSize: '0.75rem', color: 'var(--color-text-muted)',
             }}>
                 {getUsedTags(posts).map((tag) => (
-                    <span key={tag} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span key={tag} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                         <span style={{
-                            width: '10px', height: '10px', borderRadius: '2px',
+                            width: '8px', height: '8px',
                             backgroundColor: getTagColor(tag), display: 'inline-block',
+                            flexShrink: 0,
                         }} />
                         {tag}
                     </span>
