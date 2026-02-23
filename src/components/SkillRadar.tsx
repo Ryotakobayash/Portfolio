@@ -31,10 +31,10 @@ export default function SkillRadar({ data }: SkillRadarProps) {
         const startAngle = -Math.PI / 2; // top
 
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const textColor = isDark ? '#909296' : '#6c757d';
-        const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
-        const fillColor = isDark ? 'rgba(34,184,207,0.25)' : 'rgba(34,184,207,0.2)';
-        const strokeColor = '#22b8cf';
+        const textColor = isDark ? '#6B6B5A' : '#8A8A7A';
+        const gridColor = isDark ? 'rgba(245,237,220,0.08)' : 'rgba(24,24,24,0.08)';
+        const fillColor = isDark ? 'rgba(92,127,113,0.3)' : 'rgba(92,127,113,0.18)';
+        const strokeColor = '#5C7F71';
 
         ctx.clearRect(0, 0, size, size);
 
@@ -89,11 +89,10 @@ export default function SkillRadar({ data }: SkillRadarProps) {
             const dx = cx + r * Math.cos(angle);
             const dy = cy + r * Math.sin(angle);
 
-            // dot
-            ctx.beginPath();
-            ctx.arc(dx, dy, 3, 0, 2 * Math.PI);
+            // square dot (retro instrument style)
+            const dr = 3;
             ctx.fillStyle = strokeColor;
-            ctx.fill();
+            ctx.fillRect(dx - dr, dy - dr, dr * 2, dr * 2);
 
             // label - short names for better fit
             const shortLabels: Record<string, string> = {
@@ -108,7 +107,7 @@ export default function SkillRadar({ data }: SkillRadarProps) {
             const lx = cx + labelR * Math.cos(angle);
             const ly = cy + labelR * Math.sin(angle);
             ctx.fillStyle = textColor;
-            ctx.font = '11px Inter, sans-serif';
+            ctx.font = '600 10px Outfit, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(labelText, lx, ly);

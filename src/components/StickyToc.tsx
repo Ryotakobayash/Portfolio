@@ -56,21 +56,20 @@ export function StickyToc({ toc }: StickyTocProps) {
                 overflowY: 'auto',
                 padding: 'var(--spacing-md)',
                 backgroundColor: 'var(--color-bg-card)',
-                borderRadius: 'var(--radius-lg)',
                 border: '1px solid var(--color-border)',
             }}
         >
             <h2
                 style={{
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: 'var(--color-text-secondary)',
+                    fontSize: '0.6rem',
+                    fontWeight: 700,
+                    color: 'var(--color-text-muted)',
                     marginBottom: 'var(--spacing-md)',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
+                    letterSpacing: '0.25em',
                 }}
             >
-                目次
+                Contents
             </h2>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {toc.map((item) => (
@@ -86,13 +85,12 @@ export function StickyToc({ toc }: StickyTocProps) {
                             style={{
                                 display: 'block',
                                 padding: '4px 8px',
-                                fontSize: '0.875rem',
-                                color: activeId === item.id ? 'var(--color-accent)' : 'var(--color-text-secondary)',
+                                fontSize: '0.8rem',
+                                color: activeId === item.id ? 'var(--color-primary)' : 'var(--color-text-secondary)',
                                 textDecoration: 'none',
-                                borderLeft: activeId === item.id ? '2px solid var(--color-accent)' : '2px solid transparent',
-                                backgroundColor: activeId === item.id ? 'var(--color-accent-light)' : 'transparent',
-                                borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
-                                transition: 'all var(--transition-fast)',
+                                borderLeft: activeId === item.id ? '2px solid var(--color-primary)' : '2px solid transparent',
+                                backgroundColor: 'transparent',
+                                transition: 'color var(--transition-fast), border-color var(--transition-fast)',
                             }}
                         >
                             {item.text}

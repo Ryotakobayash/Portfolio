@@ -76,14 +76,14 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
         return { idealLine: ideal, actualLine: actual, currentTotal: total, isOnTrack: onTrack };
     }, [posts, yearlyTarget, period]);
 
-    const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     const colors = {
-        text: isDark ? '#c1c2c5' : '#495057',
-        grid: isDark ? '#373A40' : '#dee2e6',
-        ideal: isDark ? '#555' : '#adb5bd',
-        actual: isDark ? '#22b8cf' : '#228be6',
-        warning: '#FA5252',
+        text: isDark ? '#8A8A7A' : '#6B6B5A',
+        grid: isDark ? '#2C2C2C' : '#E0D8CC',
+        ideal: isDark ? '#3A3A32' : '#C8C0B0',
+        actual: '#5C7F71',
+        warning: '#802520',
     };
 
     const options: Highcharts.Options = {
@@ -91,7 +91,7 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
             type: 'line',
             backgroundColor: 'transparent',
             height: 240,
-            style: { fontFamily: 'Inter, "Noto Sans JP", sans-serif' },
+            style: { fontFamily: 'Outfit, sans-serif' },
         },
         title: { text: undefined },
         credits: { enabled: false },
@@ -120,7 +120,7 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
         series: [
             {
                 type: 'line',
-                name: '理想',
+                name: 'Ideal',
                 data: idealLine,
                 color: colors.ideal,
                 dashStyle: 'Dash',
@@ -129,7 +129,7 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
             },
             {
                 type: 'line',
-                name: '実績',
+                name: 'Actual',
                 data: actualLine,
                 color: isOnTrack ? colors.actual : colors.warning,
                 lineWidth: 2.5,
@@ -153,25 +153,32 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
                 marginBottom: '8px',
             }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
-                        📝 投稿数
+                    <span style={{ fontSize: '0.6rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
+                        Post Count
                     </span>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
-                        目標: {yearlyTarget}本/年
+                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                        Target: {yearlyTarget} / yr
                     </span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span style={{
-                        fontSize: '1.25rem', fontWeight: 700,
-                        color: isOnTrack ? 'var(--color-accent)' : '#FA5252',
+                        fontSize: '1.5rem', fontWeight: 900,
+                        letterSpacing: '-0.04em',
+                        color: isOnTrack ? 'var(--color-primary)' : '#802520',
+                        fontFamily: 'var(--font-sans)',
                     }}>
                         {currentTotal}
                     </span>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                        本
+                    <span style={{ fontSize: '0.6rem', color: 'var(--color-text-muted)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                        posts
                     </span>
-                    <span style={{ fontSize: '0.85rem' }}>
-                        {isOnTrack ? '✅' : '⚠️'}
+                    <span style={{
+                        fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em',
+                        textTransform: 'uppercase', padding: '2px 6px',
+                        border: `1px solid ${isOnTrack ? 'var(--color-primary)' : '#802520'}`,
+                        color: isOnTrack ? 'var(--color-primary)' : '#802520',
+                    }}>
+                        {isOnTrack ? 'ON TRACK' : 'BEHIND'}
                     </span>
                 </div>
             </div>

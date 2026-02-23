@@ -34,11 +34,11 @@ const filteredPosts = posts
   .sort((a, b) => (a.date < b.date ? 1 : -1));
 ---
 
-<BaseLayout title={`${tag} の記事 | Dashboard Portfolio`}>
+<BaseLayout title={`#${tag} — RK / Posts`}>
   <div class="page-header">
-    <a href="/tags" class="back-link">← タグ一覧に戻る</a>
+    <a href="/tags" class="back-link">← Tags</a>
     <h1 class="page-title">#{tag}</h1>
-    <p class="page-description">{filteredPosts.length} 件の記事</p>
+    <p class="page-description">{filteredPosts.length} posts</p>
   </div>
 
   <div class="post-list">
@@ -65,7 +65,8 @@ const filteredPosts = posts
 
   .page-title {
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 900;
+    letter-spacing: -0.02em;
     margin-bottom: var(--spacing-sm);
   }
 
@@ -86,24 +87,26 @@ const filteredPosts = posts
     padding: var(--spacing-md);
     background-color: var(--color-bg-card);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
     text-decoration: none;
     color: inherit;
-    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+    transition: border-color var(--transition-fast);
   }
 
   .post-item:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    border-color: var(--color-primary);
   }
 
   .post-item__date {
     flex-shrink: 0;
-    font-size: 0.875rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     color: var(--color-text-muted);
+    font-family: var(--font-mono);
   }
 
   .post-item__title {
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 600;
   }
 </style>
