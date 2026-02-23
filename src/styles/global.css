@@ -484,6 +484,27 @@ a:hover {
     }
 }
 
+/* ===== Ambient Glow Drifting ===== */
+@keyframes drift {
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+
+    to {
+        transform: translate(5%, 10%) scale(1.05);
+    }
+}
+
+@keyframes drift-reverse {
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+
+    to {
+        transform: translate(-5%, -10%) scale(1.1);
+    }
+}
+
 
 /* ===== Activity Health ===== */
 .activity-health {

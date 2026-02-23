@@ -2,13 +2,14 @@
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import CRTOverlay from '../components/CRTOverlay';
-
+import AmbientGlow from '../components/AmbientGlow';
 
 interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
 }
+
 
 const {
   title = 'Dashboard Portfolio',
@@ -75,6 +76,9 @@ const GTM_ID = 'GTM-WG6RHC88';
     </script>
   </head>
   <body>
+    <!-- Deep background glow -->
+    <AmbientGlow client:only="react" />
+
     <!-- CRT scanline + vignette overlay -->
     <CRTOverlay client:only="react" />
 
