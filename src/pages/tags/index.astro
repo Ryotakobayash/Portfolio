@@ -28,7 +28,7 @@ const tags = Array.from(tagMap.entries())
     {tags.map(({ tag, count }) => (
       <a href={`/tags/${tag.replace(/\//g, '-')}`} class="tag-card">
         <span class="tag-card__name">{tag}</span>
-        <span class="tag-card__count">{count} 記事</span>
+        <span class="tag-card__count">{count} posts</span>
       </a>
     ))}
   </div>

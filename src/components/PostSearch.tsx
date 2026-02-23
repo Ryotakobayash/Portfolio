@@ -82,21 +82,18 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
         <div>
             {/* 検索バー */}
             <div style={{ position: 'relative', marginBottom: '16px' }}>
-                <span style={{
-                    position: 'absolute', left: '12px', top: '50%',
-                    transform: 'translateY(-50%)', color: 'var(--color-text-muted)', fontSize: '1rem',
-                }}>🔍</span>
                 <input
                     type="text"
-                    placeholder="記事を検索..."
+                    placeholder="Search posts..."
                     value={query}
                     onChange={(e) => { setQuery(e.target.value); resetPage(); }}
                     style={{
-                        width: '100%', padding: '12px 12px 12px 40px', fontSize: '1rem',
-                        border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)',
+                        width: '100%', padding: '10px 14px', fontSize: '0.875rem',
+                        border: '1px solid var(--color-border)',
                         backgroundColor: 'var(--color-bg-card)', color: 'var(--color-text)',
                         outline: 'none', transition: 'border-color var(--transition-fast)',
-                        boxSizing: 'border-box',
+                        boxSizing: 'border-box', fontFamily: 'var(--font-sans)',
+                        letterSpacing: '0.02em',
                     }}
                     onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
                     onBlur={(e) => (e.target.style.borderColor = 'var(--color-border)')}
@@ -112,12 +109,15 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                             key={tag}
                             onClick={() => toggleTag(tag)}
                             style={{
-                                padding: '4px 12px', fontSize: '0.8rem', fontWeight: 500,
-                                borderRadius: 'var(--radius-sm)', cursor: 'pointer',
-                                border: isActive ? '1px solid var(--color-accent)' : '1px solid var(--color-border)',
-                                backgroundColor: isActive ? 'var(--color-accent)' : 'var(--color-bg-card)',
-                                color: isActive ? '#fff' : 'var(--color-text)',
+                                padding: '3px 10px',
+                                fontSize: '0.65rem', fontWeight: 600,
+                                letterSpacing: '0.06em',
+                                cursor: 'pointer',
+                                border: isActive ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
+                                backgroundColor: isActive ? 'var(--color-primary)' : 'transparent',
+                                color: isActive ? 'var(--color-bg)' : 'var(--color-text-muted)',
                                 transition: 'all var(--transition-fast)',
+                                fontFamily: 'var(--font-sans)',
                             }}
                         >
                             {tag}
@@ -135,16 +135,17 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                     value={sortOrder}
                     onChange={(e) => { setSortOrder(e.target.value as SortOrder); resetPage(); }}
                     style={{
-                        padding: '6px 10px', fontSize: '0.875rem',
-                        border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)',
+                        padding: '4px 10px', fontSize: '0.7rem',
+                        border: '1px solid var(--color-border)',
                         backgroundColor: 'var(--color-bg-card)', color: 'var(--color-text)',
-                        cursor: 'pointer',
+                        cursor: 'pointer', letterSpacing: '0.06em',
+                        fontFamily: 'var(--font-sans)',
                     }}
                 >
-                    <option value="newest">新着順</option>
-                    <option value="oldest">古い順</option>
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
                 </select>
-                <span>{filteredPosts.length}件</span>
+                <span style={{ fontSize: '0.65rem', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)' }}>{filteredPosts.length} posts</span>
             </div>
 
             {/* 記事リスト */}
@@ -156,23 +157,21 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                         style={{
                             display: 'block', padding: 'var(--spacing-lg)',
                             backgroundColor: 'var(--color-bg-card)',
-                            border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)',
+                            border: '1px solid var(--color-border)',
                             textDecoration: 'none', color: 'inherit',
-                            transition: 'box-shadow var(--transition-fast), transform var(--transition-fast)',
+                            transition: 'border-color var(--transition-fast)',
                         }}
                         onMouseEnter={(e) => {
-                            e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.borderColor = 'var(--color-primary)';
                         }}
                         onMouseLeave={(e) => {
-                            e.currentTarget.style.boxShadow = 'none';
-                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.borderColor = 'var(--color-border)';
                         }}
                     >
-                        <div style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-sm)' }}>
-                            📅 {post.date}
+                        <div style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-sm)', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)' }}>
+                            {post.date}
                         </div>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 'var(--spacing-sm)' }}>
+                        <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 'var(--spacing-sm)', letterSpacing: '-0.01em' }}>
                             {post.title}
                         </h2>
                         {post.excerpt && (
@@ -191,10 +190,10 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                                         key={tag}
                                         style={{
                                             display: 'inline-flex', alignItems: 'center',
-                                            padding: '2px 8px', fontSize: '0.75rem', fontWeight: 500,
-                                            borderRadius: 'var(--radius-sm)',
-                                            backgroundColor: 'var(--color-accent-light)',
-                                            color: 'var(--color-accent)',
+                                            padding: '1px 6px', fontSize: '0.6rem', fontWeight: 600,
+                                            border: '1px solid var(--color-primary)',
+                                            color: 'var(--color-primary)',
+                                            letterSpacing: '0.05em', textTransform: 'uppercase',
                                         }}
                                     >
                                         {tag}
@@ -208,8 +207,8 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
 
             {/* 結果なし */}
             {filteredPosts.length === 0 && (
-                <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: 'var(--spacing-xl)' }}>
-                    条件に一致する記事が見つかりませんでした
+                <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: 'var(--spacing-xl)', fontSize: '0.875rem', letterSpacing: '0.08em' }}>
+                    No posts match your search.
                 </p>
             )}
 
@@ -223,28 +222,32 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                         disabled={safePage <= 1}
                         onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                         style={{
-                            padding: '8px 16px', fontSize: '0.875rem', cursor: safePage <= 1 ? 'default' : 'pointer',
-                            border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)',
+                            padding: '6px 16px', fontSize: '0.75rem',
+                            letterSpacing: '0.08em', cursor: safePage <= 1 ? 'default' : 'pointer',
+                            border: '1px solid var(--color-border)',
                             backgroundColor: 'var(--color-bg-card)', color: safePage <= 1 ? 'var(--color-text-muted)' : 'var(--color-text)',
                             opacity: safePage <= 1 ? 0.5 : 1,
+                            fontFamily: 'var(--font-sans)',
                         }}
                     >
-                        ← 前
+                        ← Prev
                     </button>
-                    <span style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
+                    <span style={{ fontSize: '0.7rem', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)', color: 'var(--color-text-muted)' }}>
                         {safePage} / {totalPages}
                     </span>
                     <button
                         disabled={safePage >= totalPages}
                         onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                         style={{
-                            padding: '8px 16px', fontSize: '0.875rem', cursor: safePage >= totalPages ? 'default' : 'pointer',
-                            border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)',
+                            padding: '6px 16px', fontSize: '0.75rem',
+                            letterSpacing: '0.08em', cursor: safePage >= totalPages ? 'default' : 'pointer',
+                            border: '1px solid var(--color-border)',
                             backgroundColor: 'var(--color-bg-card)', color: safePage >= totalPages ? 'var(--color-text-muted)' : 'var(--color-text)',
                             opacity: safePage >= totalPages ? 0.5 : 1,
+                            fontFamily: 'var(--font-sans)',
                         }}
                     >
-                        次 →
+                        Next →
                     </button>
                 </div>
             )}
