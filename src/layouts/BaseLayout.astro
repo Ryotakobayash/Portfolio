@@ -25,7 +25,7 @@ const GTM_ID = 'GTM-WG6RHC88';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;300;400;600;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet" />
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -47,8 +47,9 @@ const GTM_ID = 'GTM-WG6RHC88';
     <!-- Dark mode script (run before render to prevent flash) -->
     <script is:inline>
       (function() {
-        const theme = localStorage.getItem('theme') ||
-          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        // Default to dark — light is the opt-in
+        const stored = localStorage.getItem('theme');
+        const theme = stored || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
       })();
     </script>
@@ -84,15 +85,15 @@ const GTM_ID = 'GTM-WG6RHC88';
 
     <header class="header">
       <div class="container header-content">
-        <a href="/" class="logo">📊 Dashboard Portfolio</a>
+        <a href="/" class="logo">RK / PORTFOLIO</a>
         <nav class="nav-links">
           <a href="/posts" class="nav-link">Posts</a>
           <a href="/about" class="nav-link">About</a>
-          <a href="/me" class="nav-link nav-link--accent">📊 Me</a>
+          <a href="/me" class="nav-link nav-link--accent">Dashboard</a>
         </nav>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-          <span class="sun-icon">☀️</span>
-          <span class="moon-icon">🌙</span>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <span class="sun-icon">LIGHT</span>
+          <span class="moon-icon">DARK</span>
         </button>
       </div>
     </header>
@@ -105,8 +106,8 @@ const GTM_ID = 'GTM-WG6RHC88';
 
     <script>
       function initTheme() {
-        const theme = localStorage.getItem('theme') ||
-          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        const stored = localStorage.getItem('theme');
+        const theme = stored || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
       }
 
