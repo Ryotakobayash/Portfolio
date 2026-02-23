@@ -1,6 +1,8 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
+import CRTOverlay from '../components/CRTOverlay';
+
 
 interface Props {
   title?: string;
@@ -73,6 +75,9 @@ const GTM_ID = 'GTM-WG6RHC88';
     </script>
   </head>
   <body>
+    <!-- CRT scanline + vignette overlay -->
+    <CRTOverlay client:only="react" />
+
     <!-- GTM noscript -->
     <noscript>
       <iframe

@@ -6,7 +6,9 @@ import ArticleTreemap from '../components/ArticleTreemap';
 import PopularPosts from '../components/PopularPosts';
 import ExternalPosts from '../components/ExternalPosts';
 import OrbitalBackground from '../components/OrbitalBackground';
+import DotGrid from '../components/DotGrid';
 import careerData from '../data/career.json';
+
 
 // 全記事を取得
 const posts = await getCollection('posts');
@@ -68,6 +70,10 @@ const treemapPosts = await Promise.all(
                 <a href="https://zenn.dev/ryota5884" target="_blank" rel="noopener" class="identity__link" title="Zenn">Zenn</a>
                 <a href="/about" class="link-arrow">About →</a>
             </div>
+            {/* Punch-card dot grid decoration */}
+            <div style="position:absolute;bottom:12px;right:12px;opacity:0.12;color:var(--color-text-muted);pointer-events:none;">
+                <DotGrid client:only="react" cols={18} rows={3} dotSize={2} gap={6} opacity={1} />
+            </div>
         </div>
 
         <!-- KPI Cards -->
@@ -90,6 +96,9 @@ const treemapPosts = await Promise.all(
     </div>
 
     <!-- ===== Explore: Treemap ===== -->
+    <div class="section-dotgrid-sep">
+        <DotGrid client:only="react" cols={32} rows={2} dotSize={2} gap={8} opacity={0.10} style={{ color: 'var(--color-border)' }} />
+    </div>
     <div class="section-divider"><span class="section-divider__label">01 · Explore</span></div>
 
     <div class="bento-card bento-card--wide treemap-card">
@@ -98,6 +107,9 @@ const treemapPosts = await Promise.all(
     </div>
 
     <!-- ===== Proof ===== -->
+    <div class="section-dotgrid-sep">
+        <DotGrid client:only="react" cols={32} rows={2} dotSize={2} gap={8} opacity={0.10} style={{ color: 'var(--color-border)' }} />
+    </div>
     <div class="section-divider"><span class="section-divider__label">02 · Proof</span></div>
 
     <div class="bento-grid">
@@ -343,5 +355,19 @@ const treemapPosts = await Promise.all(
     .post-list__date {
         font-size: 0.75rem;
         color: var(--color-text-muted);
+    }
+
+    /* Identity card — needs position:relative for absolute DotGrid */
+    .identity-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* DotGrid separator between hero and sections */
+    .section-dotgrid-sep {
+        display: flex;
+        justify-content: flex-start;
+        padding: var(--spacing-md) 0 0;
+        overflow: hidden;
     }
 </style>
