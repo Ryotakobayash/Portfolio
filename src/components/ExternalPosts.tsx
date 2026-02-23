@@ -9,38 +9,36 @@ interface ExternalPost {
     date: string;
 }
 
-const SERVICE_CONFIG: Record<ServiceType, { color: string; bg: string; icon: string; label: string }> = {
-    zenn: {
-        color: '#3EA8FF',
-        bg: 'rgba(62, 168, 255, 0.1)',
-        icon: '📘',
-        label: 'Zenn',
-    },
-    note: {
-        color: '#41C9B4',
-        bg: 'rgba(65, 201, 180, 0.1)',
-        icon: '📓',
-        label: 'note',
-    }
+const SERVICE_CONFIG: Record<ServiceType, { color: string; label: string }> = {
+    zenn: { color: 'var(--color-primary)', label: 'Zenn' },
+    note: { color: 'var(--color-accent-2)', label: 'note' },
 };
+
+// Dates that are "past article" placeholders
+const PAST_DATES = new Set(['2022-01-01', '2023-01-01', '2024-01-01', '2025-01-01']);
 
 export default function ExternalPosts() {
     const posts = externalData.posts as ExternalPost[];
-
     if (!posts || posts.length === 0) return null;
 
     return (
-        <div className="external-posts">
-            <h3 style={{
-                fontSize: '1.125rem', fontWeight: 700,
-                marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px'
+        <div>
+            {/* Section label */}
+            <div style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                marginBottom: '16px',
+                fontSize: '0.6rem', fontWeight: 600,
+                letterSpacing: '0.25em', textTransform: 'uppercase',
+                color: 'var(--color-text-muted)',
             }}>
-                <span>🌐</span> 外部プラットフォームの記事
-            </h3>
+                External Articles
+                <span style={{ flex: 1, height: '1px', background: 'var(--color-border)' }} />
+            </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
                 {posts.map((post, i) => {
-                    const config = SERVICE_CONFIG[post.service] || SERVICE_CONFIG.note;
+                    const config = SERVICE_CONFIG[post.service] ?? SERVICE_CONFIG.note;
+                    const dateLabel = PAST_DATES.has(post.date) ? 'Past Article' : post.date;
                     return (
                         <a
                             key={i}
@@ -49,49 +47,50 @@ export default function ExternalPosts() {
                             rel="noopener noreferrer"
                             style={{
                                 display: 'flex',
-                                alignItems: 'flex-start',
-                                gap: '12px',
-                                padding: '16px',
-                                backgroundColor: 'var(--color-bg-card)',
-                                border: '1px solid var(--color-border)',
-                                borderRadius: 'var(--radius-md)',
+                                alignItems: 'center',
+                                gap: '16px',
+                                padding: '12px 0',
+                                borderBottom: '1px solid var(--color-border)',
                                 textDecoration: 'none',
                                 color: 'var(--color-text)',
-                                transition: 'all 150ms ease',
+                                transition: 'color 120ms ease',
                             }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.borderColor = config.color;
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.borderColor = 'var(--color-border)';
-                                e.currentTarget.style.transform = 'none';
-                                e.currentTarget.style.boxShadow = 'none';
-                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-primary)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text)'; }}
                         >
-                            <div style={{
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                width: '40px', height: '40px', borderRadius: '8px',
-                                backgroundColor: config.bg, color: config.color,
-                                fontSize: '1.25rem', flexShrink: 0
+                            {/* Service label pill */}
+                            <span style={{
+                                flexShrink: 0,
+                                fontSize: '0.55rem', fontWeight: 700,
+                                letterSpacing: '0.15em', textTransform: 'uppercase',
+                                color: config.color,
+                                border: `1px solid ${config.color}`,
+                                padding: '1px 5px',
+                                lineHeight: 1.4,
+                                minWidth: '36px',
+                                textAlign: 'center',
                             }}>
-                                {config.icon}
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <span style={{ fontSize: '0.95rem', fontWeight: 600, lineHeight: 1.4 }}>
-                                    {post.title}
-                                </span>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                                    <span style={{
-                                        color: config.color, fontWeight: 600,
-                                        backgroundColor: config.bg, padding: '1px 6px', borderRadius: '4px'
-                                    }}>
-                                        {config.label}
-                                    </span>
-                                    <span>{post.date === '2023-01-01' || post.date === '2024-01-01' || post.date === '2022-01-01' || post.date === '2025-01-01' ? '過去の記事' : post.date}</span>
-                                </div>
-                            </div>
+                                {config.label}
+                            </span>
+
+                            {/* Title */}
+                            <span style={{
+                                flex: 1, minWidth: 0,
+                                fontSize: '0.875rem', fontWeight: 400,
+                                lineHeight: 1.5,
+                                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                            }}>
+                                {post.title}
+                            </span>
+
+                            {/* Date */}
+                            <span style={{
+                                flexShrink: 0,
+                                fontSize: '0.6rem', letterSpacing: '0.08em',
+                                color: 'var(--color-text-muted)',
+                            }}>
+                                {dateLabel}
+                            </span>
                         </a>
                     );
                 })}

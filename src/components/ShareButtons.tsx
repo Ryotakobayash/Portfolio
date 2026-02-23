@@ -5,10 +5,6 @@ interface Props {
     url: string;
 }
 
-/**
- * 記事シェアボタン コンポーネント
- * X (Twitter), はてなブックマーク, URLコピー
- */
 export default function ShareButtons({ title, url }: Props) {
     const [copied, setCopied] = useState(false);
 
@@ -17,35 +13,44 @@ export default function ShareButtons({ title, url }: Props) {
 
     const shareLinks = [
         {
-            label: 'X',
+            label: 'X / Twitter',
+            shortLabel: 'X',
             href: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
-            icon: '𝕏',
-            color: '#000000',
         },
         {
-            label: 'はてブ',
+            label: 'Hatena Bookmark',
+            shortLabel: 'はてブ',
             href: `https://b.hatena.ne.jp/add?mode=confirm&url=${encodedUrl}&title=${encodedTitle}`,
-            icon: 'B!',
-            color: '#00A4DE',
         },
     ];
 
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(url);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
         } catch {
-            // フォールバック
             const input = document.createElement('input');
             input.value = url;
             document.body.appendChild(input);
             input.select();
             document.execCommand('copy');
             document.body.removeChild(input);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
         }
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const btnStyle: React.CSSProperties = {
+        display: 'inline-flex', alignItems: 'center',
+        padding: '4px 12px',
+        border: '1px solid var(--color-border)',
+        backgroundColor: 'transparent',
+        color: 'var(--color-text-muted)',
+        fontSize: '0.65rem', fontWeight: 600,
+        letterSpacing: '0.12em', textTransform: 'uppercase',
+        textDecoration: 'none', cursor: 'pointer',
+        fontFamily: 'var(--font-sans)',
+        transition: 'border-color 120ms ease, color 120ms ease',
+        lineHeight: '1.8',
     };
 
     return (
@@ -55,68 +60,57 @@ export default function ShareButtons({ title, url }: Props) {
             borderTop: '1px solid var(--color-border)',
         }}>
             <span style={{
-                fontSize: '0.8rem', fontWeight: 600,
-                color: 'var(--color-text-muted)', marginRight: '4px',
+                fontSize: '0.55rem', fontWeight: 600, letterSpacing: '0.2em',
+                textTransform: 'uppercase', color: 'var(--color-text-muted)',
+                marginRight: '4px',
             }}>
-                Share:
+                Share
             </span>
 
             {shareLinks.map((link) => (
                 <a
-                    key={link.label}
+                    key={link.shortLabel}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    title={`${link.label}でシェア`}
-                    style={{
-                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                        width: '36px', height: '36px', borderRadius: 'var(--radius-md)',
-                        backgroundColor: 'var(--color-bg-secondary)',
-                        color: 'var(--color-text)', fontSize: '0.85rem', fontWeight: 700,
-                        textDecoration: 'none',
-                        transition: 'background-color 150ms ease, transform 150ms ease',
-                    }}
+                    title={link.label}
+                    style={btnStyle}
                     onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = link.color;
-                        e.currentTarget.style.color = '#fff';
-                        e.currentTarget.style.transform = 'scale(1.08)';
+                        e.currentTarget.style.borderColor = 'var(--color-primary)';
+                        e.currentTarget.style.color = 'var(--color-primary)';
                     }}
                     onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)';
-                        e.currentTarget.style.color = 'var(--color-text)';
-                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.borderColor = 'var(--color-border)';
+                        e.currentTarget.style.color = 'var(--color-text-muted)';
                     }}
                 >
-                    {link.icon}
+                    {link.shortLabel}
                 </a>
             ))}
 
-            {/* URLコピーボタン */}
             <button
                 onClick={handleCopy}
-                title="URLをコピー"
+                title="Copy URL"
                 style={{
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    width: '36px', height: '36px', borderRadius: 'var(--radius-md)',
-                    backgroundColor: copied ? 'var(--color-accent)' : 'var(--color-bg-secondary)',
-                    color: copied ? '#fff' : 'var(--color-text)',
-                    border: 'none', cursor: 'pointer',
-                    fontSize: '0.85rem', fontWeight: 700,
-                    transition: 'all 150ms ease',
+                    ...btnStyle,
+                    borderColor: copied ? 'var(--color-primary)' : 'var(--color-border)',
+                    color: copied ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                }}
+                onMouseEnter={(e) => {
+                    if (!copied) {
+                        e.currentTarget.style.borderColor = 'var(--color-primary)';
+                        e.currentTarget.style.color = 'var(--color-primary)';
+                    }
+                }}
+                onMouseLeave={(e) => {
+                    if (!copied) {
+                        e.currentTarget.style.borderColor = 'var(--color-border)';
+                        e.currentTarget.style.color = 'var(--color-text-muted)';
+                    }
                 }}
             >
-                {copied ? '✓' : '🔗'}
+                {copied ? 'Copied ✓' : 'Copy URL'}
             </button>
-
-            {/* コピー完了トースト */}
-            {copied && (
-                <span style={{
-                    fontSize: '0.75rem', color: 'var(--color-accent)',
-                    fontWeight: 500, animation: 'fadeIn 200ms ease',
-                }}>
-                    コピーしました！
-                </span>
-            )}
         </div>
     );
 }

@@ -32,11 +32,11 @@ export default function RelatedPosts({ currentSlug, currentTags, allPosts }: Pro
     return (
         <div style={{ marginTop: '24px' }}>
             <h3 style={{
-                fontSize: '0.9rem', fontWeight: 600,
+                fontSize: '0.6rem', fontWeight: 600,
                 color: 'var(--color-text-muted)', textTransform: 'uppercase',
-                letterSpacing: '0.05em', marginBottom: '12px',
+                letterSpacing: '0.25em', marginBottom: '12px',
             }}>
-                📎 関連記事
+                Related Articles
             </h3>
             <div style={{
                 display: 'grid', gap: '12px',
@@ -48,18 +48,17 @@ export default function RelatedPosts({ currentSlug, currentTags, allPosts }: Pro
                         href={`/posts/${post.slug}`}
                         style={{
                             display: 'flex', flexDirection: 'column', gap: '6px',
-                            padding: '12px', borderRadius: 'var(--radius-md)',
-                            backgroundColor: 'var(--color-bg-secondary)',
+                            padding: '12px',
+                            border: '1px solid var(--color-border)',
+                            backgroundColor: 'var(--color-bg-card)',
                             textDecoration: 'none', color: 'inherit',
-                            transition: 'transform 150ms ease, box-shadow 150ms ease',
+                            transition: 'border-color 120ms ease',
                         }}
                         onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                            e.currentTarget.style.borderColor = 'var(--color-primary)';
                         }}
                         onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = 'none';
+                            e.currentTarget.style.borderColor = 'var(--color-border)';
                         }}
                     >
                         <span style={{
@@ -75,11 +74,11 @@ export default function RelatedPosts({ currentSlug, currentTags, allPosts }: Pro
                         <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
                             {post.commonTags.map((tag) => (
                                 <span key={tag} style={{
-                                    fontSize: '0.65rem', padding: '1px 6px',
-                                    borderRadius: 'var(--radius-sm)',
-                                    backgroundColor: 'var(--color-primary-light)',
+                                    fontSize: '0.6rem', padding: '1px 5px',
+                                    border: '1px solid var(--color-primary)',
                                     color: 'var(--color-primary)',
-                                    fontWeight: 500,
+                                    fontWeight: 600, letterSpacing: '0.05em',
+                                    textTransform: 'uppercase',
                                 }}>
                                     {tag}
                                 </span>
