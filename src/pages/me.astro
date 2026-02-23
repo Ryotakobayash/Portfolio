@@ -23,9 +23,9 @@ const postDates = posts.map((post) => ({
 const postCount = posts.length;
 ---
 
-<BaseLayout title="My Dashboard | Dashboard Portfolio" description="モチベーションダッシュボード">
-    <!-- 残り時間 セクション -->
-    <div class="section-header">残り時間</div>
+<BaseLayout title="RK / Dashboard" description="Personal metrics & motivation dashboard">
+    <!-- ===== Remaining Time ===== -->
+    <div class="section-header"><span>01 · Time Remaining</span></div>
     <div class="me-grid me-grid--2col">
         <div class="bento-card">
             <LifeProgress
@@ -43,8 +43,8 @@ const postCount = posts.length;
         </div>
     </div>
 
-    <!-- KGIバーンダウン セクション -->
-    <div class="section-header">{goalsData.posts.period}年 KGIバーンダウン</div>
+    <!-- ===== KGI Burndown ===== -->
+    <div class="section-header"><span>02 · KGI Burndown {goalsData.posts.period}</span></div>
     <div class="me-grid me-grid--1col">
         <div class="bento-card">
             <PostBurndown
@@ -62,8 +62,8 @@ const postCount = posts.length;
         </div>
     </div>
 
-    <!-- PVタイムライン セクション -->
-    <div class="section-header">PV推移と投稿イベント (過去6ヶ月)</div>
+    <!-- ===== PV Timeline ===== -->
+    <div class="section-header"><span>03 · PV Timeline · 6 Months</span></div>
     <div class="bento-card" style="margin-bottom: var(--spacing-lg);">
         <PVTimeline
             client:only="react"
@@ -71,8 +71,8 @@ const postCount = posts.length;
         />
     </div>
 
-    <!-- 累計実績 セクション -->
-    <div class="section-header">累計実績</div>
+    <!-- ===== Cumulative Stats ===== -->
+    <div class="section-header"><span>04 · Cumulative Stats</span></div>
     <div class="bento-card">
         <CumulativeStats
             client:only="react"
@@ -82,8 +82,8 @@ const postCount = posts.length;
         />
     </div>
 
-    <!-- GitHub Activity セクション -->
-    <div class="section-header">GitHub Activity</div>
+    <!-- ===== GitHub Activity ===== -->
+    <div class="section-header"><span>05 · GitHub Activity</span></div>
     <div class="me-grid me-grid--2col">
         <div class="bento-card">
             <div class="bento-card__title">GitHub Contributions</div>
@@ -97,15 +97,23 @@ const postCount = posts.length;
 
 <style>
     .section-header {
-        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        font-size: 0.6rem;
         font-weight: 600;
-        color: var(--color-text-muted);
+        letter-spacing: 0.25em;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-top: var(--spacing-xl);
-        margin-bottom: var(--spacing-md);
-        padding-bottom: var(--spacing-xs);
-        border-bottom: 1px solid var(--color-border);
+        color: var(--color-text-muted);
+        margin-top: var(--spacing-2xl);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .section-header::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--color-border);
     }
 
     .section-header:first-child {
