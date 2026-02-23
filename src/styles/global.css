@@ -459,6 +459,32 @@ a:hover {
     }
 }
 
+/* ===== Slow Pulse (Breath) ===== */
+@keyframes pulse-slow {
+
+    0%,
+    100% {
+        opacity: 0.03;
+    }
+
+    50% {
+        opacity: 0.08;
+    }
+}
+
+@keyframes crt-pulse {
+
+    0%,
+    100% {
+        opacity: 0.85;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+
 /* ===== Activity Health ===== */
 .activity-health {
     display: flex;

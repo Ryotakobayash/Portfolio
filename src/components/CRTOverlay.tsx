@@ -38,6 +38,7 @@ export default function CRTOverlay() {
                     inset: 0,
                     zIndex: 9001,
                     pointerEvents: 'none',
+                    animation: 'crt-pulse 8s ease-in-out infinite',
                     background: `radial-gradient(
                         ellipse at center,
                         transparent 60%,
