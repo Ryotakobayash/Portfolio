@@ -53,11 +53,10 @@ export default function LifeProgress({ birthYear, expectedAge }: Props) {
                     <circle
                         cx={size / 2} cy={size / 2} r={radius}
                         fill="none"
-                        stroke={isOverHalf ? 'var(--color-accent)' : '#228BE6'}
+                        stroke={isOverHalf ? 'var(--color-primary)' : '#5C7F71'}
                         strokeWidth={strokeWidth}
                         strokeDasharray={circumference}
                         strokeDashoffset={offset}
-                        strokeLinecap="round"
                         style={{ transition: 'stroke-dashoffset 1s ease' }}
                     />
                 </svg>
@@ -75,19 +74,19 @@ export default function LifeProgress({ birthYear, expectedAge }: Props) {
 
             {/* テキスト情報 */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    🕐 人生の進捗
+                <span style={{ fontSize: '0.55rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
+                    Life Progress
                 </span>
-                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--color-text)' }}>
-                    {currentAge}歳 / {expectedAge}歳
+                <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-text)', letterSpacing: '-0.01em' }}>
+                    {currentAge} / {expectedAge} yrs
                 </span>
                 {yearsToHalf > 0 ? (
-                    <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                        折り返し(50%)まで: あと{yearsToHalf}年
+                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
+                        Midpoint in {yearsToHalf} yr{yearsToHalf !== 1 ? 's' : ''}
                     </span>
                 ) : (
-                    <span style={{ fontSize: '0.8rem', color: 'var(--color-accent)' }}>
-                        ✅ 折り返し地点を通過済み
+                    <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', color: 'var(--color-primary)', textTransform: 'uppercase' }}>
+                        50% Passed
                     </span>
                 )}
             </div>

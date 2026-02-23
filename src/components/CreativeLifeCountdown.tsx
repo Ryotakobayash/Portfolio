@@ -41,43 +41,43 @@ export default function CreativeLifeCountdown({ startDate, endDate }: Props) {
             display: 'flex', flexDirection: 'column', gap: '12px',
             padding: '4px 0',
         }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                🚀 創造的人生の持ち時間
+            <span style={{ fontSize: '0.55rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
+                Creative Life Runway
             </span>
 
             {/* 残り日数 */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                <span style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--color-accent)' }}>
+                <span style={{ fontSize: '2.2rem', fontWeight: 900, letterSpacing: '-0.04em', color: 'var(--color-primary)', fontFamily: 'var(--font-sans)' }}>
                     {daysLeft.toLocaleString()}
                 </span>
-                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-                    日
+                <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', letterSpacing: '0.08em' }}>
+                    days
                 </span>
             </div>
 
             {/* 年月日に分解 */}
-            <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
-                ({timeBreakdown.years}年 {timeBreakdown.months}ヶ月 {timeBreakdown.days}日)
+            <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                ({timeBreakdown.years}y {timeBreakdown.months}mo {timeBreakdown.days}d)
             </span>
 
             {/* プログレスバー */}
             <div>
                 <div style={{
                     display: 'flex', justifyContent: 'space-between',
-                    fontSize: '0.75rem', color: 'var(--color-text-muted)',
-                    marginBottom: '4px',
+                    fontSize: '0.65rem', color: 'var(--color-text-muted)',
+                    marginBottom: '4px', letterSpacing: '0.06em', fontFamily: 'var(--font-mono)',
                 }}>
-                    <span>{startDate.slice(0, 4)}年</span>
-                    <span>{percentage}% 経過</span>
-                    <span>{endDate.slice(0, 4)}年</span>
+                    <span>{startDate.slice(0, 4)}</span>
+                    <span>{percentage}% elapsed</span>
+                    <span>{endDate.slice(0, 4)}</span>
                 </div>
                 <div style={{
-                    height: '8px', borderRadius: '4px',
-                    backgroundColor: 'var(--color-bg-secondary)', overflow: 'hidden',
+                    height: '4px',
+                    backgroundColor: 'var(--color-border)', overflow: 'hidden',
                 }}>
                     <div style={{
-                        height: '100%', borderRadius: '4px',
-                        backgroundColor: 'var(--color-accent)',
+                        height: '100%',
+                        backgroundColor: 'var(--color-primary)',
                         width: `${percentage}%`,
                         transition: 'width 1s ease',
                     }} />
