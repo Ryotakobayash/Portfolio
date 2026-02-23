@@ -27,15 +27,15 @@ const allTags = Array.from(tagCount.entries())
   .map(([tag]) => tag);
 ---
 
-<BaseLayout title="記事一覧 | Dashboard Portfolio">
+<BaseLayout title="RK / Posts">
   <div class="page-header">
-    <h1 class="page-title">記事一覧</h1>
+    <h1 class="page-title">Posts</h1>
     <div class="stats-row">
-      <span class="stat-item">📝 {sortedPosts.length} Posts</span>
-      <span class="stat-separator">·</span>
-      <span class="stat-item">🏷️ {allTags.length} Tags</span>
-      <span class="stat-separator">·</span>
-      <span class="stat-item">🕐 最新: {sortedPosts[0]?.date}</span>
+      <span class="stat-item">{sortedPosts.length} Posts</span>
+      <span class="stat-separator">/</span>
+      <span class="stat-item">{allTags.length} Tags</span>
+      <span class="stat-separator">/</span>
+      <span class="stat-item">Latest: {sortedPosts[0]?.date}</span>
     </div>
   </div>
 
@@ -49,7 +49,8 @@ const allTags = Array.from(tagCount.entries())
 
   .page-title {
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 900;
+    letter-spacing: -0.02em;
     margin-bottom: var(--spacing-sm);
   }
 
@@ -61,8 +62,12 @@ const allTags = Array.from(tagCount.entries())
   }
 
   .stat-item {
-    font-size: 0.85rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     color: var(--color-text-muted);
+    font-family: var(--font-mono);
   }
 
   .stat-separator {

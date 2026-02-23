@@ -49,13 +49,13 @@ export default function PVTimeline({ posts }: Props) {
     }, []);
 
     const colors = {
-        text: isDark ? '#c1c2c5' : '#495057',
-        grid: isDark ? '#373A40' : '#dee2e6',
-        line: isDark ? '#22b8cf' : '#228be6',
-        fillStart: isDark ? 'rgba(34, 184, 207, 0.4)' : 'rgba(34, 139, 230, 0.4)',
-        fillEnd: isDark ? 'rgba(34, 184, 207, 0)' : 'rgba(34, 139, 230, 0)',
-        markerLine: isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)',
-        markerText: isDark ? '#868e96' : '#868e96',
+        text: isDark ? '#8A8A7A' : '#6B6B5A',
+        grid: isDark ? '#2C2C2C' : '#E0D8CC',
+        line: '#5C7F71',
+        fillStart: isDark ? 'rgba(92, 127, 113, 0.35)' : 'rgba(92, 127, 113, 0.2)',
+        fillEnd: 'rgba(92, 127, 113, 0)',
+        markerLine: isDark ? 'rgba(245, 237, 220, 0.2)' : 'rgba(24, 24, 24, 0.15)',
+        markerText: isDark ? '#6B6B5A' : '#8A8A7A',
     };
 
     // YYYYMM → timestamp
