@@ -25,41 +25,43 @@ export default function CumulativeStats({ postCount, talks, projects }: Props) {
     }, []);
 
     const stats = [
-        { label: 'Posts', value: postCount, icon: '📝' },
-        { label: 'Total PV', value: isLoading ? '...' : totalPV.toLocaleString(), icon: '👁' },
-        { label: 'Talks', value: talks, icon: '🎤' },
-        { label: 'Projects', value: projects, icon: '🏗️' },
+        { label: 'Posts', value: postCount },
+        { label: 'Total PV', value: isLoading ? '---' : totalPV.toLocaleString() },
+        { label: 'Talks', value: talks },
+        { label: 'Projects', value: projects },
     ];
 
     return (
         <div style={{
             display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '12px',
+            gap: '1px',
+            border: '1px solid var(--color-border)',
         }}>
             {stats.map((stat) => (
                 <div
                     key={stat.label}
                     style={{
                         display: 'flex', flexDirection: 'column',
-                        alignItems: 'center', gap: '4px',
-                        padding: '12px 8px',
-                        borderRadius: 'var(--radius-md)',
-                        backgroundColor: 'var(--color-bg-secondary)',
+                        alignItems: 'flex-start', gap: '4px',
+                        padding: '16px 12px',
+                        backgroundColor: 'var(--color-bg-card)',
+                        borderRight: '1px solid var(--color-border)',
                     }}
                 >
-                    <span style={{ fontSize: '1.25rem' }}>{stat.icon}</span>
                     <span style={{
-                        fontSize: '1.5rem', fontWeight: 700,
-                        color: 'var(--color-accent)', lineHeight: 1.2,
-                    }}>
-                        {stat.value}
-                    </span>
-                    <span style={{
-                        fontSize: '0.7rem', fontWeight: 600,
+                        fontSize: '0.55rem', fontWeight: 700,
                         color: 'var(--color-text-muted)',
-                        textTransform: 'uppercase', letterSpacing: '0.05em',
+                        textTransform: 'uppercase', letterSpacing: '0.2em',
                     }}>
                         {stat.label}
+                    </span>
+                    <span style={{
+                        fontSize: '1.75rem', fontWeight: 900,
+                        letterSpacing: '-0.04em',
+                        color: 'var(--color-primary)', lineHeight: 1,
+                        fontFamily: 'var(--font-sans)',
+                    }}>
+                        {stat.value}
                     </span>
                 </div>
             ))}

@@ -21,14 +21,14 @@ export function ViewCount({ slug }: ViewCountProps) {
     if (count === null) {
         return (
             <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-                👁️ --
+                -- views
             </span>
         );
     }
 
     return (
         <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-            👁️ {count.toLocaleString()} views
+            {count.toLocaleString()} views
         </span>
     );
 }

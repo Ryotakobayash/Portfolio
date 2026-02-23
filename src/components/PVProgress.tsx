@@ -28,7 +28,7 @@ export default function PVProgress({ monthlyTarget }: Props) {
     if (isLoading) {
         return (
             <div style={{
-                height: '80px', borderRadius: 'var(--radius-md)',
+                height: '80px',
                 background: 'linear-gradient(90deg, var(--color-bg-secondary) 25%, var(--color-border) 50%, var(--color-bg-secondary) 75%)',
                 backgroundSize: '200% 100%', animation: 'skeleton-loading 1.5s infinite',
             }} />
@@ -40,37 +40,45 @@ export default function PVProgress({ monthlyTarget }: Props) {
             <div style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
-                    👁 月間PV
+                <span style={{ fontSize: '0.6rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
+                    Monthly PV
                 </span>
-                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
-                    目標: {monthlyTarget} PV/月
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                    Target: {monthlyTarget} PV/mo
                 </span>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                 <span style={{
-                    fontSize: '1.5rem', fontWeight: 700,
-                    color: isAchieved ? 'var(--color-accent)' : 'var(--color-text)',
+                    fontSize: '1.5rem', fontWeight: 900,
+                    letterSpacing: '-0.04em',
+                    color: isAchieved ? 'var(--color-primary)' : 'var(--color-text)',
+                    fontFamily: 'var(--font-sans)',
                 }}>
                     {currentPV.toLocaleString()}
                 </span>
-                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-                    PV (過去7日)
+                <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
+                    PV (last 7d)
                 </span>
-                <span style={{ marginLeft: 'auto', fontSize: '1rem', fontWeight: 600 }}>
-                    {isAchieved ? '✅' : `${percentage}%`}
+                <span style={{
+                    marginLeft: 'auto',
+                    fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em',
+                    textTransform: 'uppercase', padding: '2px 6px',
+                    border: `1px solid ${isAchieved ? 'var(--color-primary)' : 'var(--color-border)'}`,
+                    color: isAchieved ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                }}>
+                    {isAchieved ? 'ACHIEVED' : `${percentage}%`}
                 </span>
             </div>
 
-            {/* プログレスバー */}
+            {/* Progress bar */}
             <div style={{
-                height: '8px', borderRadius: '4px',
-                backgroundColor: 'var(--color-bg-secondary)', overflow: 'hidden',
+                height: '4px',
+                backgroundColor: 'var(--color-border)', overflow: 'hidden',
             }}>
                 <div style={{
-                    height: '100%', borderRadius: '4px',
-                    backgroundColor: isAchieved ? 'var(--color-accent)' : '#228BE6',
+                    height: '100%',
+                    backgroundColor: isAchieved ? 'var(--color-primary)' : '#5C7F71',
                     width: `${percentage}%`,
                     transition: 'width 0.8s ease',
                 }} />
