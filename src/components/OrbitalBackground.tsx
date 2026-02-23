@@ -23,38 +23,42 @@ export default function OrbitalBackground() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
-            {/* Planet body */}
+            {/* Planet body (static) */}
             <circle cx="400" cy="400" r="80" stroke="currentColor" strokeWidth="1.5" />
 
-            {/* Saturn-like ring (ellipse, tilted) */}
+            {/* Saturn-like ring (ellipse, tilted, static) */}
             <ellipse cx="400" cy="400" rx="160" ry="40" stroke="currentColor" strokeWidth="1" strokeDasharray="4 6" />
 
-            {/* Orbit 1 */}
-            <circle cx="400" cy="400" r="160" stroke="currentColor" strokeWidth="0.75" />
+            {/* Group 1: Inner orbits (rotates clockwise) */}
+            <g style={{ transformOrigin: '400px 400px', animation: 'spin-slow 120s linear infinite' }}>
+                {/* Orbit 1 */}
+                <circle cx="400" cy="400" r="160" stroke="currentColor" strokeWidth="0.75" />
+                {/* Satellite dot on orbit 1 */}
+                <circle cx="560" cy="400" r="6" fill="currentColor" />
 
-            {/* Orbit 2 */}
-            <circle cx="400" cy="400" r="240" stroke="currentColor" strokeWidth="0.5" />
+                {/* Orbit 2 */}
+                <circle cx="400" cy="400" r="240" stroke="currentColor" strokeWidth="0.5" />
+                {/* Satellite dot on orbit 2 */}
+                <circle cx="400" cy="160" r="4" fill="currentColor" />
+            </g>
 
-            {/* Orbit 3 — dashed */}
-            <circle cx="400" cy="400" r="320" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 8" />
+            {/* Group 2: Outer orbits (rotates counter-clockwise) */}
+            <g style={{ transformOrigin: '400px 400px', animation: 'spin-slow-reverse 180s linear infinite' }}>
+                {/* Orbit 3 — dashed */}
+                <circle cx="400" cy="400" r="320" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 8" />
+                {/* Dot on orbit 3 */}
+                <circle cx="80" cy="400" r="3" fill="currentColor" opacity="0.6" />
 
-            {/* Orbit 4 */}
-            <circle cx="400" cy="400" r="380" stroke="currentColor" strokeWidth="0.35" />
+                {/* Orbit 4 */}
+                <circle cx="400" cy="400" r="380" stroke="currentColor" strokeWidth="0.35" />
+            </g>
 
-            {/* Satellite dot on orbit 1 */}
-            <circle cx="560" cy="400" r="6" fill="currentColor" />
-
-            {/* Satellite dot on orbit 2 */}
-            <circle cx="400" cy="160" r="4" fill="currentColor" />
-
-            {/* Dot on orbit 3 */}
-            <circle cx="80" cy="400" r="3" fill="currentColor" opacity="0.6" />
-
-            {/* Crosshair tick marks (compass-rose style) */}
+            {/* Crosshair tick marks (compass-rose style, static) */}
             <line x1="400" y1="16" x2="400" y2="36" stroke="currentColor" strokeWidth="1" />
             <line x1="400" y1="764" x2="400" y2="784" stroke="currentColor" strokeWidth="1" />
             <line x1="16" y1="400" x2="36" y2="400" stroke="currentColor" strokeWidth="1" />
             <line x1="764" y1="400" x2="784" y2="400" stroke="currentColor" strokeWidth="1" />
+
         </svg>
     );
 }

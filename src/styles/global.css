@@ -438,6 +438,27 @@ a:hover {
     }
 }
 
+/* ===== Slow Orbital Spins ===== */
+@keyframes spin-slow {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-slow-reverse {
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+
 /* ===== Activity Health ===== */
 .activity-health {
     display: flex;
