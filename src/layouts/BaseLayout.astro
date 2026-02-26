@@ -19,6 +19,13 @@ const {
 // Google Analytics 4 Measurement ID
 const GA_MEASUREMENT_ID = 'G-3XG4W5WQD1';
 const GTM_ID = 'GTM-WG6RHC88';
+
+const currentPath = Astro.url.pathname;
+const isActive = (path: string) => {
+  if (path === '/' && currentPath === '/') return true;
+  if (path !== '/' && currentPath.startsWith(path)) return true;
+  return false;
+};
 ---
 
 <!doctype html>
@@ -96,9 +103,9 @@ const GTM_ID = 'GTM-WG6RHC88';
       <div class="container header-content">
         <a href="/" class="logo">RK / PORTFOLIO</a>
         <nav class="nav-links">
-          <a href="/posts" class="nav-link">Posts</a>
-          <a href="/about" class="nav-link">About</a>
-          <a href="/me" class="nav-link nav-link--accent">Dashboard</a>
+          <a href="/posts" class={`nav-link ${isActive('/posts') ? 'nav-link--accent' : ''}`}>Posts</a>
+          <a href="/about" class={`nav-link ${isActive('/about') ? 'nav-link--accent' : ''}`}>About</a>
+          <a href="/me" class={`nav-link ${isActive('/me') ? 'nav-link--accent' : ''}`}>Dashboard</a>
         </nav>
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
           <span class="sun-icon">LIGHT</span>

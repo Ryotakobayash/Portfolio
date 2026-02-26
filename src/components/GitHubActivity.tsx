@@ -1,131 +1,33 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
+import { useTheme } from '../hooks/useTheme';
+import { useGitHubActivity } from '../hooks/useGitHubActivity';
+import { retroColor, groupContributionsByWeek, calculateMonthLabels } from '../utils/githubUtils';
 
-interface ContributionDay {
-    date: string;
-    count: number;
-    color: string; // GitHub公式カラー
-}
-
-interface APIResponse {
-    totalContributions: number;
-    days: ContributionDay[];
-}
-
-// Retro contribution color scale (4 levels, no GitHub green dependency)
-function retroColor(count: number, isDark: boolean): string {
-    if (count === 0) return isDark ? '#2A2A2A' : '#E0D8CC';
-    if (count <= 2) return isDark ? '#3D5C52' : '#8AB8A8';
-    if (count <= 5) return isDark ? '#5C7F71' : '#5C7F71';
-    return isDark ? '#7AA090' : '#3A6357';
-}
-
-/**
- * GitHub草グラフコンポーネント
- * GitHub GraphQL APIから正確なコントリビューションカレンダーを取得して表示
- */
 export function GitHubActivity({ username = 'Ryotakobayash' }: { username?: string }) {
-    const [days, setDays] = useState<ContributionDay[]>([]);
-    const [totalContributions, setTotalContributions] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [isDark, setIsDark] = useState(false);
+    const isDark = useTheme();
+    const { days, totalContributions, isLoading, error } = useGitHubActivity(username);
 
-    useEffect(() => {
-        const check = () => setIsDark(document.documentElement.getAttribute('data-theme') === 'dark');
-        check();
-        const obs = new MutationObserver(check);
-        obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-        return () => obs.disconnect();
-    }, []);
+    // 週ごとにグループ化 (全体)
+    const allWeeks = useMemo(() => groupContributionsByWeek(days), [days]);
 
-    useEffect(() => {
-        fetch('/api/github/contributions')
-            .then((res) => {
-                if (!res.ok) throw new Error(`API error: ${res.status}`);
-                return res.json();
-            })
-            .then((data: APIResponse) => {
-                setDays(data.days);
-                setTotalContributions(data.totalContributions);
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.error('Failed to fetch contributions:', err);
-                setError('Failed to load');
-                setIsLoading(false);
-            });
-    }, []);
-
-    // 週ごとにグループ化（日曜始まり、GitHub準拠）
+    // レイアウト破綻を防ぐため、情報量を「直近の24週分（約半年分）」に絞る
     const weeks = useMemo(() => {
-        if (days.length === 0) return [];
-
-        const result: (ContributionDay | null)[][] = [];
-        let currentWeek: (ContributionDay | null)[] = [];
-
-        // 最初の日の曜日を取得し、それ以前をnullで埋める
-        if (days.length > 0) {
-            const firstDayOfWeek = new Date(days[0].date).getUTCDay(); // 0=Sun
-            for (let i = 0; i < firstDayOfWeek; i++) {
-                currentWeek.push(null);
-            }
-        }
-
-        for (const day of days) {
-            currentWeek.push(day);
-            if (currentWeek.length === 7) {
-                result.push(currentWeek);
-                currentWeek = [];
-            }
-        }
-
-        // 最後の不完全な週を追加
-        if (currentWeek.length > 0) {
-            result.push(currentWeek);
-        }
-
-        return result;
-    }, [days]);
+        const WEEKS_TO_SHOW = 24;
+        return allWeeks.length > WEEKS_TO_SHOW ? allWeeks.slice(-WEEKS_TO_SHOW) : allWeeks;
+    }, [allWeeks]);
 
     // 月ラベルを計算
-    const monthLabels = useMemo(() => {
-        if (weeks.length === 0) return [];
-
-        const labels: { text: string; col: number }[] = [];
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        let lastMonth = -1;
-
-        weeks.forEach((week, colIndex) => {
-            // 週の最初の有効な日を取得
-            const firstDay = week.find((d) => d !== null);
-            if (firstDay) {
-                const month = new Date(firstDay.date).getUTCMonth();
-                if (month !== lastMonth) {
-                    labels.push({ text: monthNames[month], col: colIndex });
-                    lastMonth = month;
-                }
-            }
-        });
-
-        return labels;
-    }, [weeks]);
+    const monthLabels = useMemo(() => calculateMonthLabels(weeks), [weeks]);
 
     if (isLoading) {
         return (
-            <div style={{
-                height: '120px', borderRadius: 'var(--radius-md)',
-                background: 'linear-gradient(90deg, var(--color-bg-secondary) 25%, var(--color-border) 50%, var(--color-bg-secondary) 75%)',
-                backgroundSize: '200% 100%', animation: 'skeleton-loading 1.5s infinite',
-            }} />
+            <div className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-md)' }} />
         );
     }
 
     if (error) {
         return (
-            <div style={{
-                padding: '20px', textAlign: 'center',
-                color: 'var(--color-text-muted)', fontSize: '0.85rem',
-            }}>
+            <div className="text-muted text-sm pt-md" style={{ textAlign: 'center' }}>
                 {error}
             </div>
         );
@@ -140,12 +42,12 @@ export function GitHubActivity({ username = 'Ryotakobayash' }: { username?: stri
     const dayLabels = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
 
     return (
-        <div>
+        <div style={{ width: '100%', minWidth: 0 }}>
             <div style={{ overflowX: 'auto', padding: '4px 0' }}>
                 <svg
                     width={svgWidth}
                     height={svgHeight}
-                    style={{ display: 'block', minWidth: svgWidth }}
+                    style={{ display: 'block', minWidth: svgWidth, margin: '0 auto' }}
                 >
                     {/* 月ラベル */}
                     {monthLabels.map((label, i) => (
@@ -197,9 +99,8 @@ export function GitHubActivity({ username = 'Ryotakobayash' }: { username?: stri
                     )}
                 </svg>
             </div>
-            <div style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                marginTop: '8px', fontSize: '0.65rem', color: 'var(--color-text-muted)',
+            <div className="flex justify-between items-center text-muted" style={{
+                marginTop: '8px', fontSize: '0.65rem',
                 fontFamily: 'var(--font-mono)', letterSpacing: '0.06em',
             }}>
                 <span>{totalContributions} contributions in the last year</span>
@@ -207,7 +108,8 @@ export function GitHubActivity({ username = 'Ryotakobayash' }: { username?: stri
                     href={`https://github.com/${username}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ color: 'var(--color-primary)', textDecoration: 'none', fontSize: '0.65rem', fontFamily: 'var(--font-mono)' }}
+                    className="text-primary"
+                    style={{ textDecoration: 'none', fontSize: '0.65rem', fontFamily: 'var(--font-mono)' }}
                 >
                     @{username} →
                 </a>

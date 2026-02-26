@@ -24,7 +24,7 @@ export default function ActivityHealth() {
     }, []);
 
     return (
-        <div className="activity-health">
+        <div className="activity-health" style={{ width: '100%', height: '100%', justifyContent: 'center' }}>
             <div className="activity-health__label">12-Week Activity</div>
             <div className="activity-health__dots">
                 {weeks.map((active, i) => (
