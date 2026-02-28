@@ -1,0 +1,69 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string | ImageMetadata;
+  alt: string;
+  title?: string;
+}
+
+const { src, alt, title } = Astro.props;
+
+// Markdownの記法 `![alt](url "title")` において、title がない場合は alt をキャプションとして扱うようにします
+const caption = title || alt;
+const showCaption = caption && caption.trim().length > 0;
+---
+
+<figure class="blog-figure">
+  {
+    typeof src === 'string' ? (
+      <img src={src} alt={alt} title={title} loading="lazy" class="blog-figure-img" />
+    ) : (
+      <Image src={src} alt={alt} title={title} loading="lazy" class="blog-figure-img" />
+    )
+  }
+  {
+    showCaption && (
+      <figcaption>
+        <span class="figure-number"></span> {caption}
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .blog-figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2.5rem 0;
+    width: 100%;
+    counter-increment: figure;
+  }
+
+  /* Astroの`<Image>`が出力するタグにスタイルを当てるため `:global` を使用 */
+  .blog-figure :global(.blog-figure-img) {
+    max-width: 100%;
+    /* Keep tall images readable without taking over the whole screen */
+    max-height: 60vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    background-color: var(--color-surface, #f5f5f5);
+  }
+
+  .blog-figure figcaption {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted, #666);
+    text-align: center;
+    line-height: 1.5;
+  }
+  
+  .figure-number::before {
+    /* The counter property will be controlled globally in the blog layout */
+    content: "図" counter(figure) ": ";
+    font-weight: 600;
+  }
+</style>

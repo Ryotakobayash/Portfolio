@@ -21,7 +21,7 @@ tags:
 
 ### 最優秀チーム向け商品
 
-![DSC01794（大）](/images/posts/hackathon-sticker-2024/rJEzqvAC0_1.jpg)
+![DSC01794（大）](./hackathon-sticker-2024/rJEzqvAC0_1.jpg)
 
 詳細
 
@@ -35,7 +35,7 @@ tags:
 
 ### 参加賞
 
-![DSC01821（大）](/images/posts/hackathon-sticker-2024/r1D8iv0RC_2.jpg)
+![DSC01821（大）](./hackathon-sticker-2024/r1D8iv0RC_2.jpg)
 
 |            |                                         |
 |------------|-----------------------------------------|
@@ -47,7 +47,7 @@ tags:
 
 ### 印刷データ
 
-![image](/images/posts/hackathon-sticker-2024/ry5wnvCAC_3.png)
+![image](./hackathon-sticker-2024/ry5wnvCAC_3.png)
 
 印刷はデジタ様にお願いしました。安さと技術資料の豊富さが理由です。
 [シール印刷・ステッカー印刷・ラベル印刷が高品質｜印刷通販【デジタ】](https://www.digitaprint.jp/seal-top?gad_source=1&gclid=CjwKCAjw0t63BhAUEiwA5xP54RpBwOKEA27eKGJn0LydK8khS3wXlNaSW46BJYSUbp3oBjTYIUVbrhoChTcQAvD_BwE#)
@@ -62,13 +62,13 @@ tags:
 
 ステッカーの黒い部分はリッチブラックを使用しています。CMYKのK（KeyPlate、黒）のみで塗りつぶすのとは異なり、シアン、マゼンタ、イエローの値も混ぜて印刷する黒です。今回は背景に使用した素材との対比を綺麗に見せたかったので使用しました。深みのある黒を表現できる色ですが、印刷時にCMYKのいずれかの色がずれてしまう「見当ずれ」と呼ばれる現状が起きる難点もあったりします。たまに教科書とかで見かけますね。
 
-![image](/images/posts/hackathon-sticker-2024/B1wDpwAAC_4.png)
+![image](./hackathon-sticker-2024/B1wDpwAAC_4.png)
 
 引用：[印刷の黒:スミベタ(K100%)/リッチブラック/4色ベタ｜印刷の基礎知識｜ネット通販の印刷・プリントなら【WAVE】](https://www.wave-inc.co.jp/data/dtp/black.html)
 
 あまり起きないトラブルではありますが万が一起きた場合、賞品としてもらったときがっかりしてしまうだろうと思ったので、トラッピングと呼ばれる処置を施しました。
 
-![image](/images/posts/hackathon-sticker-2024/Byo4RvRR0_5.png)
+![image](./hackathon-sticker-2024/Byo4RvRR0_5.png)
 引用：[シール印刷の「リッチブラック」について! | 株式会社フナミズ刃型製版](https://www.hagata.co.jp/2023/03/29/richblack/)
 
 黒い部分の外周0.1mmのみK100%、それ以降の内側はリッチブラックにすることで、リッチブラック部分で見当ずれが生じてもK100%に紛れてわからなくするという手法です。肉眼でもわかるっちゃわかるので参加者の皆さんはもらったステッカーを良く見てみてください。
@@ -81,11 +81,11 @@ tags:
 
 ### 制作過程
 
-![image](/images/posts/hackathon-sticker-2024/HknZVdC00_6.png)
+![image](./hackathon-sticker-2024/HknZVdC00_6.png)
 
 今回は制作前からなんとなくイメージが固まっていたのでラフなどは描かず制作を開始しました。その分データはたくさんできましたが、幾何学的な図形メインだったので楽でしたね。とはいえ単純な図形の組み合わせだけだとショボく感じたのでモダンなアイコンを配布しているサイトを活用しました。最近のお気に入りです。
 
-![image](/images/posts/hackathon-sticker-2024/rJuWruCR0_7.png)
+![image](./hackathon-sticker-2024/rJuWruCR0_7.png)
 <https://spectrums.framer.website/>
 
 背景のホログラム感を何もない状態からイメージするのは大変だったので、フリーのホログラム風素材を使ったり、一部の印刷所が公開している仕上がりシミュレーターを使って確認しながら進めました。NUTMEGシンボルマークのオレンジ部分にホログラムのきらきらを透過させるかどうかかなり迷いました…。

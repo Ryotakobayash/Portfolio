@@ -28,14 +28,14 @@ tags:
 
 ### **デザイン原則**
 
-![](/images/posts/design-system-2023/sRiY5fU_1.png)
+![](./design-system-2023/sRiY5fU_1.png)
 > 引用:<https://spindle.ameba.design/principles/design/>
 
 そのプロダクトらしさ作るために、どのように設計、デザインするかの指標。大体3つくらいの簡単な言葉。バリューとかビジョンのような存在に近い。どのように考え、行動すべきかの指針になる。
 
 ### **デザイントークン**
 
-![](/images/posts/design-system-2023/KaUABJb_2.png)
+![](./design-system-2023/KaUABJb_2.png)
 > 引用:<https://spindle.ameba.design/styles/color/brand/>
 
 デザインを実装する際に参照しないといけない値をまとめたもの。
@@ -43,7 +43,7 @@ tags:
 
 ### **ガイドライン**
 
-![](/images/posts/design-system-2023/PEV5sby_3.png)
+![](./design-system-2023/PEV5sby_3.png)
 > <https://spindle.ameba.design/components/button/>
 
 プロダクトに使用するUIのパーツについてのガイドライン。
@@ -56,7 +56,7 @@ tags:
 
 ### **コンポーネント**
 
-![](/images/posts/design-system-2023/ZHf01uQ_4.png)
+![](./design-system-2023/ZHf01uQ_4.png)
 > デジタル庁デザインシステム
 
 Figmaなどで作る、パーツごとのアセットのようなもの。
@@ -71,7 +71,7 @@ Figmaなどで作る、パーツごとのアセットのようなもの。
 
 ### **アクセシビリティに関するページ**
 
-![](/images/posts/design-system-2023/ZbcKW24_5.png)
+![](./design-system-2023/ZbcKW24_5.png)
 > 引用:<https://spindle.ameba.design/principles/accessibility/>
 
 アクセシビリティについての注意点をまとめたページ。
@@ -162,7 +162,7 @@ Figmaなどで作る、パーツごとのアセットのようなもの。
 
 ###### TerraStyle ~テラスタイル~
 
-![](/images/posts/design-system-2023/1G4kfMB_6.jpg)
+![](./design-system-2023/1G4kfMB_6.jpg)
 
 メンバー向けに実際に操作できるNotionページを公開しましたが、ここでは外部に向けた公開になるためカットさせていただきます。
 

@@ -7,6 +7,7 @@ import ImageZoom from '../../components/ImageZoom';
 import ArticlePerformance from '../../components/ArticlePerformance';
 import ShareButtons from '../../components/ShareButtons';
 import RelatedPosts from '../../components/RelatedPosts';
+import CustomImage from '../../components/CustomImage.astro';
 
 export const prerender = true;
 
@@ -95,7 +96,7 @@ const allPostsMeta = allPosts.map((p) => ({
       )}
 
       <div class="prose">
-        <Content />
+        <Content components={{ img: CustomImage }} />
       </div>
 
       <!-- 記事フッター -->
@@ -126,6 +127,44 @@ const allPostsMeta = allPosts.map((p) => ({
     )}
   </div>
 </BaseLayout>
+
+<script>
+  function setupImageFigures() {
+    const images = document.querySelectorAll('.prose img:not(.blog-figure-img)');
+    
+    images.forEach((img, index) => {
+      // Avoid processing the same image twice
+      if (img.parentElement?.tagName.toLowerCase() === 'figure') return;
+
+      const altText = img.getAttribute('alt');
+      const titleText = img.getAttribute('title');
+      
+      // title属性があればキャプションとして使い、なければalt属性をフォールバックとして使う
+      const captionText = titleText || altText;
+      const showCaption = captionText && captionText.trim().length > 0;
+
+      const figure = document.createElement('figure');
+      figure.className = 'blog-figure';
+
+      // Insert figure before img, then move img into figure
+      img.parentNode?.insertBefore(figure, img);
+      
+      // Add a specific class to prevent reprocessing or conflict with other img styles
+      img.classList.add('blog-figure-img');
+      figure.appendChild(img);
+
+      if (showCaption) {
+        const figcaption = document.createElement('figcaption');
+        figcaption.innerHTML = `<span class="figure-number">図${index + 1}: </span>${captionText}`;
+        figure.appendChild(figcaption);
+      }
+    });
+  }
+
+  // Run on initial load and setup a listener for Astro View Transitions if used
+  document.addEventListener('DOMContentLoaded', setupImageFigures);
+  document.addEventListener('astro:page-load', setupImageFigures);
+</script>
 
 <style>
   .article-layout {
@@ -254,6 +293,7 @@ const allPostsMeta = allPosts.map((p) => ({
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--color-border);
     color: var(--color-text);
+    scroll-margin-top: calc(var(--header-height) + var(--spacing-lg));
   }
 
   .prose :global(h3) {
@@ -261,6 +301,7 @@ const allPostsMeta = allPosts.map((p) => ({
     font-weight: 600;
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
+    scroll-margin-top: calc(var(--header-height) + var(--spacing-lg));
   }
 
   .prose :global(p) {
@@ -297,12 +338,14 @@ const allPostsMeta = allPosts.map((p) => ({
     padding: var(--spacing-md);
     overflow-x: auto;
     margin-bottom: 1rem;
+    line-height: 1.5;
   }
 
   .prose :global(pre code) {
     background: none;
     padding: 0;
     font-size: 0.875rem;
+    border: none;
   }
 
   .prose :global(blockquote) {
@@ -314,7 +357,39 @@ const allPostsMeta = allPosts.map((p) => ({
     letter-spacing: 0.02em;
   }
 
-  .prose :global(img) {
+  /* Dynamically created figures via JS */
+  .prose :global(.blog-figure) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2.5rem 0;
+    width: 100%;
+  }
+
+  /* Max-height fix for tall vertical images */
+  .prose :global(.blog-figure-img) {
+    max-width: 100%;
+    max-height: 60vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    background-color: var(--color-surface, #f5f5f5);
+  }
+
+  .prose :global(.blog-figure figcaption) {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted, #666);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .prose :global(.figure-number) {
+    font-weight: 600;
+  }
+
+  .prose :global(img:not(.blog-figure-img)) {
     max-width: 100%;
     height: auto;
     border: 1px solid var(--color-border);

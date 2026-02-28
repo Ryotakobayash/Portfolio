@@ -22,7 +22,7 @@ NUTMEGデザイナーチーム 修士2年のryota5884です。この度ふと思
 
 ## ブログの記事ごとに別々の著者名を表示する
 
-![image](/images/posts/blog-refactoring-2024/HyiZI9eNC_1.png)
+![image](./blog-refactoring-2024/HyiZI9eNC_1.png)
 
 従来のブログでは実際の著者が誰であろうとBy NUTMEGと表示していました。Hugoは一人で運営するサイトを想定しているのかデフォルトではconfig.tomlで設定したauthorの値を表示することしかできません。
 
@@ -187,7 +187,7 @@ date: 2024-03-01
 
 ## 著者一覧（authors）ページの作成する
 
-![image](/images/posts/blog-refactoring-2024/r1RwvqlER_2.png)
+![image](./blog-refactoring-2024/r1RwvqlER_2.png)
 
 一応昔から存在はしてたのですが、author一覧ページのデザインを整え、Memberページから飛べるようにしました。
 
@@ -263,13 +263,13 @@ date: 2024-03-01
 
 もちろん、完璧に変換してくれるわけではありませんが、十分許容できる範囲内です。
 
-![image](/images/posts/blog-refactoring-2024/HJlnIO9xE0_3.png)
+![image](./blog-refactoring-2024/HJlnIO9xE0_3.png)
 
-![image](/images/posts/blog-refactoring-2024/r1iOu9gVC_4.png)
+![image](./blog-refactoring-2024/r1iOu9gVC_4.png)
 
 ## Productページのアップデート
 
-![image](/images/posts/blog-refactoring-2024/rkOQFceNC_5.png)
+![image](./blog-refactoring-2024/rkOQFceNC_5.png)
 
 情報が古かったので2024年の新入生勧誘資料をベースにアップデートしました。
 
@@ -277,7 +277,7 @@ date: 2024-03-01
 
 ## Memberページのアップデート
 
-![image](/images/posts/blog-refactoring-2024/rkrTOqg4C_6.png)
+![image](./blog-refactoring-2024/rkrTOqg4C_6.png)
 
 情報の更新とメンバーごとの投稿記事へ簡単にアクセスできるようにしました。
 
