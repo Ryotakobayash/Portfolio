@@ -18,31 +18,33 @@ export function StickyToc({ toc }: StickyTocProps) {
     const [activeId, setActiveId] = useState<string>('');
 
     useEffect(() => {
-        const headings = toc.map(({ id }) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+        const handleScroll = () => {
+            const headings = toc.map(({ id }) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+            if (headings.length === 0) return;
 
-        if (headings.length === 0) return;
+            // Header offset for scroll calculation
+            const scrollPosition = window.scrollY + window.innerHeight / 3;
 
-        const observer = new IntersectionObserver(
-            (entries) => {
-                const visibleEntries = entries.filter((entry) => entry.isIntersecting);
-                if (visibleEntries.length > 0) {
-                    const topEntry = visibleEntries.reduce((prev, current) =>
-                        prev.boundingClientRect.top < current.boundingClientRect.top ? prev : current
-                    );
-                    setActiveId(topEntry.target.id);
+            // Find the last heading that we've scrolled past
+            let currentActiveId = '';
+            for (const heading of headings) {
+                if (heading.offsetTop <= scrollPosition) {
+                    currentActiveId = heading.id;
+                } else {
+                    break;
                 }
-            },
-            {
-                rootMargin: '-80px 0px -70% 0px',
-                threshold: 0,
             }
-        );
 
-        headings.forEach((heading) => observer.observe(heading));
-
-        return () => {
-            headings.forEach((heading) => observer.unobserve(heading));
+            if (currentActiveId) {
+                setActiveId(currentActiveId);
+            }
         };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        // Initial check
+        handleScroll();
+
+        return () => window.removeEventListener('scroll', handleScroll);
     }, [toc]);
 
     if (toc.length === 0) return null;
