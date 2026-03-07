@@ -1,6 +1,6 @@
 ---
-title: Emacs Keymap for Claude Code
-description: Claude CodeでEmacsキーマップを使用する方法
+title: Claude CodeのVSCode拡張機能でEmacsキーマップを使用する方法（無理だった）
+description: Claude CodeのVSCode拡張機能でEmacsキーマップを使用する方法
 date: 2026-01-XX
 tags: [emacs, claudecode, productivity]
 category: Development
