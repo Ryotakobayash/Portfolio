@@ -6,8 +6,6 @@ tags: [emacs, claudecode, productivity]
 category: Development
 ---
 
-# Emacs Keymap for Claude Code
-
 ## はじめに
 
 VScodeの拡張機能経由でclaude codeを使っていると不便なことがある。
