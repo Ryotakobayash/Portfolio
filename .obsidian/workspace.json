@@ -4,19 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "a7ce47d333ab76a5",
+        "id": "a6bf5cffd48ac42b",
         "type": "tabs",
         "children": [
           {
-            "id": "1a651145e3c2b63f",
+            "id": "62921d0852754394",
             "type": "leaf",
             "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.12.4"
-              },
-              "icon": "lucide-book-up",
-              "title": "リリースノート 1.12.4"
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "新規タブ"
             }
           }
         ]
@@ -178,29 +176,29 @@
       "command-palette:コマンドパレットを開く": false
     }
   },
-  "active": "1a651145e3c2b63f",
+  "active": "752e6c8d5206fa51",
   "lastOpenFiles": [
+    "dist/client/_astro/sRiY5fU_1.C-ZqjZB5.png",
+    "dist/client/_astro/ryZWcSpJ0_1.Ddiv8nEr.png",
+    "dist/client/_astro/y696vLN_2.s0w2_A_q.png",
+    "dist/client/_astro/rJYgUUayR_6.BBleQlhb.png",
+    "dist/client/_astro/ry5wnvCAC_3.FzFvrBw1.png",
+    "dist/client/_astro/rkrTOqg4C_6.BF1_s0yv.png",
+    "dist/client/_astro/rkOQFceNC_5.CguZ48R0.png",
+    "dist/client/_astro/rJuWruCR0_7.D-DU9-4X.png",
+    "dist/client/_astro/r1RwvqlER_2.BW6c5uBN.png",
+    "dist/client/_astro/rJZA-2ZH1l_1.DNpU3eV6.png",
+    "dist/client/_astro/BJzDpITyA_8.dbv7urxb.jpg",
+    "dist/client/_astro/about.Brdmpu5x.css",
+    "dist/client/_astro/_slug_.3iKn4tth.css",
     "dist/client/index.html",
-    "dist/client/tags/就活/index.html",
-    "dist/client/tags/学習法/index.html",
-    "dist/client/tags/大学生活/index.html",
-    "dist/client/tags/印刷/index.html",
-    "dist/client/tags/ブログ運営/index.html",
-    "dist/client/tags/ポートフォリオ/index.html",
-    "dist/client/tags/デザインシステム/index.html",
-    "dist/client/tags/デザイン/index.html",
-    "dist/client/tags/デザイナー/index.html",
-    "dist/client/tags/ガジェット/index.html",
-    "dist/client/favicon.svg",
-    "dist/server/_astro/2026-02-27-01-40-29.CsfufdWw.png",
-    "dist/server/_astro/r1RwvqlER_2.BW6c5uBN.png",
-    "dist/server/_astro/2026-02-28-00-45-09.DAjI_UAy.png",
-    "dist/server/_astro/HknZVdC00_6.H2EAwSC1.png",
-    "dist/server/_astro/rkOQFceNC_5.CguZ48R0.png",
-    "dist/server/_astro/HJlnIO9xE0_3.DdqeytSZ.png",
-    "dist/server/_astro/HyiZI9eNC_1.IM7I4pUg.png",
-    "dist/server/_astro/rkrTOqg4C_6.BF1_s0yv.png",
-    "dist/server/_astro/r1iOu9gVC_4.ix7fkaXv.png",
+    "dist/client/tags/index.html",
+    "dist/client/tags/Test/index.html",
+    "dist/client/tags/Test",
+    "dist/client/tags/productivity/index.html",
+    "dist/client/tags/productivity",
+    "dist/client/tags/claudecode/index.html",
+    "dist/client/tags/claudecode",
     "src/content/posts/emacsKeymap_for_claudeCode-2026.md",
     "src/content/posts/made-skillmap-2026.md",
     "AGENT_TODO.md"
