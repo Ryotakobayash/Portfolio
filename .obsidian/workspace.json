@@ -11,10 +11,12 @@
             "id": "1a651145e3c2b63f",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "新規タブ"
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.12.4"
+              },
+              "icon": "lucide-book-up",
+              "title": "リリースノート 1.12.4"
             }
           }
         ]
@@ -167,15 +169,23 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:新規ベースを作成": false,
       "switcher:クイックスイッチャーを開く": false,
       "graph:グラフビューを開く": false,
       "canvas:新規キャンバスを作成": false,
       "daily-notes:今日のデイリーノートを開く": false,
       "templates:テンプレートを挿入": false,
-      "command-palette:コマンドパレットを開く": false,
-      "bases:Create new base": false
+      "command-palette:コマンドパレットを開く": false
     }
   },
   "active": "1a651145e3c2b63f",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "src/content/posts/emacsKeymap_for_claudeCode-2026/2026-03-08-00-11-14.png",
+    "src/content/posts/emacsKeymap_for_claudeCode-2026",
+    "src/content/posts/emacsKeymap_for_claudeCode-2026.md",
+    "src/content/posts/made-skillmap-2026",
+    "src/content/posts/made-skillmap-2026.",
+    "src/content/posts/made-skillmap-2026.md",
+    "AGENT_TODO.md"
+  ]
 }
