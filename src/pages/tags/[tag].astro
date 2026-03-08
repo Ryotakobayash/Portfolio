@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { getPublishedPosts } from '../../utils/posts';
 
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
+  const posts = await getPublishedPosts();
   const tagSet = new Set<string>();
   posts.forEach((post) => {
     (post.data.tags || []).forEach((tag: string) => tagSet.add(tag));
@@ -23,7 +24,7 @@ interface Props {
 }
 
 const { tag } = Astro.props;
-const posts = await getCollection('posts');
+const posts = await getPublishedPosts();
 const filteredPosts = posts
   .filter((post) => (post.data.tags || []).includes(tag))
   .map((post) => ({

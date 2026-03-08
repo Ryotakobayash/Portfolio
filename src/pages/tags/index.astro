@@ -2,8 +2,9 @@
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { getPublishedPosts } from '../../utils/posts';
 
-const posts = await getCollection('posts');
+const posts = await getPublishedPosts();
 
 // タグと記事数を集計
 const tagMap = new Map<string, number>();

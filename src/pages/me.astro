@@ -2,6 +2,7 @@
 export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { getPublishedPosts } from '../utils/posts';
 import LifeProgress from '../components/LifeProgress';
 import CreativeLifeCountdown from '../components/CreativeLifeCountdown';
 import PostBurndown from '../components/PostBurndown';
@@ -14,7 +15,7 @@ import goalsData from '../data/goals.json';
 import careerData from '../data/career.json';
 
 // 全記事の日付を取得（バーンダウン用）
-const posts = await getCollection('posts');
+const posts = await getPublishedPosts();
 const postDates = posts.map((post) => ({
     slug: post.id.replace(/\.mdx?$/, ''),
     date: post.data.date,

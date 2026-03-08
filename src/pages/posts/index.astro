@@ -2,9 +2,10 @@
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { getPublishedPosts } from '../../utils/posts';
 import PostSearch from '../../components/PostSearch';
 
-const posts = await getCollection('posts');
+const posts = await getPublishedPosts();
 const sortedPosts = posts
   .map((post) => ({
     slug: post.id.replace(/\.mdx?$/, ''),

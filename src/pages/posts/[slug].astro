@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { getPublishedPosts } from '../../utils/posts';
 import StickyToc from '../../components/StickyToc';
 import CodeCopyButton from '../../components/CodeCopyButton';
 import ImageZoom from '../../components/ImageZoom';
@@ -12,7 +13,7 @@ import CustomImage from '../../components/CustomImage.astro';
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
+  const posts = await getPublishedPosts();
   return posts.map((post) => ({
     params: { slug: post.id.replace(/\.mdx?$/, '') },
     props: { post },
@@ -42,7 +43,7 @@ const toc = headings
   }));
 
 // 関連記事用に全記事メタデータを取得
-const allPosts = await getCollection('posts');
+const allPosts = await getPublishedPosts();
 const allPostsMeta = allPosts.map((p) => ({
   slug: p.id.replace(/\.mdx?$/, ''),
   title: p.data.title,
