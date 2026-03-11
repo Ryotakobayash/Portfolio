@@ -659,3 +659,68 @@ a:hover {
     pointer-events: none;
     z-index: 10;
 }
+
+/* ===== Twitter / X Embed (astro-embed) ===== */
+/* 注意: astro-embedは blockquote.twitter-tweet に data-theme="light" を付与するため、
+   CSS変数が上書きされてしまう。ダークモード時は直接色指定で対応する。 */
+.twitter-tweet {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: var(--spacing-lg);
+    padding-top: calc(var(--spacing-lg) + 0.5rem);
+    max-width: 550px;
+    position: relative;
+    --tc-padding: 0;
+    --tc-border-color: transparent;
+}
+
+/* ライトモード用（デフォルト / data-theme="light" と競合しないため変数で問題なし） */
+.twitter-tweet {
+    background-color: #EDE5CE;
+    color: #4A3F30;
+    border: 1px solid #C8BAA0;
+    border-top: 2px solid #BA8530;
+}
+
+/* ダークモード用（html側のdata-themeで上書き） */
+[data-theme="dark"] .twitter-tweet {
+    background-color: #202020;
+    color: #B8A88A;
+    border: 1px solid #3A3530;
+    border-top: 2px solid #C99040;
+}
+
+/* ラベル表示でblockquoteとの差別化 */
+.twitter-tweet::before {
+    content: '𝕏 POST';
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #BA8530;
+    opacity: 0.7;
+}
+
+[data-theme="dark"] .twitter-tweet::before {
+    color: #C99040;
+}
+
+.twitter-tweet a {
+    color: #5C7F71;
+}
+
+[data-theme="dark"] .twitter-tweet a {
+    color: #7AA090;
+}
+
+.twitter-tweet a:hover {
+    color: #BA8530;
+}
+
+[data-theme="dark"] .twitter-tweet a:hover {
+    color: #C99040;
+}
