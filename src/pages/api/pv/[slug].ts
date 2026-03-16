@@ -43,7 +43,7 @@ export const GET: APIRoute = async ({ params }) => {
             token_url: 'https://sts.googleapis.com/v1/token',
             service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SA_EMAIL}:generateAccessToken`,
             subject_token_supplier: {
-                getSubjectToken: getVercelOidcToken,
+                getSubjectToken: () => getVercelOidcToken(),
             },
         });
 

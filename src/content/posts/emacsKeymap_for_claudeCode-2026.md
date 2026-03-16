@@ -1,7 +1,7 @@
 ---
 title: Claude CodeのVSCode拡張機能でEmacsキーマップを使用する方法（無理だった）
 description: Claude CodeのVSCode拡張機能でEmacsキーマップを使用する方法
-date: 2026-01-XX
+date: "2026-03-08"
 tags: [emacs, claudecode, productivity]
 category: Development
 ---
