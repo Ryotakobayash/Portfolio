@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { getPublishedPosts } from '../../../utils/posts';
 
 export const prerender = false;
 
@@ -45,7 +46,7 @@ export const GET: APIRoute = async () => {
             token_url: 'https://sts.googleapis.com/v1/token',
             service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SA_EMAIL}:generateAccessToken`,
             subject_token_supplier: {
-                getSubjectToken: getVercelOidcToken,
+                getSubjectToken: () => getVercelOidcToken(),
             },
         });
 
@@ -71,6 +72,16 @@ export const GET: APIRoute = async () => {
             limit: 100,
         });
 
+        const publishedPosts = await getPublishedPosts();
+        const oldToNewSlugMap = new Map();
+        for (const post of publishedPosts) {
+            const newSlug = post.id.replace(/\.mdx?$/, '');
+            const oldSlugMatch = newSlug.match(/^\d{8}_(.*)$/);
+            const oldSlug = oldSlugMatch ? oldSlugMatch[1] : newSlug;
+            oldToNewSlugMap.set(oldSlug, newSlug);
+            oldToNewSlugMap.set(newSlug, newSlug);
+        }
+
         const pvMap: Record<string, number> = {};
         let totalPV = 0;
 
@@ -80,7 +91,8 @@ export const GET: APIRoute = async () => {
             // /posts/slug → slug を抽出
             const slug = path.replace('/posts/', '').replace(/\/$/, '');
             if (slug && !slug.includes('/')) {
-                pvMap[slug] = (pvMap[slug] || 0) + pv;
+                const canonicalSlug = oldToNewSlugMap.get(slug) || slug;
+                pvMap[canonicalSlug] = (pvMap[canonicalSlug] || 0) + pv;
                 totalPV += pv;
             }
         }

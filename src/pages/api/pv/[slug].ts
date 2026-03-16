@@ -54,6 +54,9 @@ export const GET: APIRoute = async ({ params }) => {
         const { BetaAnalyticsDataClient } = await import('@google-analytics/data');
         const analytics = new BetaAnalyticsDataClient({ authClient: authClient as any });
 
+        const oldSlugMatch = slug.match(/^\d{8}_(.*)$/);
+        const oldSlug = oldSlugMatch ? oldSlugMatch[1] : slug;
+
         const [response] = await analytics.runReport({
             property: `properties/${GA4_PROPERTY_ID}`,
             dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
@@ -62,12 +65,17 @@ export const GET: APIRoute = async ({ params }) => {
             dimensionFilter: {
                 filter: {
                     fieldName: 'pagePath',
-                    stringFilter: { matchType: 'EXACT', value: `/posts/${slug}` },
+                    inListFilter: {
+                        values: [`/posts/${slug}`, `/posts/${oldSlug}`]
+                    }
                 },
             },
         });
 
-        const count = parseInt(response.rows?.[0]?.metricValues?.[0]?.value || '0', 10);
+        let count = 0;
+        for (const row of response.rows || []) {
+            count += parseInt(row.metricValues?.[0]?.value || '0', 10);
+        }
 
         return Response.json({ slug, count, source: 'ga4' });
     } catch (error) {

@@ -15,6 +15,15 @@ export const GET: APIRoute = async () => {
     const publishedPosts = await getPublishedPosts();
     const validPathPrefixes = publishedPosts.map(post => `/posts/${post.id.replace(/\.mdx?$/, '')}`);
 
+    const oldToNewPathMap = new Map<string, string>();
+    for (const post of publishedPosts) {
+        const newSlug = post.id.replace(/\.mdx?$/, '');
+        const oldSlugMatch = newSlug.match(/^\d{8}_(.*)$/);
+        const oldSlug = oldSlugMatch ? oldSlugMatch[1] : newSlug;
+        oldToNewPathMap.set(`/posts/${oldSlug}`, `/posts/${newSlug}`);
+        oldToNewPathMap.set(`/posts/${newSlug}`, `/posts/${newSlug}`);
+    }
+
     if (!GA4_PROPERTY_ID || !GCP_PROJECT_NUMBER || import.meta.env.DEV) {
         const dummyRanking = [
             { path: '/posts/20240526_blog-refactoring-2024', title: 'デモデータ1', pv: 245 },
@@ -74,14 +83,37 @@ export const GET: APIRoute = async () => {
             limit: 50, // 下書きを除外するため多めに取得
         });
 
-        const ranking = (response.rows || []).map((row) => ({
-            path: row.dimensionValues?.[0]?.value || '',
-            title: (row.dimensionValues?.[1]?.value || '').replace(' | Dashboard Portfolio', ''),
-            pv: parseInt(row.metricValues?.[0]?.value || '0', 10),
+        const pvMap: Record<string, { title: string; pv: number }> = {};
+
+        for (const row of response.rows || []) {
+            let path = row.dimensionValues?.[0]?.value || '';
+            const title = (row.dimensionValues?.[1]?.value || '').replace(' | Dashboard Portfolio', '');
+            const pv = parseInt(row.metricValues?.[0]?.value || '0', 10);
+
+            // Canonicalize path: if it's an old path, map it to the new one
+            let canonicalPath = path;
+            for (const [oldP, newP] of oldToNewPathMap.entries()) {
+                if (path === oldP || path.startsWith(`${oldP}/`) || path.startsWith(`${oldP}?`)) {
+                    canonicalPath = newP;
+                    break;
+                }
+            }
+
+            if (!pvMap[canonicalPath]) {
+                pvMap[canonicalPath] = { title, pv: 0 };
+            }
+            pvMap[canonicalPath].pv += pv;
+        }
+
+        const ranking = Object.entries(pvMap).map(([path, data]) => ({
+            path,
+            title: data.title,
+            pv: data.pv
         }));
 
         const filteredRanking = ranking
             .filter(item => validPathPrefixes.some(vp => item.path === vp || item.path.startsWith(`${vp}/`) || item.path.startsWith(`${vp}?`)))
+            .sort((a, b) => b.pv - a.pv)
             .slice(0, 5);
 
         return Response.json({ ranking: filteredRanking, source: 'ga4' });
