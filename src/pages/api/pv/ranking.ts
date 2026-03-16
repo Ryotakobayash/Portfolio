@@ -17,11 +17,11 @@ export const GET: APIRoute = async () => {
 
     if (!GA4_PROPERTY_ID || !GCP_PROJECT_NUMBER || import.meta.env.DEV) {
         const dummyRanking = [
-            { path: '/posts/blog-refactoring-2024', title: 'デモデータ1', pv: 245 },
-            { path: '/posts/design-system-2023', title: 'デモデータ2', pv: 198 },
-            { path: '/posts/hackathon-sticker-2024', title: 'デモデータ3', pv: 156 },
-            { path: '/posts/pc-environment-2024', title: 'デモデータ4', pv: 134 },
-            { path: '/posts/figma-education-2022', title: 'デモデータ5', pv: 112 },
+            { path: '/posts/20240526_blog-refactoring-2024', title: 'デモデータ1', pv: 245 },
+            { path: '/posts/20230420_design-system-2023', title: 'デモデータ2', pv: 198 },
+            { path: '/posts/20241005_hackathon-sticker-2024', title: 'デモデータ3', pv: 156 },
+            { path: '/posts/20240405_pc-environment-2024', title: 'デモデータ4', pv: 134 },
+            { path: '/posts/20221026_figma-education-2022', title: 'デモデータ5', pv: 112 },
         ];
 
         const filteredDummy = dummyRanking

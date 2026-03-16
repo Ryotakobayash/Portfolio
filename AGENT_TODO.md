@@ -63,6 +63,12 @@
 ---
 
 ## ✅ 完了タスク (Done)
+### [タスク名: src/content/postsの記事をyyyymmdd_title.mdという命名規則に統一する]
+**完了日時:** 2026-03-17
+**サマリー:**
+- `src/content/posts/` 以下のすべての markdown ファイルをパースし、フロントマターの `date` の値を `yyyymmdd` 形式にしてファイル名や関連ディレクトリ名（画像保管用）の先頭に付与しました。
+- それに伴い、内部リンクやAPIエンドポイント（`ranking.ts`, `treemap.ts` など）でハードコードされていた古いslug指定を、新しい `yyyymmdd_title` 形式に置換してリンク切れを防ぎました。
+
 ### [タスク名: DashboardページのLifeProgressの見た目を整える]
 **完了日時:** 2026-03-16
 **サマリー:**
