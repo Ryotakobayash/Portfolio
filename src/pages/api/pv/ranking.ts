@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { getPublishedPosts } from '../../../utils/posts';
 
 export const prerender = false;
 
@@ -10,15 +11,25 @@ export const GET: APIRoute = async () => {
     const GA4_PROPERTY_ID = process.env.GA4_PROPERTY_ID;
     const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
 
+    // 公開済みの記事パス一覧を取得
+    const publishedPosts = await getPublishedPosts();
+    const validPathPrefixes = publishedPosts.map(post => `/posts/${post.id.replace(/\.mdx?$/, '')}`);
+
     if (!GA4_PROPERTY_ID || !GCP_PROJECT_NUMBER || import.meta.env.DEV) {
+        const dummyRanking = [
+            { path: '/posts/blog-refactoring-2024', title: 'デモデータ1', pv: 245 },
+            { path: '/posts/design-system-2023', title: 'デモデータ2', pv: 198 },
+            { path: '/posts/hackathon-sticker-2024', title: 'デモデータ3', pv: 156 },
+            { path: '/posts/pc-environment-2024', title: 'デモデータ4', pv: 134 },
+            { path: '/posts/figma-education-2022', title: 'デモデータ5', pv: 112 },
+        ];
+
+        const filteredDummy = dummyRanking
+            .filter(item => validPathPrefixes.some(vp => item.path === vp || item.path.startsWith(`${vp}/`) || item.path.startsWith(`${vp}?`)))
+            .slice(0, 5);
+
         return Response.json({
-            ranking: [
-                { path: '/posts/blog-refactoring-2024', title: 'NUTMEGブログ大改造ビフォーアフター', pv: 245 },
-                { path: '/posts/design-system-2023', title: 'デザインシステムを個人開発で作ってみた', pv: 198 },
-                { path: '/posts/hackathon-sticker-2024', title: 'ハッカソンでステッカーを作った話', pv: 156 },
-                { path: '/posts/pc-environment-2024', title: 'PC環境 2024年版', pv: 134 },
-                { path: '/posts/figma-education-2022', title: 'Figmaを使ったデザイン教育', pv: 112 },
-            ],
+            ranking: filteredDummy,
             source: 'dummy',
         });
     }
@@ -37,7 +48,7 @@ export const GET: APIRoute = async () => {
             token_url: 'https://sts.googleapis.com/v1/token',
             service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SA_EMAIL}:generateAccessToken`,
             subject_token_supplier: {
-                getSubjectToken: getVercelOidcToken,
+                getSubjectToken: () => getVercelOidcToken(),
             },
         });
 
@@ -60,7 +71,7 @@ export const GET: APIRoute = async () => {
                     stringFilter: { matchType: 'BEGINS_WITH', value: '/posts/' },
                 },
             },
-            limit: 5,
+            limit: 50, // 下書きを除外するため多めに取得
         });
 
         const ranking = (response.rows || []).map((row) => ({
@@ -69,7 +80,11 @@ export const GET: APIRoute = async () => {
             pv: parseInt(row.metricValues?.[0]?.value || '0', 10),
         }));
 
-        return Response.json({ ranking, source: 'ga4' });
+        const filteredRanking = ranking
+            .filter(item => validPathPrefixes.some(vp => item.path === vp || item.path.startsWith(`${vp}/`) || item.path.startsWith(`${vp}?`)))
+            .slice(0, 5);
+
+        return Response.json({ ranking: filteredRanking, source: 'ga4' });
     } catch (error) {
         console.error('GA4 ranking API Error:', error);
         return Response.json({
