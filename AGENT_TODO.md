@@ -40,7 +40,6 @@
 
 
 
-
 ## タスク化する前のメモ📝
 - 記事を書く
 	- スキルの評価のやつの根拠を追加する。
@@ -64,6 +63,13 @@
 ---
 
 ## ✅ 完了タスク (Done)
+### [タスク名: DashboardページのLifeProgressの見た目を整える]
+**完了日時:** 2026-03-16
+**サマリー:**
+- `src/components/LifeProgress.tsx` を編集し、年齢/寿命の表示形式を `CreativeLifeCountdown`（CreativeLifeRunway部分）の "Days" セクションと同じスタイル（`fontSize: '2.2rem'`, `fontWeight: 900`, `color: 'var(--color-primary)'`, `fontFamily: 'var(--font-sans)'`）に合わせました。
+- 狭い画面幅でも破綻しないよう、全体を囲むコンテナに `flexWrap: 'wrap'` と `whiteSpace: 'nowrap'` を適用し、リングの横に文字が収まらなかった場合には自然と折り返して表示されるように調整しています。
+- ローカル環境（`pnpm run dev`）を開始し、確認可能な状態にしました（現在バックグラウンドで起動中です）。
+
 ### [タスク名: 公開した記事のPVを取得できるようにする]
 **完了日時:** 2026-03-16
 **サマリー:**

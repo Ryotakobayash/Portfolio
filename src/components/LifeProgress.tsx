@@ -36,59 +36,72 @@ export default function LifeProgress({ birthYear, expectedAge }: Props) {
     const isOverHalf = percentage >= 50;
 
     return (
+
         <div style={{
-            display: 'flex', alignItems: 'center', gap: '20px',
+            display: 'flex', flexDirection: 'column', flexWrap: 'wrap', gap: '20px',
             padding: '4px 0',
         }}>
-            {/* Ring */}
-            <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
-                <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-                    {/* 背景リング */}
-                    <circle
-                        cx={size / 2} cy={size / 2} r={radius}
-                        fill="none" stroke="var(--color-bg-secondary)"
-                        strokeWidth={strokeWidth}
-                    />
-                    {/* プログレスリング */}
-                    <circle
-                        cx={size / 2} cy={size / 2} r={radius}
-                        fill="none"
-                        stroke={isOverHalf ? 'var(--color-primary)' : '#5C7F71'}
-                        strokeWidth={strokeWidth}
-                        strokeDasharray={circumference}
-                        strokeDashoffset={offset}
-                        style={{ transition: 'stroke-dashoffset 1s ease' }}
-                    />
-                </svg>
-                {/* 中心テキスト */}
-                <div style={{
-                    position: 'absolute', inset: 0,
-                    display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', justifyContent: 'center',
-                }}>
-                    <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                        {percentage}%
-                    </span>
-                </div>
-            </div>
 
-            {/* テキスト情報 */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span style={{ fontSize: '0.55rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
-                    Life Progress
-                </span>
-                <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-text)', letterSpacing: '-0.01em' }}>
-                    {currentAge} / {expectedAge} yrs
-                </span>
-                {yearsToHalf > 0 ? (
-                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
-                        Midpoint in {yearsToHalf} yr{yearsToHalf !== 1 ? 's' : ''}
-                    </span>
-                ) : (
-                    <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', color: 'var(--color-primary)', textTransform: 'uppercase' }}>
-                        50% Passed
-                    </span>
-                )}
+            <span style={{ fontSize: '0.55rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
+                Life Progress
+            </span>
+
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+                {/* Ring */}
+                <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
+                    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+                        {/* 背景リング */}
+                        <circle
+                            cx={size / 2} cy={size / 2} r={radius}
+                            fill="none" stroke="var(--color-bg-secondary)"
+                            strokeWidth={strokeWidth}
+                        />
+                        {/* プログレスリング */}
+                        <circle
+                            cx={size / 2} cy={size / 2} r={radius}
+                            fill="none"
+                            stroke={isOverHalf ? 'var(--color-primary)' : '#5C7F71'}
+                            strokeWidth={strokeWidth}
+                            strokeDasharray={circumference}
+                            strokeDashoffset={offset}
+                            style={{ transition: 'stroke-dashoffset 1s ease' }}
+                        />
+                    </svg>
+                    {/* 中心テキスト */}
+                    <div style={{
+                        position: 'absolute', inset: 0,
+                        display: 'flex', flexDirection: 'column',
+                        alignItems: 'center', justifyContent: 'center',
+                    }}>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-text)' }}>
+                            {percentage}%
+                        </span>
+                    </div>
+                </div>
+
+                {/* テキスト情報 */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '2.2rem', fontWeight: 900, letterSpacing: '-0.04em', color: 'var(--color-primary)', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap' }}>
+                            {currentAge} / {expectedAge}
+                        </span>
+                        <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', letterSpacing: '0.08em' }}>
+                            yrs
+                        </span>
+                    </div>
+
+                    {yearsToHalf > 0 ? (
+                        <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
+                            Midpoint in {yearsToHalf} yr{yearsToHalf !== 1 ? 's' : ''}
+                        </span>
+                    ) : (
+                        <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', color: 'var(--color-primary)', textTransform: 'uppercase' }}>
+                            50% Passed
+                        </span>
+                    )}
+                </div>
             </div>
         </div>
     );
