@@ -61,9 +61,9 @@ const allPostsMeta = allPosts.map((p) => ({
     <article class="article">
       <header class="article-header">
         <a href="/posts" class="back-link">← Posts</a>
-        <h1 class="article-title">{post.data.title}</h1>
+        <h1 class="article-title" transition:name={`post-title-${encodeURIComponent(slug).replace(/%/g, '')}`}>{post.data.title}</h1>
         <div class="article-meta">
-          <span class="article-meta__date">{post.data.date}</span>
+          <span class="article-meta__date" transition:name={`post-date-${encodeURIComponent(slug).replace(/%/g, '')}`}>{post.data.date}</span>
         </div>
         {post.data.tags && post.data.tags.length > 0 && (
           <div class="article-tags">

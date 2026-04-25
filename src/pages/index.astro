@@ -7,6 +7,7 @@ import ArticleTreemap from '../components/ArticleTreemap';
 import PopularPosts from '../components/PopularPosts';
 import ExternalPosts from '../components/ExternalPosts';
 import OrbitalBackground from '../components/OrbitalBackground';
+import AsciiBackground from '../components/AsciiBackground';
 import DotGrid from '../components/DotGrid';
 import careerData from '../data/career.json';
 
@@ -43,6 +44,9 @@ const treemapPosts = await Promise.all(
 ---
 
 <BaseLayout>
+    <!-- ASCII 3D Background -->
+    <AsciiBackground client:only="react" />
+
     <!-- Orbital background decoration -->
     <OrbitalBackground client:only="react" />
 

@@ -200,10 +200,10 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                         onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
                     >
-                        <div className="text-muted" style={{ fontSize: '0.65rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)' }}>
+                        <div className="text-muted" style={{ fontSize: '0.65rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)', viewTransitionName: `post-date-${encodeURIComponent(post.slug).replace(/%/g, '')}` } as React.CSSProperties}>
                             {post.date}
                         </div>
-                        <h2 className="font-bold" style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '-0.01em' }}>
+                        <h2 className="font-bold" style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '-0.01em', viewTransitionName: `post-title-${encodeURIComponent(post.slug).replace(/%/g, '')}` } as React.CSSProperties}>
                             {post.title}
                         </h2>
                         {post.excerpt && (
