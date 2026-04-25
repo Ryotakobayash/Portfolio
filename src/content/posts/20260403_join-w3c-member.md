@@ -1,0 +1,98 @@
+---
+title: "w3cメンバーになりました"
+date: "2026-03-13"
+excerpt: "w3cのメンバーになりました。これから何をしたら貢献できるかを考えました。"
+tags:
+  - W3C
+  - DesignToken
+draft: true
+---
+
+# 初めに。何があったんです？
+
+サイボウズはw3cのメンバーに加入しています。会社としてどのようなことを考えて参加したのは以下の記事がこれ以上ないほど書いています。
+
+- [サイボウズ、W3C (World Wide Web Consortium) のメンバーに加入 | サイボウズ株式会社](https://topics.cybozu.co.jp/news/2025/07/25-19153.html)
+- [なぜサイボウズは W3C のメンバーに加入したのか？その真意を聞いてみた - Cybozu Inside Out | サイボウズエンジニアのブログ](https://blog.cybozu.io/entry/joining-w3c)
+
+私自身は少し興味があったくらいだったんですが、社内の同期（@mehm8128）が頑張っているところを見て、自分も何かしら貢献できることがあるんじゃないかと思うようになりました。
+自分が力になれるかわかりませんが、自分が入ることでハードルが下がり自分より優秀な人が挑戦しやすくなることもあるかもしれません。
+そんな思いでw3c（design token community group）に入ってみました。
+
+とはいえそんないきなりの参加だったので、どこをどう見るといいかなんてわかりません。
+色々手探りながら探索した結果を作業ログ的に残していきます。
+
+# DTCG 参加・外部発信ロードマップ
+
+まずは受動的な人間でもインプットできる基盤を作ります。
+
+## Phase 0: セットアップ（〜1週間）
+
+- `design-tokens/community-group` リポジトリをCustom Watchに設定（Issues + Pull Requests + Discussions）
+- `public-design-tokens` メーリングリスト（lists.w3.org）を購読
+- W3C CG ブログのRSSフィード（`https://www.w3.org/community/design-tokens/feed/`）をリーダーに追加
+- designtokens.org/tr/drafts/ をブックマーク（最新プレビュードラフト）
+- エコシステムツールのリリース情報源を整理
+  - Style Dictionary GitHub（v5のDTCG 2025.10対応）
+  - Tokens Studio GitHub / changelog
+  - Penpot, Figma のリリースノート
+
+## Phase 1: キャッチアップ（1〜2ヶ月目）
+
+- [ ] Final Reports 2025.10 の3モジュールを通読
+  - Design Tokens Format Module 2025.10
+  - Design Tokens Color Module 2025.10
+  - Design Tokens Resolver Module 2025.10
+- [ ] GitHub issuesを全件ざっと読む（openなもの優先）
+  - 未決事項、controversialなissueをリストアップ
+  - 主要な発言者と各自のポジションを把握
+- [ ] 過去のエディターズミーティング議事録を遡る
+- [ ] Decision-making frameworkのドキュメントを読む（Contributor / Editor / Module Lead / Chair の役割定義）
+- [ ] Genieのトークン設計と仕様のギャップを洗い出す
+  - 3層アーキテクチャ（Base→Semantic→Component）の表現可能性
+  - datavizパレットのトークングループとしての扱い
+  - Figma Variables連携で遭遇した制約
+
+## Phase 2: 発信開始（3ヶ月目〜）
+
+- [ ] 発信フォーマットを決める
+  - 媒体: Zenn / note / Cybozu Inside Out のいずれか
+  - 頻度: 月次（動きが少ない月は短縮版）
+  - フロントエンドチームのWeb標準動向との棲み分けを確認
+- [ ] 第1回の記事を書く
+  - DTCG 2025.10の概要と現状のエコシステム対応状況をまとめる導入記事が書きやすい
+- [ ] 社内共有の仕組みを作る（Slackチャンネル、定例での共有枠など）
+
+## Phase 3: コミュニティ参加（4〜6ヶ月目）
+
+- [ ] GitHub issueへのリアクション・コメントを始める
+  - まずは既存の議論への+1やユースケース補足から
+- [ ] Genieでの実装フィードバックをissueとして投稿する
+  - 具体的な再現手順やコード例を添える
+  - 候補テーマ:
+    - コンポーネントレイヤーのトークン定義パターン
+    - dataviz用sequential paletteの型表現
+    - Figma Variables連携時の構造的制約
+- [ ] エディターズミーティングに参加できるか確認（時差・頻度）
+
+## Phase 4: 継続・深化（6ヶ月目〜）
+
+- [ ] 発信を継続しつつ、記事のテーマを深掘り方向に広げる
+  - 特定issueの経緯と論点整理
+  - ベンダー実装状況の比較
+  - Genieでの採用事例
+- [ ] TPAC等のイベント参加を検討
+- [ ] 社内の他チーム（フロントエンド、デザインシステム）との連携を強化
+  - フロントエンドチームのWeb標準動向にDTCGセクションを寄稿するのもあり
+
+## ウォッチ対象一覧
+
+| ソース            | URL                                                | 用途                      |
+| ----------------- | -------------------------------------------------- | ------------------------- |
+| DTCG GitHub       | github.com/design-tokens/community-group           | 仕様議論の本体            |
+| 公式サイト drafts | designtokens.org/tr/drafts/                        | 最新プレビュー            |
+| ML アーカイブ     | lists.w3.org/Archives/Public/public-design-tokens/ | フォーマルなアナウンス    |
+| CG ブログ RSS     | w3.org/community/design-tokens/feed/               | マイルストーンの通知      |
+| Style Dictionary  | github.com/amzn/style-dictionary                   | リファレンス実装の動向    |
+| Tokens Studio     | github.com/tokens-studio                           | Figma連携ツールの対応状況 |
+| @DesignTokens     | x.com/DesignTokens                                 | 公式アナウンス            |
