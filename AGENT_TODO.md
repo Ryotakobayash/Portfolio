@@ -38,6 +38,7 @@
 
 ## 🚀 未着手タスク (Backlog)
 
+## タスク化する前のメモ📝
 
 ## タスク化する前のメモ📝
 - 記事を書く
@@ -58,6 +59,59 @@
 
 ## 🚧 進行中タスク (In Progress)
 
+### [タスク名: Typography ベストプラクティス導入]
+**背景・目的:**
+- 参照記事: https://blog.sakupi01.com/dev/articles/state-of-sakupi01com-ui-practice-2
+- 現状 `html { font-size: 16px; }` 固定でユーザのブラウザ設定を無視している
+- CJK テキスト処理（日本語組版）が一切されていない
+- スケーリングシステムがなく、フォントサイズがハードコードで散在
+- 詳細な実装計画は Conversation `2bd439de-2d6a-4678-b200-2a65e50bcc7d` の implementation_plan.md を参照
+
+**ユーザ確認済み決定事項:**
+- フォントサイズ基準値: `max(1em, 16px)` を採用（`18px` には引き上げない）
+- スケーリング適用範囲: `.prose`（ブログ記事本文）限定。ダッシュボード系UIは固定サイズ維持
+- `text-fit`: 見送り
+
+**要件・仕様:**
+
+#### Phase 1: フォントサイズ基盤のリファクタリング
+- [ ] `src/styles/global.css` の `:root` に Typography Scale 変数を追加
+- [ ] `@media (width >= 60em)` で `--p-text-ratio: 1.175` に切り替え
+- [ ] `html { font-size: 16px; }` → `html { font-size: var(--p-text-base); }` に変更
+- [ ] `html` に `text-size-adjust: none; -webkit-text-size-adjust: none;` を追加
+- [ ] `src/pages/posts/[slug].astro` 内 `.prose h2` → `var(--p-step-2)`、`.prose h3` → `var(--p-step-1)` に移行
+- [ ] 確認: `npm run dev` → `/posts/{slug}` でブログ記事表示確認
+
+#### Phase 2: CJK テキスト最適化
+- [ ] `src/styles/global.css` に以下を追加
+- [ ] 確認: ブログ記事で日本語テキストの改行位置や約物の処理を確認
+
+#### Phase 3: テキスト折り返しとコンテンツ幅
+- [ ] `src/styles/global.css` に `text-wrap: pretty` を見出しに追加
+- [ ] `src/pages/posts/[slug].astro` の `.prose` 内に `max-inline-size: 40em` を p, li 等に追加
+- [ ] 確認: 記事本文が約40文字で折り返されること、コードブロック等は幅制限を受けないこと
+
+#### Phase 4: スペーシング改善（`.prose` 内限定）
+- [ ] `src/styles/global.css` の `:root` にスペーシング変数追加
+- [ ] `.prose p` の `margin-bottom: 1rem` → `margin-block: 0.75lh` に移行
+- [ ] `.prose h2` の `margin-top: 2.5rem` → `margin-block-start: var(--s-space-gap-md)` に移行
+- [ ] 確認: テキストサイズ変更時にスペーシングが適切にスケールすること
+
+#### Phase 5: `margin-trim`
+- [ ] `src/styles/global.css` に `margin-trim: block` とフォールバックを追加
+- [ ] 確認: コンテナの先頭/末尾に不要な余白がないこと
+
+**関連する既存ファイル・技術スタック:**
+- `src/styles/global.css` — メインの変更対象
+- `src/pages/posts/[slug].astro` — `.prose` スタイルの変更対象
+- `src/layouts/BaseLayout.astro` — `<html lang="ja">` 設定済み（CJK 対応に必要）
+
+**完了条件 (Acceptance Criteria):**
+- [ ] `npm run build` でビルドエラーが出ないこと
+- [ ] `/posts/{slug}` でブログ記事の Typography が改善されていること
+- [ ] `/` `/about` `/me` でダッシュボード系UIのレイアウトが崩れていないこと
+- [ ] ブラウザのフォントサイズ設定を 16px → 24px に変更してテキストが適切にスケールすること
+- [ ] モバイル幅（375px）で表示崩れがないこと
 
 ---
 

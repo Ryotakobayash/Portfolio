@@ -85,6 +85,25 @@
   /* Typography */
   --font-sans: "Outfit", "Noto Sans JP", -apple-system, sans-serif;
   --font-mono: "Courier New", Courier, monospace;
+
+  /* Typography Scale */
+  --p-text-base: clamp(1em, 16px + 0.05svi, 1.125em);
+  --p-text-ratio: 1.125;
+  --p-step--2: calc(var(--p-text-base) * pow(var(--p-text-ratio), -2));
+  --p-step--1: calc(var(--p-text-base) * pow(var(--p-text-ratio), -1));
+  --p-step-0: var(--p-text-base);
+  --p-step-1: calc(var(--p-text-base) * pow(var(--p-text-ratio), 1));
+  --p-step-2: calc(var(--p-text-base) * pow(var(--p-text-ratio), 2));
+  --p-step-3: calc(var(--p-text-base) * pow(var(--p-text-ratio), 3));
+  --p-step-4: calc(var(--p-text-base) * pow(var(--p-text-ratio), 4));
+  --p-step-5: calc(var(--p-text-base) * pow(var(--p-text-ratio), 5));
+  --p-step-6: calc(var(--p-text-base) * pow(var(--p-text-ratio), 6));
+}
+
+@media (width >= 60em) {
+  :root {
+    --p-text-ratio: 1.175;
+  }
 }
 
 /* ===== Reset ===== */
@@ -97,7 +116,9 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: var(--p-text-base);
+  text-size-adjust: none;
+  -webkit-text-size-adjust: none;
   scroll-behavior: smooth;
 }
 
