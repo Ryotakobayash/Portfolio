@@ -780,3 +780,19 @@ a:hover {
 [data-theme="dark"] .twitter-tweet a:hover {
   color: #c99040;
 }
+
+/* ===== Margin Trim ===== */
+:where(article, section, aside) {
+  margin-trim: block;
+}
+
+@supports not (margin-trim: block) {
+  :where(article, section, aside) {
+    > :first-child {
+      margin-block-start: 0;
+    }
+    > :last-child {
+      margin-block-end: 0;
+    }
+  }
+}
