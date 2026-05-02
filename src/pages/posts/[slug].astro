@@ -309,6 +309,12 @@ const allPostsMeta = allPosts.map((p) => ({
     margin-bottom: 1rem;
   }
 
+  .prose :global(:is(p, li):not([class])),
+  .prose :global(dd),
+  .prose :global(small) {
+    max-inline-size: 40em;
+  }
+
   .prose :global(ul),
   .prose :global(ol) {
     margin-bottom: 1rem;
