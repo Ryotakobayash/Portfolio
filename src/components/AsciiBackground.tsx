@@ -30,9 +30,6 @@ export default function AsciiBackground() {
   return (
     <div style={{ width: '100%', height: '100vh', position: 'absolute', top: 0, left: 0, zIndex: -1, overflow: 'hidden' }}>
       <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-        {/* 背景色 */}
-        <color attach="background" args={['transparent']} />
-
         {/* ライティング（ASCIIエフェクトの陰影に影響します） */}
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 10]} intensity={1.5} />
