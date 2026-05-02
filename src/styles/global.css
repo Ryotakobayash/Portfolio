@@ -68,6 +68,12 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
 
+  /* Spacing (Rhythm) */
+  --s-space-gutter-xs: 0.75lh;
+  --s-space-gutter-sm: 1lh;
+  --s-space-gap-sm: 1rlh;
+  --s-space-gap-md: 1.5rlh;
+
   /* Border radius — 0: straight edges everywhere */
   --radius-sm: 0px;
   --radius-md: 0px;

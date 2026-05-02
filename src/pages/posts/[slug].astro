@@ -289,8 +289,8 @@ const allPostsMeta = allPosts.map((p) => ({
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-top: 2.5rem;
-    margin-bottom: 0.75rem;
+    margin-block-start: var(--s-space-gap-md);
+    margin-block-end: var(--s-space-gutter-xs);
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--color-border);
     color: var(--color-text);
@@ -300,13 +300,13 @@ const allPostsMeta = allPosts.map((p) => ({
   .prose :global(h3) {
     font-size: var(--p-step-1);
     font-weight: 600;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
+    margin-block-start: var(--s-space-gap-sm);
+    margin-block-end: var(--s-space-gutter-xs);
     scroll-margin-top: calc(var(--header-height) + var(--spacing-lg));
   }
 
   .prose :global(p) {
-    margin-bottom: 1rem;
+    margin-block: 0.75lh;
   }
 
   .prose :global(:is(p, li):not([class])),
