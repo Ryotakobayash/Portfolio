@@ -137,6 +137,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ===== CJK Typography ===== */
+:where(html) {
+  hanging-punctuation: first allow-end last;
+}
+
+:lang(ja) {
+  text-autospace: normal;
+  text-spacing-trim: trim-start;
+  word-break: auto-phrase;
+  line-break: strict;
+}
+
+:lang(en) {
+  hyphens: auto;
+}
+
 a {
   color: var(--color-primary);
   text-decoration: none;
