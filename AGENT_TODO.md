@@ -38,22 +38,24 @@
 
 ## 🚀 未着手タスク (Backlog)
 
-## タスク化する前のメモ📝
+### [保留タスク: quadtree-art の演出導入]
+**背景・目的:**
+- quadtree-artを使った演出を入れたいが、まだ具体的なイメージが固まっていないため延期。
+
 
 ## タスク化する前のメモ📝
 - 記事を書く
 	- スキルの評価のやつの根拠を追加する。
-	- Adobeの論文をがっつり読んで記事を書いてみる
 	- Token関係の取り組みをやる
+	- Adobeの論文をがっつり読んで記事を書いてみる
 	- 年末recapの続きを書く。
 	- Xのブックマークを整理する
 	- 入社前の内定時にやっていることの調査
 	- 議事録を使ったレビュー観点抽出の話。
-	- 海外の人がやっているやつ（私を構成する言葉、みたいなやつをやってみる）
+	- 海外の人がやっている開発者の自己表現っぽいやつを書いてみる（私を構成する言葉、みたいなやつをやってみる）[参考](https://gemini.google.com/app/477098d0c68f8eff?hl=ja)
 	- 動く絵文字の話
 	- 独自ドメイン設定の話
-	- 開発者の自己表現っぽいやつを書いてみる
-	- https://gemini.google.com/app/477098d0c68f8eff?hl=ja
+
 
 ---
 
@@ -62,6 +64,38 @@
 ---
 
 ## ✅ 完了タスク (Done)
+### [タスク名: ダッシュボード全体像を示すTreemapの改善]
+**完了日時:** 2026-05-03
+**サマリー:**
+- `src/utils/treemapUtils.ts` および `src/components/ArticleTreemap.tsx` を改修し、Treemapをタグごとの親ノードを持つ階層構造に変更しました。
+- Highchartsの `heatmap` モジュールを追加で読み込み、`colorAxis` を使ってアクセス数（PV）ベースで色付け（ハイコントラスト表示）されるように設定しました。
+- 修正後コミットを行いました (`feat: improve Treemap visualization...`)。
+### [タスク名: 記事のファイル名日本語化と短いURLの両立]
+**完了日時:** 2026-05-03
+**サマリー:**
+- Nodeスクリプトにより、`src/content/posts/` の記事のファイル名を `YYYYMMDD_記事タイトル.md` という日本語フォーマットにリネームしました。
+- 元のファイル名（ID）を `slug` としてフロントマターに付与し、ルーティング時に `post.data.slug` を優先して利用するよう各所のロジックを修正しました。これにより既存URLの短さ・リンクを維持しています。
+- 修正後コミットを行いました (`feat: localize post filenames...`)。
+### [タスク名: イベント参加レポートタグの統一と整理]
+**完了日時:** 2026-05-03
+**サマリー:**
+- `src/content/posts/*.md` ファイル群に含まれる `EventReport` および `イベント` タグをすべて `参加ログ` に置換し、統一しました。
+- 修正後コミットを行いました (`chore(content): unify event report tags...`)。
+### [タスク名: WCAG基準に基づくコントラスト比の改善]
+**完了日時:** 2026-05-03
+**サマリー:**
+- `src/styles/global.css` のCSS Variablesを調整し、ライト・ダークテーマ両方において、`color-text-muted`, `color-primary`, `color-accent` 等のコントラスト比が背景色に対して4.5:1 (WCAG AA基準) を満たすように修正しました。
+- 修正後コミットを行いました (`style: adjust CSS variables to meet WCAG AA...`)。
+### [タスク名: Share機能のアップデート（はてブ削除・Bluesky/LinkedIn追加）]
+**完了日時:** 2026-05-03
+**サマリー:**
+- `src/components/ShareButtons.tsx` にて、はてなブックマークを削除し、BlueskyとLinkedInのシェアリンクを追加しました。
+- 修正後コミットを行いました (`feat: replace Hatena Bookmark...`)。
+### [タスク名: トップページ惑星装飾のz-index修正]
+**完了日時:** 2026-05-03
+**サマリー:**
+- `src/components/OrbitalBackground.tsx` の `zIndex` プロパティを `0` から `-1` に変更し、テキスト要素の背面に描画されるように修正しました。
+- 修正後コミットを行いました (`fix: change OrbitalBackground z-index to -1...`)。
 ### [タスク名: Typography ベストプラクティス導入]
 **完了日時:** 2026-05-03
 **サマリー:**
