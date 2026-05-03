@@ -6,12 +6,7 @@ import { useFetchPV } from '../hooks/useFetchPV';
 import { buildGenreData, buildPVData, getUsedTags, getTagColor } from '../utils/treemapUtils';
 import type { PostData } from '../utils/treemapUtils';
 
-type ViewMode = 'genre' | 'pv';
 
-const VIEW_LABELS: Record<ViewMode, string> = {
-    genre: 'ジャンルで見る',
-    pv: '閲覧数で見る',
-};
 
 interface Props {
     posts: PostData[];
@@ -21,7 +16,6 @@ export default function ArticleTreemap({ posts }: Props) {
     const chartRef = useRef<HighchartsReact.RefObject>(null);
     const isDark = useTheme();
     const { pvMap, totalPV, isLoading } = useFetchPV();
-    const [viewMode, setViewMode] = useState<ViewMode>('genre');
     const [treemapReady, setTreemapReady] = useState(false);
 
     // Highcharts Treemap / Heatmap モジュールを動的にロード
@@ -40,13 +34,10 @@ export default function ArticleTreemap({ posts }: Props) {
         });
     }, []);
 
-    // Treemap データ生成（ジャンル→階層構造、PV→フラット構造）
+    // Treemap データ生成（ジャンル→階層構造）
     const treemapData = useMemo(() => {
-        if (viewMode === 'pv') {
-            return buildPVData(posts, pvMap);
-        }
         return buildGenreData(posts);
-    }, [posts, pvMap, viewMode]);
+    }, [posts]);
 
     // チャートオプション
     const options: Highcharts.Options = useMemo(() => {
@@ -59,12 +50,7 @@ export default function ArticleTreemap({ posts }: Props) {
                 height: 380,
                 style: { fontFamily: 'Outfit, "Noto Sans JP", sans-serif' },
             },
-            ...(viewMode === 'pv' ? {
-                colorAxis: {
-                    minColor: isDark ? '#161616' : '#ede5ce',
-                    maxColor: isDark ? '#5fbf8a' : '#2d5040',
-                }
-            } : {}),
+
             title: { text: undefined },
             credits: { enabled: false },
             tooltip: {
@@ -97,7 +83,7 @@ export default function ArticleTreemap({ posts }: Props) {
                         letterSpacing: '0.02em',
                     },
                 },
-                levels: viewMode === 'genre' ? [{
+                levels: [{
                     level: 1,
                     dataLabels: {
                         enabled: true,
@@ -112,7 +98,7 @@ export default function ArticleTreemap({ posts }: Props) {
                     },
                     borderWidth: 1,
                     borderColor: isDark ? '#2A2A2A' : '#C8BAA0',
-                }] : [],
+                }],
             }],
             plotOptions: {
                 series: {
@@ -130,7 +116,7 @@ export default function ArticleTreemap({ posts }: Props) {
                 }
             }
         };
-    }, [treemapData, pvMap, isDark, viewMode]);
+    }, [treemapData, pvMap, isDark]);
 
     // テーマ変更時・データ変更時にチャート更新
     useEffect(() => {
@@ -149,36 +135,13 @@ export default function ArticleTreemap({ posts }: Props) {
 
     return (
         <div>
-            {/* ビュー切替 */}
-            <div className="flex mb-md" style={{
-                gap: '2px', background: 'var(--color-border)', padding: '1px',
-            }}>
-                {(Object.keys(VIEW_LABELS) as ViewMode[]).map((mode) => (
-                    <button
-                        key={mode}
-                        onClick={() => setViewMode(mode)}
-                        style={{
-                            flex: 1, padding: '6px 10px',
-                            fontSize: '0.65rem', fontWeight: 700,
-                            border: 'none',
-                            letterSpacing: '0.12em', textTransform: 'uppercase',
-                            cursor: 'pointer',
-                            backgroundColor: viewMode === mode ? 'var(--color-primary)' : 'var(--color-bg-card)',
-                            color: viewMode === mode ? 'var(--color-bg)' : 'var(--color-text-muted)',
-                            transition: 'all 150ms ease',
-                        }}
-                    >
-                        {VIEW_LABELS[mode]}
-                    </button>
-                ))}
-            </div>
 
-            {/* Treemap (keyにviewModeを指定して、モード切替時に確実な再描画を行う) */}
-            <HighchartsReact key={viewMode} highcharts={Highcharts} options={options} ref={chartRef} />
+
+            <HighchartsReact highcharts={Highcharts} options={options} ref={chartRef} />
 
             {/* 凡例 */}
             <div className="flex text-sm text-muted gap-sm mt-md" style={{ flexWrap: 'wrap' }}>
-                {viewMode === 'genre' && getUsedTags(posts).map((tag) => (
+                {getUsedTags(posts).map((tag) => (
                     <span key={tag} className="flex items-center gap-xs" style={{ gap: '5px' }}>
                         <span style={{
                             width: '8px', height: '8px',
