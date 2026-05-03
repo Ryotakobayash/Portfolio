@@ -3,7 +3,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { useTheme } from '../hooks/useTheme';
 import { useFetchPV } from '../hooks/useFetchPV';
-import { buildTagGroupData, buildPvFlatData } from '../utils/treemapUtils';
+import { buildGenreData, buildPVData, getUsedTags, getTagColor } from '../utils/treemapUtils';
 import type { PostData } from '../utils/treemapUtils';
 
 type ViewMode = 'genre' | 'pv';
@@ -40,14 +40,12 @@ export default function ArticleTreemap({ posts }: Props) {
         });
     }, []);
 
-    // Treemap データ生成
+    // Treemap データ生成（ジャンル→階層構造、PV→フラット構造）
     const treemapData = useMemo(() => {
         if (viewMode === 'pv') {
-            // PVモードはフラット構造（colorAxis sequentialが機能するのはparent/childなしの場合のみ）
-            return buildPvFlatData(posts, pvMap);
+            return buildPVData(posts, pvMap);
         }
-        // ジャンルモードはタグごとの階層構造
-        return buildTagGroupData(posts, pvMap, viewMode);
+        return buildGenreData(posts);
     }, [posts, pvMap, viewMode]);
 
     // チャートオプション
@@ -63,8 +61,8 @@ export default function ArticleTreemap({ posts }: Props) {
             },
             ...(viewMode === 'pv' ? {
                 colorAxis: {
-                    minColor: isDark ? '#1f1f1f' : '#ede5ce',
-                    maxColor: isDark ? '#7aa090' : '#466557',
+                    minColor: isDark ? '#161616' : '#ede5ce',
+                    maxColor: isDark ? '#5fbf8a' : '#2d5040',
                 }
             } : {}),
             title: { text: undefined },
@@ -88,7 +86,6 @@ export default function ArticleTreemap({ posts }: Props) {
                 layoutAlgorithm: 'squarified',
                 allowDrillToNode: false,
                 animationLimit: 1000,
-                colorKey: 'colorValue', // colorAxisのグラデーション対象を明示
                 data: treemapData,
                 dataLabels: {
                     enabled: true,
@@ -179,14 +176,24 @@ export default function ArticleTreemap({ posts }: Props) {
             {/* Treemap (keyにviewModeを指定して、モード切替時に確実な再描画を行う) */}
             <HighchartsReact key={viewMode} highcharts={Highcharts} options={options} ref={chartRef} />
 
-            {/* 凡例（colorAxisが自動で描画するためタグ色の凡例は削除） */}
-            {totalPV > 0 && (
-                <div className="flex text-sm text-muted mt-md">
+            {/* 凡例 */}
+            <div className="flex text-sm text-muted gap-sm mt-md" style={{ flexWrap: 'wrap' }}>
+                {viewMode === 'genre' && getUsedTags(posts).map((tag) => (
+                    <span key={tag} className="flex items-center gap-xs" style={{ gap: '5px' }}>
+                        <span style={{
+                            width: '8px', height: '8px',
+                            backgroundColor: getTagColor(tag), display: 'inline-block',
+                            flexShrink: 0,
+                        }} />
+                        {tag}
+                    </span>
+                ))}
+                {totalPV > 0 && (
                     <span style={{ marginLeft: 'auto' }}>
                         Total: {totalPV.toLocaleString()} PV
                     </span>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }

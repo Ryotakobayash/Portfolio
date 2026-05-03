@@ -39,11 +39,9 @@ export function getTagColor(tag: string): string {
     return DEFAULT_COLOR;
 }
 
-/** タグでグルーピングするデータ */
-export function buildTagGroupData(
+/** 「ジャンルで見る」用データ — タグで階層化し、categoricalパレットで色分け */
+export function buildGenreData(
     posts: PostData[],
-    pvMap: Record<string, number>,
-    mode: 'genre' | 'pv',
 ): any[] {
     const groups: Record<string, PostData[]> = {};
     for (const post of posts) {
@@ -54,72 +52,46 @@ export function buildTagGroupData(
 
     const data: any[] = [];
 
-    // 親ノード（タグ）
+    // 親ノード（タグ）— グループの色を設定
     for (const tag of Object.keys(groups)) {
         data.push({
             id: `tag_${tag}`,
             name: tag,
-            color: mode === 'pv' ? undefined : getTagColor(tag),
+            color: getTagColor(tag),
         });
     }
 
-    // 子ノード（記事）
+    // 子ノード（記事）— 面積は文字数、色は親から継承
     for (const [tag, groupPosts] of Object.entries(groups)) {
         for (const post of groupPosts) {
-            const pv = pvMap[post.slug] || 1;
-            const sizeValue = post.wordCount || 100; // 面積は常に文字数
-            
-            const point: any = {
+            data.push({
                 parent: `tag_${tag}`,
                 name: post.title,
-                value: sizeValue,
+                value: post.wordCount || 100,
+                color: getTagColor(tag),
                 slug: post.slug,
                 primaryTag: tag,
-            };
-
-            if (mode === 'pv') {
-                point.colorValue = pv; // PV数（sequential palette）
-                point.color = undefined; // 古いcolorがマージされないように明示的にリセット
-            } else {
-                point.color = getTagColor(tag); // ジャンル（categorical palette）
-                point.colorValue = undefined; // PV用のcolorValueをリセット
-            }
-
-            data.push(point);
+            });
         }
     }
 
     return data;
 }
 
-/**
- * PVビュー用フラットデータ
- * グループ分け（parent/child）なしのフラット構造でないと
- * HighchartsのcolorAxisがsequential coloring として機能しないため、
- * このモードでは階層を使わない。
- */
-export function buildPvFlatData(
+/** 「閲覧数で見る」用データ — フラット構造でcolorAxisが効くようにする */
+export function buildPVData(
     posts: PostData[],
     pvMap: Record<string, number>,
 ): any[] {
-    // pvMapが空かどうか（ローカル環境などでGA4から取得できない場合）
-    const hasPvData = Object.keys(pvMap).length > 0;
-
-    return posts.map((post, i) => {
-        let pv: number;
-        if (hasPvData) {
-            pv = pvMap[post.slug] || 1;
-        } else {
-            // pvMapが空の場合はインデックスに基づくダミー値を使用
-            // （ローカル確認用: colorAxisのグラデーションが見えるようにする）
-            pv = (i + 1) * 10;
-        }
+    return posts.map((post) => {
+        const pv = pvMap[post.slug] || 1;
+        const primaryTag = post.tags[0] || 'Other';
         return {
             name: post.title,
-            value: post.wordCount || 100, // 面積 = 文字数
-            colorValue: pv,               // 色 = PV数（またはダミー値）
+            value: post.wordCount || 100, // 面積は文字数
+            colorValue: pv, // 色はPV数（sequentialパレット）
             slug: post.slug,
-            primaryTag: post.tags[0] || 'Other',
+            primaryTag,
         };
     });
 }
