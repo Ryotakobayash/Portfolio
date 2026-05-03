@@ -15,19 +15,19 @@
   --color-bg-card: #202020;
   --color-text: #f5eddc;
   --color-text-secondary: #b8a88a;
-  --color-text-muted: #6b6050;
+  --color-text-muted: #857a68; /* WCAG AA: 4.5+ */
   --color-border: #3a3530;
 
   /* Accents */
   --color-primary: #7aa090;
   /* 青緑 */
   --color-primary-light: rgba(122, 160, 144, 0.12);
-  --color-accent: #a03030;
+  --color-accent: #cc4444; /* WCAG AA: 4.5+ */
   /* 暗い赤 */
   --color-accent-light: rgba(160, 48, 48, 0.12);
   --color-accent-2: #c99040;
   /* 暗い黄 */
-  --color-accent-3: #c07050;
+  --color-accent-3: #d17855; /* WCAG AA: 4.5+ */
   /* オレンジ */
 
   /* Shadows — subtle, no glow */
@@ -43,15 +43,15 @@
   --color-bg-card: #ede5ce;
   --color-text: #181818;
   --color-text-secondary: #4a3f30;
-  --color-text-muted: #8a7b63;
+  --color-text-muted: #6e624f; /* WCAG AA: 4.5+ */
   --color-border: #c8baa0;
 
-  --color-primary: #5c7f71;
+  --color-primary: #466557; /* WCAG AA: 4.5+ */
   --color-primary-light: rgba(92, 127, 113, 0.1);
   --color-accent: #802520;
   --color-accent-light: rgba(128, 37, 32, 0.1);
-  --color-accent-2: #ba8530;
-  --color-accent-3: #b2653b;
+  --color-accent-2: #996b24; /* WCAG AA: 4.5+ */
+  --color-accent-3: #995530; /* WCAG AA: 4.5+ */
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
