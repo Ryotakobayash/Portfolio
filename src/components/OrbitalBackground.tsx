@@ -16,7 +16,7 @@ export default function OrbitalBackground() {
                 maxWidth: '800px',
                 height: 'auto',
                 pointerEvents: 'none',
-                zIndex: 0,
+                zIndex: -1,
                 animation: 'pulse-slow 16s ease-in-out infinite',
             }}
             viewBox="0 0 800 800"
