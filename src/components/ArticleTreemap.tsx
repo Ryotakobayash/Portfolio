@@ -3,7 +3,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { useTheme } from '../hooks/useTheme';
 import { useFetchPV } from '../hooks/useFetchPV';
-import { buildGenreData, buildPVData, getUsedTags, getTagColor } from '../utils/treemapUtils';
+import { buildGenreData, getUsedTags, getTagColor } from '../utils/treemapUtils';
 import type { PostData } from '../utils/treemapUtils';
 
 
@@ -50,7 +50,6 @@ export default function ArticleTreemap({ posts }: Props) {
                 height: 380,
                 style: { fontFamily: 'Outfit, "Noto Sans JP", sans-serif' },
             },
-
             title: { text: undefined },
             credits: { enabled: false },
             tooltip: {
@@ -135,8 +134,7 @@ export default function ArticleTreemap({ posts }: Props) {
 
     return (
         <div>
-
-
+            {/* Treemap */}
             <HighchartsReact highcharts={Highcharts} options={options} ref={chartRef} />
 
             {/* 凡例 */}
