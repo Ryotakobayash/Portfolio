@@ -1,11 +1,12 @@
 ---
-title: "Figmaの学生プラン・FigJamを導入します"
-date: "2022-10-26"
-excerpt: "NUTMEGでFigmaの学生プランおよびFigJamをメンバー全員に導入する流れと使い方をまとめました。"
+title: Figmaの学生プラン・FigJamを導入します
+date: '2022-10-26'
+excerpt: NUTMEGでFigmaの学生プランおよびFigJamをメンバー全員に導入する流れと使い方をまとめました。
 tags:
   - Figma
   - デザイン
   - NUTMEG
+slug: 20221026_figma-education-2022
 ---
 
 

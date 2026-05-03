@@ -28,7 +28,7 @@ const posts = await getPublishedPosts();
 const filteredPosts = posts
   .filter((post) => (post.data.tags || []).includes(tag))
   .map((post) => ({
-    slug: post.id.replace(/\.mdx?$/, ''),
+    slug: (post.data.slug || post.id.replace(/\.mdx?$/, '')),
     title: post.data.title,
     date: post.data.date,
   }))

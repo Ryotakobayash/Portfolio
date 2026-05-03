@@ -1,10 +1,14 @@
 ---
-title: "AI Reviewerに関する調査"
-description: "AIを活用したコードレビューの現状と、導入による効果についての調査結果をまとめます。"
-date: "2026-03-08"
-category: "Research"
-tags: ["AI", "CodeReview", "LLM"]
+title: AI Reviewerに関する調査
+description: AIを活用したコードレビューの現状と、導入による効果についての調査結果をまとめます。
+date: '2026-03-08'
+category: Research
+tags:
+  - AI
+  - CodeReview
+  - LLM
 draft: true
+slug: 20260308_research_AIReviewer
 ---
 
 仕事でclaude codeを使う中で、過去のデザインレビュー議事録からレビュー観点を抽出し、それを参照しながらAIにレビューさせることができないか気になった。

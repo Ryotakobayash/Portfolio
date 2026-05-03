@@ -13,11 +13,11 @@ export const GET: APIRoute = async () => {
 
     // 公開済みの記事パス一覧を取得
     const publishedPosts = await getPublishedPosts();
-    const validPathPrefixes = publishedPosts.map(post => `/posts/${post.id.replace(/\.mdx?$/, '')}`);
+    const validPathPrefixes = publishedPosts.map(post => `/posts/${(post.data.slug || post.id.replace(/\.mdx?$/, ''))}`);
 
     const oldToNewPathMap = new Map<string, string>();
     for (const post of publishedPosts) {
-        const newSlug = post.id.replace(/\.mdx?$/, '');
+        const newSlug = (post.data.slug || post.id.replace(/\.mdx?$/, ''));
         const oldSlugMatch = newSlug.match(/^\d{8}_(.*)$/);
         const oldSlug = oldSlugMatch ? oldSlugMatch[1] : newSlug;
         oldToNewPathMap.set(`/posts/${oldSlug}`, `/posts/${newSlug}`);

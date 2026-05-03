@@ -27,7 +27,7 @@ export const GET: APIRoute = async ({ params }) => {
     if (!slug) return new Response('Not Found', { status: 404 });
 
     const posts = await getPublishedPosts();
-    const post = posts.find((p) => p.id.replace(/\.mdx?$/, '') === slug);
+    const post = posts.find((p) => (p.data.slug || p.id.replace(/\.mdx?$/, '')) === slug);
 
     if (!post) {
         return new Response('Post Not Found', { status: 404 });

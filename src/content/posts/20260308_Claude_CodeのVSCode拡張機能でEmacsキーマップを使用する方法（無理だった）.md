@@ -1,9 +1,13 @@
 ---
 title: Claude CodeのVSCode拡張機能でEmacsキーマップを使用する方法（無理だった）
 description: Claude CodeのVSCode拡張機能でEmacsキーマップを使用する方法
-date: "2026-03-08"
-tags: [emacs, claudecode, productivity]
+date: '2026-03-08'
+tags:
+  - emacs
+  - claudecode
+  - productivity
 category: Development
+slug: 20260308_emacsKeymap_for_claudeCode-2026
 ---
 
 ## はじめに

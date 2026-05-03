@@ -16,7 +16,7 @@ import careerData from '../data/career.json';
 const posts = await getPublishedPosts();
 const sortedPosts = posts
     .map((post) => ({
-        slug: post.id.replace(/\.mdx?$/, ''),
+        slug: (post.data.slug || post.id.replace(/\.mdx?$/, '')),
         title: post.data.title,
         date: post.data.date,
         tags: post.data.tags || [],
@@ -28,7 +28,7 @@ const postCount = posts.length;
 // Treemap用: 各記事の文字数を計算（Markdownのbody長で近似）
 const treemapPosts = await Promise.all(
     posts.map(async (post) => {
-        const slug = post.id.replace(/\.mdx?$/, '');
+        const slug = (post.data.slug || post.id.replace(/\.mdx?$/, ''));
         const { body } = post;
         // Markdownタグ等を除いた粗い文字数カウント
         const wordCount = (body || '').replace(/[#*\-\[\]()>|`~]/g, '').replace(/\s+/g, '').length;

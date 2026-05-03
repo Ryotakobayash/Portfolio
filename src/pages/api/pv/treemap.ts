@@ -75,7 +75,7 @@ export const GET: APIRoute = async () => {
         const publishedPosts = await getPublishedPosts();
         const oldToNewSlugMap = new Map();
         for (const post of publishedPosts) {
-            const newSlug = post.id.replace(/\.mdx?$/, '');
+            const newSlug = (post.data.slug || post.id.replace(/\.mdx?$/, ''));
             const oldSlugMatch = newSlug.match(/^\d{8}_(.*)$/);
             const oldSlug = oldSlugMatch ? oldSlugMatch[1] : newSlug;
             oldToNewSlugMap.set(oldSlug, newSlug);

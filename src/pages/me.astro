@@ -17,7 +17,7 @@ import careerData from '../data/career.json';
 // 全記事の日付を取得（バーンダウン用）
 const posts = await getPublishedPosts();
 const postDates = posts.map((post) => ({
-    slug: post.id.replace(/\.mdx?$/, ''),
+    slug: (post.data.slug || post.id.replace(/\.mdx?$/, '')),
     date: post.data.date,
 }));
 
