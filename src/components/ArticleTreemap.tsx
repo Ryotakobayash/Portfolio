@@ -3,7 +3,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { useTheme } from '../hooks/useTheme';
 import { useFetchPV } from '../hooks/useFetchPV';
-import { buildFlatData, buildTimelineData, getUsedTags, getTagColor } from '../utils/treemapUtils';
+import { buildTagGroupData, buildTimelineData } from '../utils/treemapUtils';
 import type { PostData } from '../utils/treemapUtils';
 
 type ViewMode = 'pv' | 'wordCount' | 'timeline';
@@ -25,13 +25,16 @@ export default function ArticleTreemap({ posts }: Props) {
     const [viewMode, setViewMode] = useState<ViewMode>('pv');
     const [treemapReady, setTreemapReady] = useState(false);
 
-    // Highcharts Treemap モジュールを動的にロード
+    // Highcharts Treemap / Heatmap モジュールを動的にロード
     useEffect(() => {
-        import('highcharts/modules/treemap').then((mod) => {
-            const init = (mod as any).default || mod;
-            if (typeof init === 'function') {
-                init(Highcharts);
-            }
+        Promise.all([
+            import('highcharts/modules/heatmap'),
+            import('highcharts/modules/treemap')
+        ]).then(([heatmapMod, treemapMod]) => {
+            const initHeatmap = (heatmapMod as any).default || heatmapMod;
+            const initTreemap = (treemapMod as any).default || treemapMod;
+            if (typeof initHeatmap === 'function') initHeatmap(Highcharts);
+            if (typeof initTreemap === 'function') initTreemap(Highcharts);
             setTreemapReady(true);
         }).catch(() => {
             setTreemapReady(true);
@@ -43,7 +46,7 @@ export default function ArticleTreemap({ posts }: Props) {
         if (viewMode === 'timeline') {
             return buildTimelineData(posts, pvMap);
         }
-        return buildFlatData(posts, pvMap, viewMode);
+        return buildTagGroupData(posts, pvMap, viewMode);
     }, [posts, pvMap, viewMode]);
 
     // チャートオプション
@@ -56,6 +59,10 @@ export default function ArticleTreemap({ posts }: Props) {
                 backgroundColor: 'transparent',
                 height: 380,
                 style: { fontFamily: 'Outfit, "Noto Sans JP", sans-serif' },
+            },
+            colorAxis: {
+                minColor: isDark ? '#1f1f1f' : '#ede5ce',
+                maxColor: isDark ? '#7aa090' : '#466557',
             },
             title: { text: undefined },
             credits: { enabled: false },
@@ -168,24 +175,14 @@ export default function ArticleTreemap({ posts }: Props) {
             {/* Treemap */}
             <HighchartsReact highcharts={Highcharts} options={options} ref={chartRef} />
 
-            {/* 凡例 */}
-            <div className="flex text-sm text-muted gap-sm mt-md" style={{ flexWrap: 'wrap' }}>
-                {getUsedTags(posts).map((tag) => (
-                    <span key={tag} className="flex items-center gap-xs" style={{ gap: '5px' }}>
-                        <span style={{
-                            width: '8px', height: '8px',
-                            backgroundColor: getTagColor(tag), display: 'inline-block',
-                            flexShrink: 0,
-                        }} />
-                        {tag}
-                    </span>
-                ))}
-                {totalPV > 0 && (
+            {/* 凡例（colorAxisが自動で描画するためタグ色の凡例は削除） */}
+            {totalPV > 0 && (
+                <div className="flex text-sm text-muted mt-md">
                     <span style={{ marginLeft: 'auto' }}>
                         Total: {totalPV.toLocaleString()} PV
                     </span>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 }
