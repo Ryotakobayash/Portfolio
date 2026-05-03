@@ -92,6 +92,28 @@ export function buildTagGroupData(
     return data;
 }
 
+/**
+ * PVビュー用フラットデータ
+ * グループ分け（parent/child）なしのフラット構造でないと
+ * HighchartsのcolorAxisがsequential coloring として機能しないため、
+ * このモードでは階層を使わない。
+ */
+export function buildPvFlatData(
+    posts: PostData[],
+    pvMap: Record<string, number>,
+): any[] {
+    return posts.map((post) => {
+        const pv = pvMap[post.slug] || 1;
+        return {
+            name: post.title,
+            value: post.wordCount || 100, // 面積 = 文字数
+            colorValue: pv,               // 色 = PV数
+            slug: post.slug,
+            primaryTag: post.tags[0] || 'Other',
+        };
+    });
+}
+
 /** 時系列グルーピングのデータ */
 export function buildTimelineData(
     posts: PostData[],

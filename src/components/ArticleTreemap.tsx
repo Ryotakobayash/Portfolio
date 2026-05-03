@@ -3,7 +3,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { useTheme } from '../hooks/useTheme';
 import { useFetchPV } from '../hooks/useFetchPV';
-import { buildTagGroupData, buildTimelineData } from '../utils/treemapUtils';
+import { buildTagGroupData, buildPvFlatData } from '../utils/treemapUtils';
 import type { PostData } from '../utils/treemapUtils';
 
 type ViewMode = 'genre' | 'pv';
@@ -42,6 +42,11 @@ export default function ArticleTreemap({ posts }: Props) {
 
     // Treemap データ生成
     const treemapData = useMemo(() => {
+        if (viewMode === 'pv') {
+            // PVモードはフラット構造（colorAxis sequentialが機能するのはparent/childなしの場合のみ）
+            return buildPvFlatData(posts, pvMap);
+        }
+        // ジャンルモードはタグごとの階層構造
         return buildTagGroupData(posts, pvMap, viewMode);
     }, [posts, pvMap, viewMode]);
 
@@ -94,7 +99,7 @@ export default function ArticleTreemap({ posts }: Props) {
                         letterSpacing: '0.02em',
                     },
                 },
-                levels: [{
+                levels: viewMode === 'genre' ? [{
                     level: 1,
                     dataLabels: {
                         enabled: true,
@@ -109,7 +114,7 @@ export default function ArticleTreemap({ posts }: Props) {
                     },
                     borderWidth: 1,
                     borderColor: isDark ? '#2A2A2A' : '#C8BAA0',
-                }],
+                }] : [],
             }],
             plotOptions: {
                 series: {
