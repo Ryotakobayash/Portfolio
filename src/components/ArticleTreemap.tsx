@@ -88,6 +88,7 @@ export default function ArticleTreemap({ posts }: Props) {
                 layoutAlgorithm: 'squarified',
                 allowDrillToNode: false,
                 animationLimit: 1000,
+                colorKey: 'colorValue', // colorAxisのグラデーション対象を明示
                 data: treemapData,
                 dataLabels: {
                     enabled: true,
