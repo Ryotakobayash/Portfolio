@@ -59,6 +59,7 @@ export function buildTagGroupData(
         data.push({
             id: `tag_${tag}`,
             name: tag,
+            color: mode === 'pv' ? undefined : getTagColor(tag),
         });
     }
 
@@ -78,8 +79,10 @@ export function buildTagGroupData(
 
             if (mode === 'pv') {
                 point.colorValue = pv; // PV数（sequential palette）
+                point.color = undefined; // 古いcolorがマージされないように明示的にリセット
             } else {
                 point.color = getTagColor(tag); // ジャンル（categorical palette）
+                point.colorValue = undefined; // PV用のcolorValueをリセット
             }
 
             data.push(point);

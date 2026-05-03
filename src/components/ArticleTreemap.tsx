@@ -56,10 +56,12 @@ export default function ArticleTreemap({ posts }: Props) {
                 height: 380,
                 style: { fontFamily: 'Outfit, "Noto Sans JP", sans-serif' },
             },
-            colorAxis: viewMode === 'pv' ? {
-                minColor: isDark ? '#1f1f1f' : '#ede5ce',
-                maxColor: isDark ? '#7aa090' : '#466557',
-            } : undefined,
+            ...(viewMode === 'pv' ? {
+                colorAxis: {
+                    minColor: isDark ? '#1f1f1f' : '#ede5ce',
+                    maxColor: isDark ? '#7aa090' : '#466557',
+                }
+            } : {}),
             title: { text: undefined },
             credits: { enabled: false },
             tooltip: {
@@ -127,12 +129,12 @@ export default function ArticleTreemap({ posts }: Props) {
         };
     }, [treemapData, pvMap, isDark, viewMode]);
 
-    // テーマ変更時にチャート更新
+    // テーマ変更時・データ変更時にチャート更新
     useEffect(() => {
         if (chartRef.current?.chart && treemapData.length > 0) {
             chartRef.current.chart.update(options, true, true);
         }
-    }, [isDark, treemapData]);
+    }, [isDark, treemapData, options]);
 
     if (isLoading || !treemapReady) {
         return (
@@ -168,8 +170,8 @@ export default function ArticleTreemap({ posts }: Props) {
                 ))}
             </div>
 
-            {/* Treemap */}
-            <HighchartsReact highcharts={Highcharts} options={options} ref={chartRef} />
+            {/* Treemap (keyにviewModeを指定して、モード切替時に確実な再描画を行う) */}
+            <HighchartsReact key={viewMode} highcharts={Highcharts} options={options} ref={chartRef} />
 
             {/* 凡例（colorAxisが自動で描画するためタグ色の凡例は削除） */}
             {totalPV > 0 && (
