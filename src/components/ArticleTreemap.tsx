@@ -18,6 +18,11 @@ export default function ArticleTreemap({ posts }: Props) {
     const { pvMap, totalPV, isLoading } = useFetchPV();
     const [treemapReady, setTreemapReady] = useState(false);
 
+    // 合計文字数の計算
+    const totalWords = useMemo(() => {
+        return posts.reduce((acc, post) => acc + (post.wordCount || 0), 0);
+    }, [posts]);
+
     // Highcharts Treemap / Heatmap モジュールを動的にロード
     useEffect(() => {
         Promise.all([
@@ -56,11 +61,10 @@ export default function ArticleTreemap({ posts }: Props) {
                 useHTML: true,
                 formatter: function (this: Highcharts.Point): string {
                     const point = this as any;
-                    const pv = pvMap[point.slug] || 0;
                     return `
                         <div style="padding:4px 8px">
                             <b>${point.name}</b><br/>
-                            <span style="color:${textColor}">PV: ${pv.toLocaleString()}</span><br/>
+                            <span style="color:${textColor}">Words: ${point.value.toLocaleString()}</span><br/>
                             <span style="color:${textColor}">${point.primaryTag || ''}</span>
                         </div>
                     `;
@@ -149,9 +153,9 @@ export default function ArticleTreemap({ posts }: Props) {
                         {tag}
                     </span>
                 ))}
-                {totalPV > 0 && (
+                {totalWords > 0 && (
                     <span style={{ marginLeft: 'auto' }}>
-                        Total: {totalPV.toLocaleString()} PV
+                        Total: {totalWords.toLocaleString()} Words
                     </span>
                 )}
             </div>
