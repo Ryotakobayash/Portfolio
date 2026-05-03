@@ -18,9 +18,14 @@ export default function ShareButtons({ title, url }: Props) {
             href: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
         },
         {
-            label: 'Hatena Bookmark',
-            shortLabel: 'はてブ',
-            href: `https://b.hatena.ne.jp/add?mode=confirm&url=${encodedUrl}&title=${encodedTitle}`,
+            label: 'Bluesky',
+            shortLabel: 'Bluesky',
+            href: `https://bsky.app/intent/compose?text=${encodedTitle}%0A${encodedUrl}`,
+        },
+        {
+            label: 'LinkedIn',
+            shortLabel: 'LinkedIn',
+            href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
         },
     ];
 
