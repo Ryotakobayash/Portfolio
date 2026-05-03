@@ -102,12 +102,22 @@ export function buildPvFlatData(
     posts: PostData[],
     pvMap: Record<string, number>,
 ): any[] {
-    return posts.map((post) => {
-        const pv = pvMap[post.slug] || 1;
+    // pvMapが空かどうか（ローカル環境などでGA4から取得できない場合）
+    const hasPvData = Object.keys(pvMap).length > 0;
+
+    return posts.map((post, i) => {
+        let pv: number;
+        if (hasPvData) {
+            pv = pvMap[post.slug] || 1;
+        } else {
+            // pvMapが空の場合はインデックスに基づくダミー値を使用
+            // （ローカル確認用: colorAxisのグラデーションが見えるようにする）
+            pv = (i + 1) * 10;
+        }
         return {
             name: post.title,
             value: post.wordCount || 100, // 面積 = 文字数
-            colorValue: pv,               // 色 = PV数
+            colorValue: pv,               // 色 = PV数（またはダミー値）
             slug: post.slug,
             primaryTag: post.tags[0] || 'Other',
         };
