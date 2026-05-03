@@ -6,12 +6,11 @@ import { useFetchPV } from '../hooks/useFetchPV';
 import { buildTagGroupData, buildTimelineData } from '../utils/treemapUtils';
 import type { PostData } from '../utils/treemapUtils';
 
-type ViewMode = 'pv' | 'wordCount' | 'timeline';
+type ViewMode = 'genre' | 'pv';
 
 const VIEW_LABELS: Record<ViewMode, string> = {
-    pv: 'PV × ジャンル',
-    wordCount: '文字数 × ジャンル',
-    timeline: '時系列 × ジャンル',
+    genre: 'ジャンルで見る',
+    pv: '閲覧数で見る',
 };
 
 interface Props {
@@ -22,7 +21,7 @@ export default function ArticleTreemap({ posts }: Props) {
     const chartRef = useRef<HighchartsReact.RefObject>(null);
     const isDark = useTheme();
     const { pvMap, totalPV, isLoading } = useFetchPV();
-    const [viewMode, setViewMode] = useState<ViewMode>('pv');
+    const [viewMode, setViewMode] = useState<ViewMode>('genre');
     const [treemapReady, setTreemapReady] = useState(false);
 
     // Highcharts Treemap / Heatmap モジュールを動的にロード
@@ -43,9 +42,6 @@ export default function ArticleTreemap({ posts }: Props) {
 
     // Treemap データ生成
     const treemapData = useMemo(() => {
-        if (viewMode === 'timeline') {
-            return buildTimelineData(posts, pvMap);
-        }
         return buildTagGroupData(posts, pvMap, viewMode);
     }, [posts, pvMap, viewMode]);
 
@@ -60,10 +56,10 @@ export default function ArticleTreemap({ posts }: Props) {
                 height: 380,
                 style: { fontFamily: 'Outfit, "Noto Sans JP", sans-serif' },
             },
-            colorAxis: {
+            colorAxis: viewMode === 'pv' ? {
                 minColor: isDark ? '#1f1f1f' : '#ede5ce',
                 maxColor: isDark ? '#7aa090' : '#466557',
-            },
+            } : undefined,
             title: { text: undefined },
             credits: { enabled: false },
             tooltip: {
@@ -129,7 +125,7 @@ export default function ArticleTreemap({ posts }: Props) {
                 }
             }
         };
-    }, [treemapData, pvMap, isDark]);
+    }, [treemapData, pvMap, isDark, viewMode]);
 
     // テーマ変更時にチャート更新
     useEffect(() => {
