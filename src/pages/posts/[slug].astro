@@ -182,7 +182,7 @@ const allPostsMeta = allPosts.map((p) => ({
     if (!footnoteSection) return;
 
     const refs = document.querySelectorAll('sup a[data-footnote-ref]');
-    refs.forEach((ref) => {
+    refs.forEach((ref, index) => {
       const href = ref.getAttribute('href');
       if (!href) return;
       // href は "#user-content-fn-1" など
@@ -190,9 +190,11 @@ const allPostsMeta = allPosts.map((p) => ({
       const footnoteItem = footnoteSection.querySelector(`#${CSS.escape(id)}`);
       if (!footnoteItem) return;
 
-      // サイドノート要素を生成
-      const sidenote = document.createElement('span');
+      // サイドノート要素を生成（セマンティクスのため aside + role="note"）
+      const sidenote = document.createElement('aside');
       sidenote.className = 'sidenote';
+      sidenote.setAttribute('role', 'note');
+      sidenote.setAttribute('aria-label', `注釈 ${index + 1}`);
       // li の中身を取得（バックリンクを除く）
       const clone = footnoteItem.cloneNode(true);
       clone.querySelectorAll('a[data-footnote-backref]').forEach((el) => el.remove());
