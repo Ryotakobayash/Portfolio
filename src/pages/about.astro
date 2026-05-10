@@ -1,10 +1,22 @@
 ---
 export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SkillRadar from '../components/SkillRadar';
+import { getPublishedPosts } from '../utils/posts';
+import LifeProgress from '../components/LifeProgress';
+import CreativeLifeCountdown from '../components/CreativeLifeCountdown';
+import PostBurndown from '../components/PostBurndown';
+import GitHubActivity from '../components/GitHubActivity';
+import goalsData from '../data/goals.json';
+
+// 全記事の日付を取得（バーンダウン用）
+const posts = await getPublishedPosts();
+const postDates = posts.map((post) => ({
+    slug: (post.data.slug || post.id.replace(/\.mdx?$/, '')),
+    date: post.data.date,
+}));
 ---
 
-<BaseLayout title="RK / About" description="小林 諒大のプロフィール">
+<BaseLayout title="RK / About" description="小林 諒大のプロフィールとダッシュボード">
   <div class="about">
     <!-- Hero Section -->
     <section class="hero">
@@ -18,124 +30,49 @@ import SkillRadar from '../components/SkillRadar';
 
     <hr class="divider" />
 
-    <!-- Education Section -->
+    <!-- ===== Time Remaining ===== -->
     <section class="section">
-      <h2 class="section-title"><span>01 · Education</span></h2>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-marker"></div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">長岡技術科学大学 大学院</h3>
-            <p class="timeline-subtitle">工学専攻科 機械工学分野 / 知的計測制御研究室</p>
-            <p class="timeline-date">2023/4 〜 2025/3</p>
+      <h2 class="section-title"><span>01 · Time Remaining</span></h2>
+      <div class="me-grid me-grid--2col">
+          <div class="bento-card">
+              <LifeProgress
+                  client:load
+                  birthYear={goalsData.lifeExpectancy.birthYear}
+                  expectedAge={goalsData.lifeExpectancy.expectedAge}
+              />
           </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-marker"></div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">長岡技術科学大学</h3>
-            <p class="timeline-subtitle">工学部 機械創造工学分野 / ナノ・原子レベル解析研究室</p>
-            <p class="timeline-date">2019/4 〜 2023/3</p>
+          <div class="bento-card">
+              <CreativeLifeCountdown
+                  client:load
+                  startDate={goalsData.creativeLife.start}
+                  endDate={goalsData.creativeLife.end}
+              />
           </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-marker"></div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">新潟県立新潟工業高等学校</h3>
-            <p class="timeline-subtitle">機械科</p>
-            <p class="timeline-date">〜 2019/3</p>
-          </div>
-        </div>
       </div>
     </section>
 
     <hr class="divider" />
 
-    <!-- Work Section -->
+    <!-- ===== Post Count ===== -->
     <section class="section">
-      <h2 class="section-title"><span>02 · Work</span></h2>
-      <div class="timeline">
-        <div class="timeline-item timeline-item--active">
-          <div class="timeline-marker"></div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">サイボウズ株式会社</h3>
-            <p class="timeline-subtitle">開発本部 プロダクトデザイナー / kintoneプラットフォーム</p>
-            <p class="timeline-date">2025/4 〜 現在</p>
-          </div>
-        </div>
+      <h2 class="section-title"><span>02 · Post Count {goalsData.posts.period}</span></h2>
+      <div class="bento-card">
+          <PostBurndown
+              client:only="react"
+              posts={postDates}
+              yearlyTarget={goalsData.posts.yearlyTarget}
+              period={goalsData.posts.period}
+          />
       </div>
     </section>
 
     <hr class="divider" />
 
-    <!-- Skills Section -->
+    <!-- ===== GitHub Activity ===== -->
     <section class="section">
-      <h2 class="section-title"><span>03 · Skills</span></h2>
-
-      <!-- スキルレーダーチャート -->
-      <div class="bento-card" style="margin-bottom: var(--spacing-lg);">
-        <SkillRadar client:only="react" data={{
-          'Product Design': 55,
-          'UX Research': 40,
-          'Visual Design': 50,
-          'Frontend Dev': 65,
-        }} />
-      </div>
-
-      <h3 class="subsection-title">デザインスキル</h3>
-      <div class="skill-grid">
-        <div class="skill-item">
-          <div class="skill-header">
-            <span>UIデザイン</span>
-            <span class="skill-level">Lv.2.5/5</span>
-          </div>
-          <div class="skill-bar"><div class="skill-bar__fill" style="width: 50%"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-header">
-            <span>ウェブアクセシビリティ</span>
-            <span class="skill-level">Lv.2/5</span>
-          </div>
-          <div class="skill-bar"><div class="skill-bar__fill" style="width: 40%"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-header">
-            <span>情報設計</span>
-            <span class="skill-level">Lv.2/5</span>
-          </div>
-          <div class="skill-bar"><div class="skill-bar__fill" style="width: 40%"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-header">
-            <span>プロトタイピング</span>
-            <span class="skill-level">Lv.2/5</span>
-          </div>
-          <div class="skill-bar"><div class="skill-bar__fill" style="width: 40%"></div></div>
-        </div>
-      </div>
-
-      <h3 class="subsection-title">技術スキル</h3>
-      <div class="tech-grid">
-        <div class="tech-card">
-          <h4 class="tech-card__name">Figma</h4>
-          <span class="badge">3年程度</span>
-          <p class="tech-card__desc">アプリUIデザイン、プロトタイプ作成、コンポーネントライブラリ作成</p>
-        </div>
-        <div class="tech-card">
-          <h4 class="tech-card__name">Adobe Illustrator</h4>
-          <span class="badge">5年程度</span>
-          <p class="tech-card__desc">ロゴデザイン、印刷物作成、SVG書き出し</p>
-        </div>
-        <div class="tech-card">
-          <h4 class="tech-card__name">HTML/CSS/SCSS</h4>
-          <span class="badge">4年程度</span>
-          <p class="tech-card__desc">Webサイト作成、フロントエンド実装</p>
-        </div>
-        <div class="tech-card">
-          <h4 class="tech-card__name">TypeScript</h4>
-          <span class="badge">1年未満</span>
-          <p class="tech-card__desc">Vue, React, Next.js を使用したフロントエンド開発</p>
-        </div>
+      <h2 class="section-title"><span>03 · GitHub Activity</span></h2>
+      <div class="bento-card">
+          <GitHubActivity client:load />
       </div>
     </section>
 
@@ -164,7 +101,7 @@ import SkillRadar from '../components/SkillRadar';
 
 <style>
   .about {
-    max-width: 700px;
+    max-width: 800px;
     margin: 0 auto;
   }
 
@@ -224,115 +161,13 @@ import SkillRadar from '../components/SkillRadar';
     background: var(--color-border);
   }
 
-  .subsection-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: var(--spacing-lg) 0 var(--spacing-md);
-  }
-
-  /* Timeline */
-  .timeline {
-    padding-left: var(--spacing-lg);
-    border-left: 2px solid var(--color-border);
-  }
-
-  .timeline-item {
-    position: relative;
-    padding-bottom: var(--spacing-lg);
-  }
-
-  .timeline-item:last-child {
-    padding-bottom: 0;
-  }
-
-  .timeline-marker {
-    position: absolute;
-    left: calc(-1 * var(--spacing-lg) - 5px);
-    top: 5px;
-    width: 8px;
-    height: 8px;
-    background-color: var(--color-border);
-    border: 2px solid var(--color-bg);
-  }
-
-  .timeline-item--active .timeline-marker {
-    background-color: var(--color-accent);
-  }
-
-  .timeline-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-xs);
-  }
-
-  .timeline-subtitle {
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-xs);
-  }
-
-  .timeline-date {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-  }
-
-  /* Skills */
-  .skill-grid {
+  .me-grid {
     display: grid;
-    gap: var(--spacing-md);
+    gap: var(--spacing-lg);
   }
 
-  .skill-item {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-  }
-
-  .skill-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.875rem;
-  }
-
-  .skill-level {
-    color: var(--color-text-muted);
-    font-size: 0.75rem;
-  }
-
-  .skill-bar {
-    height: 4px;
-    background-color: var(--color-border);
-    overflow: hidden;
-  }
-
-  .skill-bar__fill {
-    height: 100%;
-    background-color: var(--color-primary);
-  }
-
-  .tech-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-md);
-  }
-
-  .tech-card {
-    background-color: var(--color-bg-card);
-    border: 1px solid var(--color-border);
-    border-left: 2px solid var(--color-primary);
-    padding: var(--spacing-md);
-  }
-
-  .tech-card__name {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-xs);
-  }
-
-  .tech-card__desc {
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    margin-top: var(--spacing-sm);
+  .me-grid--2col {
+    grid-template-columns: 1fr 1fr;
   }
 
   /* Links */
@@ -361,5 +196,11 @@ import SkillRadar from '../components/SkillRadar';
   .link-item:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
+  }
+
+  @media (max-width: 700px) {
+    .me-grid--2col {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
