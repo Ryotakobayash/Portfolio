@@ -104,15 +104,18 @@ export function GitHubActivity({ username = 'Ryotakobayash' }: { username?: stri
                 fontFamily: 'var(--font-mono)', letterSpacing: '0.06em',
             }}>
                 <span>{totalContributions} contributions in the last year</span>
-                <a
-                    href={`https://github.com/${username}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary"
-                    style={{ textDecoration: 'none', fontSize: '0.65rem', fontFamily: 'var(--font-mono)' }}
-                >
-                    @{username} →
-                </a>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span>Source: GitHub API</span>
+                    <a
+                        href={`https://github.com/${username}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary"
+                        style={{ textDecoration: 'none', fontSize: '0.65rem', fontFamily: 'var(--font-mono)' }}
+                    >
+                        @{username} →
+                    </a>
+                </span>
             </div>
         </div>
     );

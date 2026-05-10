@@ -94,6 +94,14 @@ export function PopularPosts() {
                     </span>
                 </a>
             ))}
+
+            {/* Data Source */}
+            <div style={{
+                marginTop: '12px', fontSize: '0.6rem', color: 'var(--color-text-muted)',
+                fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
+            }}>
+                Source: GA4 Data API
+            </div>
         </div>
     );
 }

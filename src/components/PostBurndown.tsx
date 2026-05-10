@@ -185,6 +185,14 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
 
             {/* チャート */}
             <HighchartsReact highcharts={Highcharts} options={options} ref={chartRef} />
+
+            {/* Data Source */}
+            <div style={{
+                marginTop: '4px', fontSize: '0.6rem', color: 'var(--color-text-muted)',
+                fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
+            }}>
+                Source: Local Files (Markdown)
+            </div>
         </div>
     );
 }

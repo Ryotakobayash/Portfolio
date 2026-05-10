@@ -87,6 +87,15 @@ export default function CreativeLifeCountdown({ startDate, endDate }: Props) {
             <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
                 「力を尽くして生きなさい」— カプローニ
             </span>
+
+            {/* Data Source */}
+            <div style={{
+                marginTop: 'auto', paddingTop: '8px',
+                fontSize: '0.6rem', color: 'var(--color-text-muted)',
+                fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
+            }}>
+                Source: Local Config
+            </div>
         </div>
     );
 }

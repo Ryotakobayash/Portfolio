@@ -160,6 +160,14 @@ export default function ArticleTreemap({ posts }: Props) {
                     )}
                 </div>
             </div>
+
+            {/* Data Source */}
+            <div style={{
+                marginTop: '12px', fontSize: '0.6rem', color: 'var(--color-text-muted)',
+                fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
+            }}>
+                Source: Local Files & GA4 API
+            </div>
         </div>
     );
 }

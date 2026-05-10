@@ -98,6 +98,15 @@ export default function LifeProgress({ birthYear, expectedAge }: Props) {
                     )}
                 </div>
             </div>
+
+            {/* Data Source */}
+            <div style={{
+                marginTop: 'auto', paddingTop: '8px',
+                fontSize: '0.6rem', color: 'var(--color-text-muted)',
+                fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
+            }}>
+                Source: Local Config
+            </div>
         </div>
     );
 }

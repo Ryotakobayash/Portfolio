@@ -83,6 +83,14 @@ export default function PVProgress({ monthlyTarget }: Props) {
                     transition: 'width 0.8s ease',
                 }} />
             </div>
+
+            {/* Data Source */}
+            <div style={{
+                marginTop: '4px', fontSize: '0.6rem', color: 'var(--color-text-muted)',
+                fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
+            }}>
+                Source: GA4 Data API
+            </div>
         </div>
     );
 }
