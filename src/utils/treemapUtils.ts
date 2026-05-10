@@ -29,14 +29,27 @@ const TAG_COLORS: Record<string, string> = {
     'Blog': '#8A6A3A',
 };
 
-const DEFAULT_COLOR = '#6B6050'; // muted border tone
+const DIVERSE_COLORS = [
+    '#5C7F71', '#A03030', '#4A7A8A', '#C07050', '#7A5C8A', '#C99040',
+    '#7B5E52', '#8A6A3A', '#445566', '#6A8A5C', '#8A4A5C', '#5C6A8A',
+    '#A08030', '#307080', '#704060', '#508050', '#806040', '#606080',
+    '#808050', '#705070', '#507080', '#8A5A4A', '#4A8A6A', '#6A4A8A'
+];
+
+function hashCode(str: string) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return Math.abs(hash);
+}
 
 export function getTagColor(tag: string): string {
     if (TAG_COLORS[tag]) return TAG_COLORS[tag];
     for (const [key, color] of Object.entries(TAG_COLORS)) {
         if (tag.toLowerCase().includes(key.toLowerCase())) return color;
     }
-    return DEFAULT_COLOR;
+    return DIVERSE_COLORS[hashCode(tag) % DIVERSE_COLORS.length];
 }
 
 /** 「ジャンルで見る」用データ — タグで階層化し、categoricalパレットで色分け */
