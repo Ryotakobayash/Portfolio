@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useCountUp } from '../hooks/useCountUp';
 
 interface Props {
     postCount: number;
@@ -24,11 +25,16 @@ export default function CumulativeStats({ postCount, talks, projects }: Props) {
             .finally(() => setIsLoading(false));
     }, []);
 
+    const animatedPostCount = useCountUp(postCount, 1500);
+    const animatedTotalPV = useCountUp(totalPV, 1500);
+    const animatedTalks = useCountUp(talks, 1500);
+    const animatedProjects = useCountUp(projects, 1500);
+
     const stats = [
-        { label: 'Posts', value: postCount },
-        { label: 'Total PV', value: isLoading ? '---' : totalPV.toLocaleString() },
-        { label: 'Talks', value: talks },
-        { label: 'Projects', value: projects },
+        { label: 'Posts', value: animatedPostCount },
+        { label: 'Total PV', value: isLoading ? '---' : animatedTotalPV.toLocaleString() },
+        { label: 'Talks', value: animatedTalks },
+        { label: 'Projects', value: animatedProjects },
     ];
 
     return (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCountUp } from '../hooks/useCountUp';
 
 interface Props {
     birthYear: number;
@@ -16,14 +16,16 @@ export default function LifeProgress({ birthYear, expectedAge }: Props) {
     const halfAge = Math.ceil(expectedAge / 2);
     const yearsToHalf = halfAge - age;
 
+    const animatedPercentage = useCountUp(percentage, 2000);
+
     // SVG Ring Progress
     const size = 120;
     const strokeWidth = 10;
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
-    const offset = circumference - (percentage / 100) * circumference;
+    const offset = circumference - (animatedPercentage / 100) * circumference;
 
-    const isOverHalf = percentage >= 50;
+    const isOverHalf = animatedPercentage >= 50;
 
     return (
 
@@ -70,7 +72,7 @@ export default function LifeProgress({ birthYear, expectedAge }: Props) {
                         alignItems: 'center', justifyContent: 'center',
                     }}>
                         <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                            {percentage}%
+                            {animatedPercentage}%
                         </span>
                     </div>
                 </div>

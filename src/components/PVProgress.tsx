@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useCountUp } from '../hooks/useCountUp';
 
 interface Props {
     monthlyTarget: number;
@@ -24,7 +25,10 @@ export default function PVProgress({ monthlyTarget }: Props) {
             .finally(() => setIsLoading(false));
     }, []);
 
+    const animatedPV = useCountUp(currentPV, 1500);
+
     const percentage = Math.min(100, Math.round((currentPV / monthlyTarget) * 100));
+    const animatedPercentage = useCountUp(percentage, 1500);
     const isAchieved = percentage >= 100;
 
     const generateSparklinePath = (data: { pv: number }[]) => {
@@ -79,19 +83,20 @@ export default function PVProgress({ monthlyTarget }: Props) {
                     color: isAchieved ? 'var(--color-primary)' : 'var(--color-text)',
                     fontFamily: 'var(--font-sans)',
                 }}>
-                    {currentPV.toLocaleString()}
+                    {animatedPV.toLocaleString()}
                 </span>
                 <span style={{ position: 'relative', zIndex: 1, fontSize: '0.65rem', color: 'var(--color-text-muted)', letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
                     PV (last 7d)
                 </span>
                 <span style={{
                     marginLeft: 'auto',
+                    position: 'relative', zIndex: 1,
                     fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em',
                     textTransform: 'uppercase', padding: '2px 6px',
                     border: `1px solid ${isAchieved ? 'var(--color-primary)' : 'var(--color-border)'}`,
                     color: isAchieved ? 'var(--color-primary)' : 'var(--color-text-muted)',
                 }}>
-                    {isAchieved ? 'ACHIEVED' : `${percentage}%`}
+                    {isAchieved ? 'ACHIEVED' : `${animatedPercentage}%`}
                 </span>
             </div>
 

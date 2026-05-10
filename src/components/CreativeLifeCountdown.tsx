@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useCountUp } from '../hooks/useCountUp';
 
 interface Props {
     startDate: string;  // "2025-04-01"
@@ -36,6 +37,8 @@ export default function CreativeLifeCountdown({ startDate, endDate }: Props) {
         setTimeBreakdown({ years, months, days });
     }, [startDate, endDate]);
 
+    const animatedDaysLeft = useCountUp(daysLeft, 2000);
+
     return (
         <div style={{
             display: 'flex', flexDirection: 'column', gap: '12px',
@@ -48,7 +51,7 @@ export default function CreativeLifeCountdown({ startDate, endDate }: Props) {
             {/* 残り日数 */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                 <span style={{ fontSize: '2.2rem', fontWeight: 900, letterSpacing: '-0.04em', color: 'var(--color-primary)', fontFamily: 'var(--font-sans)' }}>
-                    {daysLeft.toLocaleString()}
+                    {animatedDaysLeft.toLocaleString()}
                 </span>
                 <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', letterSpacing: '0.08em' }}>
                     days
