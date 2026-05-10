@@ -163,8 +163,48 @@ const allPostsMeta = allPosts.map((p) => ({
   }
 
   // Run on initial load and setup a listener for Astro View Transitions if used
-  document.addEventListener('DOMContentLoaded', setupImageFigures);
-  document.addEventListener('astro:page-load', setupImageFigures);
+  document.addEventListener('DOMContentLoaded', () => {
+    setupImageFigures();
+    setupSidenotes();
+  });
+  document.addEventListener('astro:page-load', () => {
+    setupImageFigures();
+    setupSidenotes();
+  });
+
+  /**
+   * 脚注（.footnotes セクション）をサイドノートとして本文横に展開する
+   * デスクトップ: float で右余白に配置
+   * モバイル: インライン表示にフォールバック
+   */
+  function setupSidenotes() {
+    const footnoteSection = document.querySelector('.footnotes');
+    if (!footnoteSection) return;
+
+    const refs = document.querySelectorAll('sup a[data-footnote-ref]');
+    refs.forEach((ref) => {
+      const href = ref.getAttribute('href');
+      if (!href) return;
+      // href は "#user-content-fn-1" など
+      const id = href.replace(/^#/, '');
+      const footnoteItem = footnoteSection.querySelector(`#${CSS.escape(id)}`);
+      if (!footnoteItem) return;
+
+      // サイドノート要素を生成
+      const sidenote = document.createElement('span');
+      sidenote.className = 'sidenote';
+      // li の中身を取得（バックリンクを除く）
+      const clone = footnoteItem.cloneNode(true);
+      clone.querySelectorAll('a[data-footnote-backref]').forEach((el) => el.remove());
+      sidenote.innerHTML = clone.innerHTML;
+
+      // 脚注参照 <sup> の直後に挿入
+      const sup = ref.closest('sup');
+      if (sup?.parentNode) {
+        sup.parentNode.insertBefore(sidenote, sup.nextSibling);
+      }
+    });
+  }
 </script>
 
 <style>
@@ -419,5 +459,57 @@ const allPostsMeta = allPosts.map((p) => ({
   .prose :global(th) {
     background-color: var(--color-bg-secondary);
     font-weight: 600;
+  }
+
+  /* ===== 脚注 / サイドノート ===== */
+
+  /* ページ下部のデフォルト脚注セクションを非表示にする */
+  .prose :global(.footnotes) {
+    display: none;
+  }
+
+  /* 脚注参照リンク（上付き数字） */
+  .prose :global(sup a[data-footnote-ref]) {
+    color: var(--color-primary);
+    font-size: 0.7em;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 0 1px;
+  }
+
+  .prose :global(sup a[data-footnote-ref]:hover) {
+    color: var(--color-accent-2);
+  }
+
+  /* サイドノート本体 — デスクトップ: 右余白に float */
+  .prose :global(.sidenote) {
+    display: block;
+    float: right;
+    clear: right;
+    width: 180px;
+    margin-right: -210px;
+    margin-top: 0.2em;
+    margin-bottom: 0.5em;
+    padding: 6px 8px;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    border-left: 2px solid var(--color-primary);
+    opacity: 0.85;
+  }
+
+  /* モバイル: float 解除してインライン表示 */
+  @media (max-width: 1023px) {
+    .prose :global(.sidenote) {
+      float: none;
+      clear: none;
+      width: 100%;
+      margin-right: 0;
+      margin: 0.75rem 0;
+      padding: 0.5rem 0.75rem;
+      background-color: var(--color-bg-secondary);
+      border-left: 2px solid var(--color-primary);
+    }
   }
 </style>
