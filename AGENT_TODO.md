@@ -91,6 +91,104 @@
 
 ## 🚧 進行中タスク (In Progress)
 
+### [Phase 3: Content Experience — ブログ・記事体験の強化]
+**背景・目的:**
+- ポートフォリオの中核コンテンツである「記事」の読書体験を向上させる。
+- RSS Feed の整備、脚注の余白表示、カスタムエラーページ の3タスクに絞る（リンクプレビューや記事間グラフは Phase 4 以降に延期）。
+
+**作業ルール:**
+- 1タスク完了ごとに `git commit` すること。
+- コミットメッセージは `feat:` / `style:` / `fix:` のプレフィクスを使うこと。
+- 完了したタスクはチェックを入れること。
+- 全タスク完了後、このセクション全体を `## ✅ 完了タスク (Done)` へ移動し、サマリーを追記すること。
+
+---
+
+#### タスク 3-1: RSS / JSON Feed の整備
+- [ ] 実装完了
+- [ ] ビルドエラーなし確認
+
+**概要:** `@astrojs/rss` を使い `/rss.xml` エンドポイントを生成する。
+
+**手順:**
+1. `pnpm add @astrojs/rss` でパッケージをインストール。
+2. `src/pages/rss.xml.ts` を新規作成。以下の要件で実装する:
+   - `getPublishedPosts()` (`src/utils/posts.ts`) を使って公開済み記事のみ取得。
+   - `title`: `"RK / Portfolio"`, `description`: `"Ryota Kobayashi's blog and portfolio"`, `site`: `import.meta.env.SITE` (astro.config.mjs の `site` 値)。
+   - 各アイテムの `link` は `/posts/${post.data.slug || post.id.replace(/\.mdx?$/, '')}` 形式。
+   - `pubDate` は `post.data.date` を `new Date()` でパース。
+   - 記事を日付降順でソートしてフィードに含める。
+3. `src/layouts/BaseLayout.astro` の `<head>` 内に `<link rel="alternate" type="application/rss+xml" title="RK / Portfolio" href="/rss.xml" />` を追加。
+4. **注意:** このファイルは SSR 環境でプリレンダリングする必要があるため、ファイル先頭に `export const prerender = true;` を記述すること。
+
+**完了条件:** `pnpm run build` がエラーなく通り、`/rss.xml` にアクセスするとXML形式のフィードが返ること。
+
+---
+
+#### タスク 3-2: Markdown 脚注（footnote）の Tufte CSS 的な余白注釈表示
+- [ ] 実装完了
+- [ ] ビルドエラーなし確認
+
+**概要:** Markdown の `[^1]` 記法による脚注を、ページ下部ではなく記事本文の右余白（サイドノート）に表示する。デスクトップのみサイドノート表示し、モバイルではインライン展開する。
+
+**手順:**
+1. `pnpm add remark-gfm` が既にインストール済みか確認（`package.json` を参照 → 済み）。`remark-gfm` は GFM footnote 構文をパースする。
+2. `astro.config.mjs` の `markdown.remarkPlugins` に `remark-gfm` が設定されているか確認し、なければ追加。（`remarkPlugins: [remarkGfm]` の形式）
+3. `src/pages/posts/[slug].astro` の `<style>` セクションに以下のスタイルを追加:
+   - `.prose :global(.footnotes)` — デフォルトの脚注セクション（ページ下部）を非表示にする (`display: none`)。
+   - `.prose :global(sup a[data-footnote-ref])` — 脚注参照リンクのスタイル。上付き数字をプライマリカラーで強調。
+   - `.prose :global(.sidenote)` — サイドノート用スタイル。`float: right; clear: right; margin-right: -220px; width: 200px;` で右余白に配置。`font-size: 0.75rem; color: var(--color-text-muted);`。
+   - モバイル (`@media (max-width: 1023px)`) では `.sidenote` を `float: none; width: 100%; margin: 0.5rem 0; padding: 0.5rem; background: var(--color-bg-secondary); border-left: 2px solid var(--color-primary);` にフォールバック。
+4. `src/pages/posts/[slug].astro` の `<script>` セクション（`setupImageFigures` と同じ場所）に、DOM操作で脚注をサイドノートに変換する関数を追加:
+   ```js
+   function setupSidenotes() {
+     const footnoteSection = document.querySelector('.footnotes');
+     if (!footnoteSection) return;
+     const refs = document.querySelectorAll('sup a[data-footnote-ref]');
+     refs.forEach((ref) => {
+       const id = ref.getAttribute('href')?.replace('#', '');
+       if (!id) return;
+       const footnoteItem = footnoteSection.querySelector(`#${id}`);
+       if (!footnoteItem) return;
+       // サイドノート要素を生成
+       const sidenote = document.createElement('span');
+       sidenote.className = 'sidenote';
+       sidenote.innerHTML = footnoteItem.innerHTML;
+       // バックリンクを削除
+       sidenote.querySelectorAll('.data-footnote-backref, a[data-footnote-backref]').forEach(el => el.remove());
+       // 脚注参照の直後に挿入
+       const sup = ref.closest('sup');
+       sup?.parentNode?.insertBefore(sidenote, sup.nextSibling);
+     });
+   }
+   ```
+   既存の `DOMContentLoaded` / `astro:page-load` イベントリスナーに `setupSidenotes()` の呼び出しを追加。
+5. **注意:** `.article-layout` のグリッドは現状 `max-width: 1100px` で `1fr 280px` 構成。サイドノートが右余白にはみ出すには、記事本文 `.prose` に `overflow: visible` を確保し、`.article` にも `overflow: visible` を設定する必要がある。既存の `overflow` 指定があれば `visible` に変更すること。
+
+**完了条件:** テスト用の脚注を含む記事をビルドし、デスクトップ幅で脚注が本文横に表示され、モバイル幅ではインライン展開されること。
+
+---
+
+#### タスク 3-3: カスタム 404 ページの作成
+- [ ] 実装完了
+- [ ] ビルドエラーなし確認
+
+**概要:** ポートフォリオの世界観に合ったカスタム404ページを作成する。ASCIIアート風のデザインで「迷子」感を表現する。
+
+**手順:**
+1. `src/pages/404.astro` を新規作成。`export const prerender = true;` を先頭に記述（Astro SSR環境で404をプリレンダリングする標準手法）。
+2. `BaseLayout` を使用し、タイトルは `"404 — Page Not Found | RK / Portfolio"`。
+3. ページ内容:
+   - 中央寄せレイアウト（`display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh;`）。
+   - 大きな `404` 数字をモノスペースで表示（`font-size: 6rem; font-weight: 900; color: var(--color-primary); font-family: var(--font-mono); letter-spacing: 0.1em;`）。
+   - サブテキスト: `"SIGNAL LOST"` を `font-size: 0.7rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--color-text-muted);` で表示。
+   - 説明文: `"The page you're looking for has drifted beyond our telemetry range."` を `font-size: 0.9rem; color: var(--color-text-secondary); max-width: 400px; text-align: center;` で表示。
+   - ASCIIアートの装飾: `█▓▒░` を使った横ライン（`<div class="morse">` クラスを再利用）を上下に配置。
+   - ホームへのリンクボタン: `"← Return to Base"` — `<a href="/" class="link-arrow">` を使用。
+4. スタイルは `<style>` タグ内にスコープドCSSで記述する（global.css には追加しない）。
+
+**完了条件:** 存在しないURL（例: `/nonexistent`）にアクセスした際にこのページが表示されること。
+
 ---
 
 ## ✅ 完了タスク (Done)
