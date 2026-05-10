@@ -95,17 +95,18 @@
 
 ## 🚧 進行中タスク (In Progress)
 
-### [Phase 1: Quick Wins & Clarity]
-**背景・目的:**
-- トークン枯渇のリスクに備え、即効性のあるUI改善とバグ修正を優先して進める方針をドキュメント化。
-- 小さな修正をこなしつつ、1タスクごとにgit commitを実施して進捗を保存する。
+---
 
-**要件・仕様・進捗:**
-- [x] ASCII レンダーに使う文字のカスタム ( `█▓▒░` に変更)
-- [x] `/me` (現 `/about`) の Life Progress の説明追加 (初期マウント時のバグ修正と説明テキスト追加)
-- [x] Article Map の categorical パレット色数増加 (DIVERSE_COLORS定義と文字列ハッシュによる決定)
-- [ ] `Article Map — Word Count`の面積が文字数を表していることを明示する。
-- [ ] `Popular Posts · 30 Days` を月切り替えリセットではなく直近30日の集計に変更する。
+## ✅ 完了タスク (Done)
+### [Phase 1: Quick Wins & Clarity]
+**完了日時:** 2026-05-10
+**サマリー:**
+トークン枯渇リスクに備え、即効性のあるUI改善とバグ修正を優先実施し、タスクごとにGitコミットを行いました。
+- ASCII レンダーに使う文字のカスタム ( `█▓▒░` に変更)
+- `/me` (現 `/about`) の Life Progress の説明追加 (初期マウント時のバグ修正と説明テキスト追加)
+- Article Map の categorical パレット色数増加 (DIVERSE_COLORS定義と文字列ハッシュによる決定)
+- `Article Map — Word Count`の面積が文字数を表していることを明示する。 (凡例とTooltipに追加)
+- `Popular Posts · 30 Days` を直近30日の集計に変更する。 (GA4のAPIが既に `30daysAgo` を使用したローリング集計であることを確認)
 
 
 
