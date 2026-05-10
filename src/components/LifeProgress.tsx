@@ -10,21 +10,11 @@ interface Props {
  * 現在の年齢 / 期待寿命 の割合をリング型プログレスで表示
  */
 export default function LifeProgress({ birthYear, expectedAge }: Props) {
-    const [currentAge, setCurrentAge] = useState(0);
-    const [percentage, setPercentage] = useState(0);
-    const [yearsToHalf, setYearsToHalf] = useState(0);
-
-    useEffect(() => {
-        const now = new Date();
-        const age = now.getFullYear() - birthYear;
-        const pct = Math.round((age / expectedAge) * 100);
-        const halfAge = Math.ceil(expectedAge / 2);
-        const toHalf = halfAge - age;
-
-        setCurrentAge(age);
-        setPercentage(pct);
-        setYearsToHalf(toHalf > 0 ? toHalf : 0);
-    }, [birthYear, expectedAge]);
+    // コンポーネント内で直接計算（初期レンダー時のチラつきや矛盾を防ぐ）
+    const age = new Date().getFullYear() - birthYear;
+    const percentage = Math.round((age / expectedAge) * 100);
+    const halfAge = Math.ceil(expectedAge / 2);
+    const yearsToHalf = halfAge - age;
 
     // SVG Ring Progress
     const size = 120;
@@ -42,9 +32,14 @@ export default function LifeProgress({ birthYear, expectedAge }: Props) {
             padding: '4px 0',
         }}>
 
-            <span style={{ fontSize: '0.55rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
-                Life Progress
-            </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <span style={{ fontSize: '0.55rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
+                    Life Progress
+                </span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', lineHeight: 1.4 }}>
+                    想定寿命（{expectedAge}歳）に対する現在の年齢の割合
+                </span>
+            </div>
 
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
@@ -85,7 +80,7 @@ export default function LifeProgress({ birthYear, expectedAge }: Props) {
 
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
                         <span style={{ fontSize: '2.2rem', fontWeight: 900, letterSpacing: '-0.04em', color: 'var(--color-primary)', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap' }}>
-                            {currentAge} / {expectedAge}
+                            {age} / {expectedAge}
                         </span>
                         <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', letterSpacing: '0.08em' }}>
                             yrs
