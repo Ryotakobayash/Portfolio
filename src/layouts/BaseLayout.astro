@@ -38,7 +38,7 @@ const isActive = (path: string) => {
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title="Dashboard Portfolio RSS" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="RK / Portfolio" href="/rss.xml" />
     
     <!-- OGP Tags -->
     <meta property="og:title" content={title} />
@@ -88,7 +88,6 @@ const isActive = (path: string) => {
         <nav class="nav-links">
           <a href="/posts" class={`nav-link ${isActive('/posts') ? 'nav-link--accent' : ''}`}>Posts</a>
           <a href="/about" class={`nav-link ${isActive('/about') ? 'nav-link--accent' : ''}`}>About</a>
-          <a href="/me" class={`nav-link ${isActive('/me') ? 'nav-link--accent' : ''}`}>Dashboard</a>
         </nav>
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
           <span class="sun-icon">LIGHT</span>
