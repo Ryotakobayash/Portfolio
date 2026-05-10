@@ -64,7 +64,7 @@ export default function ArticleTreemap({ posts }: Props) {
                     return `
                         <div style="padding:4px 8px">
                             <b>${point.name}</b><br/>
-                            <span style="color:${textColor}">Words: ${point.value.toLocaleString()}</span><br/>
+                            <span style="color:${textColor}">Words (Area): ${point.value.toLocaleString()}</span><br/>
                             <span style="color:${textColor}">${point.primaryTag || ''}</span>
                         </div>
                     `;
@@ -153,11 +153,12 @@ export default function ArticleTreemap({ posts }: Props) {
                         {tag}
                     </span>
                 ))}
-                {totalWords > 0 && (
-                    <span style={{ marginLeft: 'auto' }}>
-                        Total: {totalWords.toLocaleString()} Words
-                    </span>
-                )}
+                <div style={{ marginLeft: 'auto', display: 'flex', gap: '16px', alignItems: 'center' }}>
+                    <span>※ ブロック面積 = 文字数</span>
+                    {totalWords > 0 && (
+                        <span>Total: {totalWords.toLocaleString()} Words</span>
+                    )}
+                </div>
             </div>
         </div>
     );
