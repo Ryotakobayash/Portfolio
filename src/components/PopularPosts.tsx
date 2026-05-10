@@ -22,12 +22,7 @@ export function PopularPosts() {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} style={{
-                        height: '36px',
-                        background: 'linear-gradient(90deg, var(--color-bg-secondary) 25%, var(--color-border) 50%, var(--color-bg-secondary) 75%)',
-                        backgroundSize: '200% 100%',
-                        animation: 'skeleton-loading 1.5s infinite',
-                    }} />
+                    <div key={i} className="skeleton" style={{ height: '36px' }} />
                 ))}
             </div>
         );
