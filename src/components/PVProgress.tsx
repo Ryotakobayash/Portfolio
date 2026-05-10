@@ -10,6 +10,7 @@ interface Props {
  */
 export default function PVProgress({ monthlyTarget }: Props) {
     const [currentPV, setCurrentPV] = useState(0);
+    const [trendData, setTrendData] = useState<{ date: string, pv: number }[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -17,13 +18,27 @@ export default function PVProgress({ monthlyTarget }: Props) {
             .then((res) => res.json())
             .then((json) => {
                 setCurrentPV(json.totalPV || 0);
+                setTrendData(json.data || []);
             })
-            .catch(() => setCurrentPV(0))
+            .catch(() => { setCurrentPV(0); setTrendData([]); })
             .finally(() => setIsLoading(false));
     }, []);
 
     const percentage = Math.min(100, Math.round((currentPV / monthlyTarget) * 100));
     const isAchieved = percentage >= 100;
+
+    const generateSparklinePath = (data: { pv: number }[]) => {
+        if (data.length === 0) return '';
+        const max = Math.max(...data.map(d => d.pv), 1);
+        const min = Math.min(...data.map(d => d.pv), 0);
+        const range = max - min || 1;
+        
+        return data.map((d, i) => {
+            const x = (i / (data.length - 1)) * 100;
+            const y = 30 - ((d.pv - min) / range) * 26 - 2;
+            return `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+        }).join(' ');
+    };
 
     if (isLoading) {
         return (
@@ -48,8 +63,17 @@ export default function PVProgress({ monthlyTarget }: Props) {
                 </span>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'baseline', gap: '8px', minHeight: '32px' }}>
+                {trendData.length > 0 && (
+                    <div style={{ position: 'absolute', right: '60px', bottom: 0, width: '40%', height: '100%', opacity: 0.25, pointerEvents: 'none' }}>
+                        <svg viewBox="0 0 100 30" preserveAspectRatio="none" style={{ width: '100%', height: '100%', display: 'block' }}>
+                            <path d={generateSparklinePath(trendData)} fill="none" stroke="var(--color-primary)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </div>
+                )}
+                
                 <span style={{
+                    position: 'relative', zIndex: 1,
                     fontSize: '1.5rem', fontWeight: 900,
                     letterSpacing: '-0.04em',
                     color: isAchieved ? 'var(--color-primary)' : 'var(--color-text)',
@@ -57,7 +81,7 @@ export default function PVProgress({ monthlyTarget }: Props) {
                 }}>
                     {currentPV.toLocaleString()}
                 </span>
-                <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ position: 'relative', zIndex: 1, fontSize: '0.65rem', color: 'var(--color-text-muted)', letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
                     PV (last 7d)
                 </span>
                 <span style={{
