@@ -43,7 +43,7 @@ export default function AsciiBackground() {
         <AsciiRenderer
           fgColor="currentColor" // CSSのカレントカラーに追従
           bgColor="transparent"  // 背景は透過
-          characters=" ░▒▓█"
+          characters="$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^'. "
           invert={false}
         />
       </Canvas>
