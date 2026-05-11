@@ -1,5 +1,5 @@
 ---
-import { ClientRouter } from 'astro:transitions';
+import { ClientRouter, slide } from 'astro:transitions';
 import '../styles/global.css';
 import CRTOverlay from '../components/CRTOverlay';
 import AmbientGlow from '../components/AmbientGlow';
@@ -75,16 +75,19 @@ const isActive = (path: string) => {
   </head>
   <body>
     <!-- Deep background glow -->
-    <AmbientGlow client:only="react" />
+    <div transition:persist="ambient-glow">
+      <AmbientGlow client:only="react" />
+    </div>
 
-    <!-- CRT scanline + vignette overlay -->
-    <CRTOverlay client:only="react" />
+    <div transition:persist="crt-overlay">
+      <CRTOverlay client:only="react" />
+    </div>
 
 
 
     <header class="header">
       <div class="container header-content">
-        <a href="/" class="logo">RK / PORTFOLIO</a>
+        <a href="/" class="logo" transition:name="site-logo">RK / PORTFOLIO</a>
         <nav class="nav-links">
           <a href="/posts" class={`nav-link ${isActive('/posts') ? 'nav-link--accent' : ''}`}>Posts</a>
           <a href="/about" class={`nav-link ${isActive('/about') ? 'nav-link--accent' : ''}`}>About</a>
@@ -98,7 +101,7 @@ const isActive = (path: string) => {
       </div>
     </header>
 
-    <main class="main">
+    <main class="main" transition:animate={slide({ duration: '0.2s' })}>
       <div class="container">
         <slot />
       </div>
