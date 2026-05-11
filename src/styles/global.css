@@ -811,3 +811,9 @@ a:hover {
 ::view-transition-new(root) {
   z-index: 9999;
 }
+
+/* テーマ切替時、root 以外の view-transition-name を一時的に無効化して
+   Astro の slide などのアニメーションが発火しないようにする */
+:root[data-theme-transition="true"] * {
+  view-transition-name: none !important;
+}

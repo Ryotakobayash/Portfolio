@@ -129,6 +129,9 @@ const isActive = (path: string) => {
           }
 
           // @ts-ignore
+          document.documentElement.setAttribute('data-theme-transition', 'true');
+
+          // @ts-ignore
           const transition = document.startViewTransition(() => {
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
@@ -156,6 +159,10 @@ const isActive = (path: string) => {
                 pseudoElement: '::view-transition-new(root)',
               }
             );
+          });
+
+          transition.finished.finally(() => {
+            document.documentElement.removeAttribute('data-theme-transition');
           });
         });
       }
