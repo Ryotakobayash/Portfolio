@@ -1,0 +1,295 @@
+---
+export const prerender = true;
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Colophon | RK / Portfolio" description="About the design and technology of this site">
+  <div class="colophon">
+    <header class="colophon-header">
+      <h1 class="page-title">Colophon</h1>
+      <p class="page-description">
+        This page details the typography, color palette, and technology stack used to build this portfolio.
+        The design system is heavily inspired by 1960s Space Race documentation, vintage telemetry displays, and Swiss Typography.
+      </p>
+    </header>
+
+    <div class="section-divider"><span class="section-divider__label">01 · Typography</span></div>
+    <section class="bento-card">
+      <div class="typography-grid">
+        <div class="type-specimen outfit">
+          <div class="type-name">Outfit</div>
+          <div class="type-use">Primary Headings & English Text</div>
+          <div class="type-sample">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>abcdefghijklmnopqrstuvwxyz<br/>0123456789</div>
+        </div>
+        <div class="type-specimen notosans">
+          <div class="type-name">Noto Sans JP</div>
+          <div class="type-use">Japanese Body Copy</div>
+          <div class="type-sample">あいうえお かきくけこ さしすせそ<br/>アイウエオ カキクケコ サシスセソ<br/>漢字 表現 typography</div>
+        </div>
+        <div class="type-specimen mono">
+          <div class="type-name">System Mono</div>
+          <div class="type-use">Code & Telemetry Data</div>
+          <div class="type-sample">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>abcdefghijklmnopqrstuvwxyz<br/>0123456789</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"><span class="section-divider__label">02 · Color Palette</span></div>
+    <section class="bento-card">
+      <div class="color-grid">
+        <!-- Base Colors -->
+        <div class="color-swatch-wrapper">
+          <div class="color-swatch" style="background-color: var(--color-bg);"></div>
+          <div class="color-info">
+            <span class="color-name">Background</span>
+            <span class="color-var">--color-bg</span>
+          </div>
+        </div>
+        <div class="color-swatch-wrapper">
+          <div class="color-swatch" style="background-color: var(--color-bg-secondary);"></div>
+          <div class="color-info">
+            <span class="color-name">Surface</span>
+            <span class="color-var">--color-bg-secondary</span>
+          </div>
+        </div>
+        <div class="color-swatch-wrapper">
+          <div class="color-swatch" style="background-color: var(--color-text);"></div>
+          <div class="color-info">
+            <span class="color-name">Text</span>
+            <span class="color-var">--color-text</span>
+          </div>
+        </div>
+        <div class="color-swatch-wrapper">
+          <div class="color-swatch" style="background-color: var(--color-text-muted);"></div>
+          <div class="color-info">
+            <span class="color-name">Text Muted</span>
+            <span class="color-var">--color-text-muted</span>
+          </div>
+        </div>
+
+        <!-- Accents -->
+        <div class="color-swatch-wrapper">
+          <div class="color-swatch" style="background-color: var(--color-primary);"></div>
+          <div class="color-info">
+            <span class="color-name">Primary</span>
+            <span class="color-var">--color-primary</span>
+          </div>
+        </div>
+        <div class="color-swatch-wrapper">
+          <div class="color-swatch" style="background-color: var(--color-accent);"></div>
+          <div class="color-info">
+            <span class="color-name">Accent 1 (Red)</span>
+            <span class="color-var">--color-accent</span>
+          </div>
+        </div>
+        <div class="color-swatch-wrapper">
+          <div class="color-swatch" style="background-color: var(--color-accent-2);"></div>
+          <div class="color-info">
+            <span class="color-name">Accent 2 (Yellow)</span>
+            <span class="color-var">--color-accent-2</span>
+          </div>
+        </div>
+        <div class="color-swatch-wrapper">
+          <div class="color-swatch" style="background-color: var(--color-accent-3);"></div>
+          <div class="color-info">
+            <span class="color-name">Accent 3 (Orange)</span>
+            <span class="color-var">--color-accent-3</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"><span class="section-divider__label">03 · Technology Stack</span></div>
+    <section class="bento-card tech-stack">
+      <ul class="tech-list">
+        <li>
+          <strong>Astro</strong>
+          <span>Core framework for static site generation, utilizing Islands Architecture for optimal performance.</span>
+        </li>
+        <li>
+          <strong>React</strong>
+          <span>Used as UI components within Astro Islands, powering interactive elements like charts and 3D scenes.</span>
+        </li>
+        <li>
+          <strong>Vanilla CSS</strong>
+          <span>Custom design system built with CSS Variables, focusing on standard CSS capabilities without utility frameworks.</span>
+        </li>
+        <li>
+          <strong>Highcharts</strong>
+          <span>Data visualization library used for telemetry and dashboard charts.</span>
+        </li>
+        <li>
+          <strong>Three.js / React Three Fiber</strong>
+          <span>WebGL rendering for the ASCII art background effects and orbital decorations.</span>
+        </li>
+        <li>
+          <strong>Vercel</strong>
+          <span>Deployment platform and edge network, utilizing API Routes for data fetching.</span>
+        </li>
+      </ul>
+    </section>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .colophon {
+    max-width: 800px;
+    margin: 0 auto;
+    padding-bottom: var(--spacing-2xl);
+  }
+
+  .colophon-header {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .page-title {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-primary);
+  }
+
+  .page-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+  }
+
+  /* Section Divider */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: var(--spacing-2xl) 0 var(--spacing-lg);
+  }
+
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  /* Typography */
+  .typography-grid {
+    display: grid;
+    gap: var(--spacing-lg);
+  }
+
+  .type-specimen {
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px dashed var(--color-border);
+  }
+
+  .type-specimen:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .type-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--color-text);
+  }
+
+  .type-use {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .type-sample {
+    font-size: 1.25rem;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+    word-break: break-all;
+  }
+
+  .outfit .type-name, .outfit .type-sample {
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .notosans .type-name, .notosans .type-sample {
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .mono .type-name, .mono .type-sample {
+    font-family: var(--font-mono);
+  }
+
+  /* Colors */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--spacing-lg);
+  }
+
+  .color-swatch-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .color-swatch {
+    width: 100%;
+    aspect-ratio: 1;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+
+  .color-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .color-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .color-var {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+  }
+
+  /* Tech Stack */
+  .tech-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  .tech-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tech-list strong {
+    font-size: 1.1rem;
+    color: var(--color-primary);
+  }
+
+  .tech-list span {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+  }
+</style>
