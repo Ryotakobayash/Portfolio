@@ -38,48 +38,24 @@
 
 ## 🚧 進行中タスク (In Progress)
 
-### [タスク名: View Transitions の本格活用]
-**背景・目的:**
-- Astro の `<ClientRouter />` は有効化済みだが、`transition:animate` や `transition:persist` がまだ活用されていない。
-- ヘッダーロゴの共有要素化、メインコンテンツの slide アニメーション、背景エフェクトの永続化を行い、ページ遷移体験を向上させる。
-
-**要件・仕様:**
-- [ ] ヘッダーロゴに `transition:name="site-logo"` を追加する
-- [ ] `<main>` に `transition:animate={slide()}` を適用する
-- [ ] `<AmbientGlow>` と `<CRTOverlay>` に `transition:persist` を適用する
-- [ ] 記事一覧→記事詳細の既存トランジションが正常に動作しているか確認する
-
-**関連ドキュメント:**
-- 実装計画: `docs/plan-view-transitions-and-ux.md` の Phase 1 を参照
-
-**完了条件 (Acceptance Criteria):**
-- [ ] ページ遷移時にロゴが滑らかに留まり、メインコンテンツが slide でアニメーションすること
-- [ ] 背景エフェクトが遷移時に再レンダリングされないこと
-
 ---
+
+## ✅ 完了タスク (Done)
+### [タスク名: View Transitions の本格活用]
+**完了日時:** 2026-05-11
+**サマリー:**
+ページ遷移時の体験を向上させるため、View Transitions を強化しました。
+- ヘッダーロゴを共有要素 (`transition:name="site-logo"`) に設定。
+- メインコンテンツに `slide` アニメーションを適用。
+- 背景エフェクト（AmbientGlow, CRTOverlay）を `transition:persist` で永続化し、遷移時の再レンダリングを防止。
 
 ### [タスク名: ダークモード切替アニメーション]
-**背景・目的:**
-- テーマ切替ボタンをクリックした際に、ブラウザネイティブの View Transition API を用いて、クリック位置を起点にした円形のクリップパスで新テーマが展開するアニメーションを実装する。
-
-**要件・仕様:**
-- [ ] `BaseLayout.astro` の `setupThemeToggle()` で `document.startViewTransition()` を使用する
-- [ ] 非対応ブラウザでは従来通り即座に切り替わるフォールバックを実装する
-- [ ] `global.css` に `::view-transition-old(root)` / `::view-transition-new(root)` のスタイルを追加する
-
-**関連ドキュメント:**
-- 実装計画: `docs/plan-view-transitions-and-ux.md` の Phase 3 を参照
-
-**完了条件 (Acceptance Criteria):**
-- [ ] テーマ切替時に円形展開アニメーションが表示されること
-- [ ] 非対応ブラウザで切替が正常に動作すること（エラーなし）
-
----
-
-
----
-
----
+**完了日時:** 2026-05-11
+**サマリー:**
+テーマ切替時に、クリック位置を中心とした円形展開アニメーションを実装しました。
+- ブラウザネイティブの View Transition API (`document.startViewTransition`) を使用。
+- `global.css` にてアニメーションの競合を防ぐためのスタイル調整。
+- 非対応ブラウザ向けのフォールバック処理を実装。
 
 ## ✅ 完了タスク (Done)
 ### [タスク名: /talks ページへの登壇追加手順のドキュメント化]
