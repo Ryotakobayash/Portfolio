@@ -209,6 +209,10 @@ const allPostsMeta = allPosts.map((p) => ({
       if (sup?.parentNode) {
         sup.parentNode.insertBefore(sidenote, sup.nextSibling);
       }
+
+      // 脚注リンクのクリックによる不要なジャンプを無効化
+      ref.addEventListener('click', (e) => e.preventDefault());
+      ref.style.cursor = 'default'; // ジャンプしないためカーソルを変更
     });
   }
 </script>

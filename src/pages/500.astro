@@ -1,0 +1,85 @@
+---
+// SSR 環境でプリレンダリングする標準手法
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="500 — System Failure | RK / Portfolio" description="A server-side error occurred.">
+  <div class="not-found">
+    <div class="morse">█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░</div>
+
+    <div class="not-found__code">500</div>
+
+    <div class="not-found__label">SYSTEM FAILURE</div>
+
+    <p class="not-found__message">
+      Our telemetry systems are reporting a critical internal error.
+      Please stand by while we attempt to re-establish stable operations.
+    </p>
+
+    <a href="/" class="link-arrow not-found__link">← Return to Base</a>
+
+    <div class="morse">░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█</div>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 1.5rem;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .not-found__code {
+    font-size: clamp(4rem, 15vw, 8rem);
+    font-weight: 900;
+    color: var(--color-accent); /* エラーなので赤系を使用 */
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    line-height: 1;
+    /* チラつくアニメーション */
+    animation: signal-flicker 4s infinite;
+  }
+
+  @keyframes signal-flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96%           { opacity: 0.4; }
+    97%           { opacity: 1; }
+    98%           { opacity: 0.2; }
+    99%           { opacity: 0.9; }
+  }
+
+  .not-found__label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .not-found__message {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    max-width: 400px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .not-found__link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  /* morse クラスは global.css に定義済み */
+  .morse {
+    opacity: 0.4;
+    letter-spacing: 0.1em;
+  }
+</style>

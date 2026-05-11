@@ -3,13 +3,13 @@ export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Colophon | RK / Portfolio" description="About the design and technology of this site">
+<BaseLayout title="Colophon | RK / Portfolio" description="このサイトのデザインと技術スタックについて">
   <div class="colophon">
     <header class="colophon-header">
       <h1 class="page-title">Colophon</h1>
       <p class="page-description">
-        This page details the typography, color palette, and technology stack used to build this portfolio.
-        The design system is heavily inspired by 1960s Space Race documentation, vintage telemetry displays, and Swiss Typography.
+        このページでは、本ポートフォリオを構成するタイポグラフィ、カラーパレット、および技術スタックの詳細を記述します。
+        デザインシステムは、1960年代の宇宙開発競争時代の資料、ヴィンテージのテレメトリ表示、およびスイス・タイポグラフィから強い影響を受けています。
       </p>
     </header>
 
@@ -18,17 +18,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="typography-grid">
         <div class="type-specimen outfit">
           <div class="type-name">Outfit</div>
-          <div class="type-use">Primary Headings & English Text</div>
+          <div class="type-use">メイン見出し & 英文テキスト</div>
           <div class="type-sample">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>abcdefghijklmnopqrstuvwxyz<br/>0123456789</div>
         </div>
         <div class="type-specimen notosans">
           <div class="type-name">Noto Sans JP</div>
-          <div class="type-use">Japanese Body Copy</div>
+          <div class="type-use">日本語本文</div>
           <div class="type-sample">あいうえお かきくけこ さしすせそ<br/>アイウエオ カキクケコ サシスセソ<br/>漢字 表現 typography</div>
         </div>
         <div class="type-specimen mono">
           <div class="type-name">System Mono</div>
-          <div class="type-use">Code & Telemetry Data</div>
+          <div class="type-use">コード & テレメトリデータ</div>
           <div class="type-sample">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>abcdefghijklmnopqrstuvwxyz<br/>0123456789</div>
         </div>
       </div>
@@ -104,27 +104,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <ul class="tech-list">
         <li>
           <strong>Astro</strong>
-          <span>Core framework for static site generation, utilizing Islands Architecture for optimal performance.</span>
+          <span>静的サイト生成のためのコアフレームワーク。Islands Architectureを活用し、最適なパフォーマンスを実現しています。</span>
         </li>
         <li>
           <strong>React</strong>
-          <span>Used as UI components within Astro Islands, powering interactive elements like charts and 3D scenes.</span>
+          <span>Astro Islands内のUIコンポーネントとして使用。チャートや3Dシーンなどのインタラクティブな要素を制御しています。</span>
         </li>
         <li>
           <strong>Vanilla CSS</strong>
-          <span>Custom design system built with CSS Variables, focusing on standard CSS capabilities without utility frameworks.</span>
+          <span>CSS変数を用いた独自のデザインシステム。ユーティリティフレームワークを使用せず、標準的なCSSの機能を最大限に活用しています。</span>
         </li>
         <li>
           <strong>Highcharts</strong>
-          <span>Data visualization library used for telemetry and dashboard charts.</span>
+          <span>テレメトリおよびダッシュボードのチャートに使用されるデータ可視化ライブラリ。</span>
         </li>
         <li>
           <strong>Three.js / React Three Fiber</strong>
-          <span>WebGL rendering for the ASCII art background effects and orbital decorations.</span>
+          <span>ASCIIアートの背景エフェクトや軌道装飾のためのWebGLレンダリング。</span>
         </li>
         <li>
           <strong>Vercel</strong>
-          <span>Deployment platform and edge network, utilizing API Routes for data fetching.</span>
+          <span>デプロイプラットフォームおよびエッジネットワーク。データ取得にはAPI Routesを利用しています。</span>
         </li>
       </ul>
     </section>
