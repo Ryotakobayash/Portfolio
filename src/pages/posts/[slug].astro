@@ -58,7 +58,7 @@ const allPostsMeta = allPosts.map((p) => ({
 >
   <div class="article-layout">
     <!-- メインコンテンツ -->
-    <article class="article">
+    <article class="article" transition:name={`post-card-${encodeURIComponent(slug).replace(/%/g, '')}`}>
       <header class="article-header">
         <a href="/posts" class="back-link">← Posts</a>
         <h1 class="article-title" transition:name={`post-title-${encodeURIComponent(slug).replace(/%/g, '')}`}>{post.data.title}</h1>

@@ -196,7 +196,8 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                             border: '1px solid var(--color-border)',
                             textDecoration: 'none', color: 'inherit',
                             transition: 'border-color var(--transition-fast)',
-                        }}
+                            viewTransitionName: `post-card-${encodeURIComponent(post.slug).replace(/%/g, '')}`
+                        } as React.CSSProperties}
                         onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
                     >
