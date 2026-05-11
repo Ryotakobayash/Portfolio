@@ -1,0 +1,22 @@
+{
+  "upcoming": [
+    {
+      "id": "upcoming-1",
+      "date": "2026-09-01",
+      "event": "Future Design Meetup 2026",
+      "title": "AstroとReactを用いたポートフォリオ構築事例（仮）",
+      "status": "準備中"
+    }
+  ],
+  "past": [
+    {
+      "id": "past-1",
+      "date": "2026-03-31",
+      "event": "EMconf",
+      "title": "EMconf After-Event: デザインとエンジニアリングの交差点",
+      "embedUrl": "https://speakerdeck.com/player/e8061dfcc4fc4bdf98ce2fb0114f6b5b", 
+      "link": "https://speakerdeck.com/ryota5884",
+      "type": "Speaker Deck"
+    }
+  ]
+}
