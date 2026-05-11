@@ -1,5 +1,5 @@
 ---
-import { ClientRouter, slide } from 'astro:transitions';
+import { ClientRouter, fade } from 'astro:transitions';
 import '../styles/global.css';
 import CRTOverlay from '../components/CRTOverlay';
 import AmbientGlow from '../components/AmbientGlow';
@@ -101,7 +101,7 @@ const isActive = (path: string) => {
       </div>
     </header>
 
-    <main class="main" transition:animate={slide({ duration: '0.2s' })}>
+    <main class="main" transition:animate={fade({ duration: '0.15s' })}>
       <div class="container">
         <slot />
       </div>
