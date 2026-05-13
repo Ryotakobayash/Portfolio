@@ -254,6 +254,28 @@ a:hover {
   }
 }
 
+@media (max-width: 375px) {
+  .logo {
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+  }
+
+  .nav-links {
+    gap: var(--spacing-xs);
+  }
+
+  .nav-link {
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+  }
+
+  .theme-toggle {
+    font-size: 0.55rem;
+    padding: 2px 6px;
+    letter-spacing: 0.08em;
+  }
+}
+
 /* ===== Theme Toggle ===== */
 .theme-toggle {
   background: none;
