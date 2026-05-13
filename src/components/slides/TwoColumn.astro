@@ -1,0 +1,30 @@
+---
+interface Props {
+  gap?: string;
+}
+const { gap = '2rem' } = Astro.props;
+---
+<div class="two-column" style={`--col-gap: ${gap}`}>
+  <slot />
+</div>
+
+<style>
+  .two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--col-gap, 2rem);
+    align-items: start;
+  }
+
+  .two-column :global(> div) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .two-column {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

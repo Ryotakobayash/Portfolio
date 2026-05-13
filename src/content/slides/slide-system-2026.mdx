@@ -1,0 +1,97 @@
+---
+title: AstroとMDXで作るスライドシステム
+date: '2026-05-13'
+event: このポートフォリオ
+description: MDX × View Transitions API で作ったポートフォリオ内蔵のスライドシステムについて
+---
+import Slide from '../../components/slides/Slide.astro';
+import SlideTitle from '../../components/slides/SlideTitle.astro';
+import TwoColumn from '../../components/slides/TwoColumn.astro';
+
+<Slide>
+  <SlideTitle
+    title="AstroとMDXで作るスライドシステム"
+    subtitle="MDX × View Transitions API"
+    meta="2026-05-13 · このポートフォリオ"
+  />
+</Slide>
+
+<Slide>
+
+## なぜMDXか
+
+- **Marpの課題**: 外部画像パスの管理が煩雑。HTMLに出力すると画像を別途配置する必要がある
+- **MDXの利点**: サイトのデザインシステム（CSS変数・フォント）と完全に統合できる
+- **Astroらしさ**: コンポーネント駆動・ゼロJS・コンテンツコレクション管理
+
+</Slide>
+
+<Slide>
+
+## アーキテクチャ
+
+<TwoColumn>
+<div>
+
+**スライド記述**
+- MDX（Markdown + JSX）
+- Astroコンポーネント
+- `src/content/slides/` で管理
+
+</div>
+<div>
+
+**ビューア**
+- View Transitions API
+- `←` `→` キーボードナビ
+- `?slide=N` URLディープリンク
+
+</div>
+</TwoColumn>
+
+</Slide>
+
+<Slide>
+
+## View Transitions API
+
+```js
+document.startViewTransition(() => {
+  showNextSlide();
+});
+```
+
+ブラウザネイティブのAPIでスライド切り替えをアニメーション。方向（前進・後退）に応じてアニメーションを切り替えます。
+
+</Slide>
+
+<Slide>
+
+## スライドの書き方
+
+```mdx
+import Slide from '../../components/slides/Slide.astro';
+import SlideTitle from '../../components/slides/SlideTitle.astro';
+
+<Slide>
+  <SlideTitle title="タイトル" subtitle="サブタイトル" />
+</Slide>
+
+<Slide>
+
+## 通常スライド
+
+- MDXで自由に記述できます
+
+</Slide>
+```
+
+</Slide>
+
+<Slide>
+  <SlideTitle
+    title="Thank you"
+    subtitle="← → キーまたはボタンで操作できます"
+    meta="fin."
+  />
+</Slide>

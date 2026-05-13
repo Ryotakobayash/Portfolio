@@ -1,0 +1,253 @@
+---
+export const prerender = false;
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const { slug } = Astro.params;
+const allDecks = await getCollection('slides');
+const deck = allDecks.find(d => d.id.replace(/\.mdx?$/, '') === slug);
+
+if (!deck) {
+  return Astro.redirect('/404');
+}
+
+const { Content } = await render(deck);
+---
+
+<BaseLayout title={`${deck.data.title} | Slides`} description={deck.data.description ?? ''}>
+  <div class="slide-viewer">
+    <div class="deck-meta">
+      {deck.data.event && <span class="deck-event">{deck.data.event}</span>}
+      <span class="deck-date">{deck.data.date}</span>
+    </div>
+
+    <div class="slides-container" id="slides-container">
+      <Content />
+    </div>
+
+    <nav class="slide-controls" id="slide-controls" aria-label="Slide navigation">
+      <button class="ctrl-btn" id="prev-btn" aria-label="Previous slide" disabled>
+        ← PREV
+      </button>
+      <div class="ctrl-center">
+        <div class="slide-dots" id="slide-dots" aria-hidden="true"></div>
+        <span class="slide-counter" id="slide-counter"></span>
+      </div>
+      <button class="ctrl-btn" id="next-btn" aria-label="Next slide">
+        NEXT →
+      </button>
+    </nav>
+  </div>
+</BaseLayout>
+
+<style>
+  .slide-viewer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-xl);
+  }
+
+  .deck-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .deck-event {
+    color: var(--color-accent-2);
+    font-weight: 600;
+  }
+
+  /* 16:9 container that fits within viewport */
+  .slides-container {
+    position: relative;
+    width: min(100%, calc((100vh - var(--header-height) - 140px) * 16 / 9));
+    aspect-ratio: 16 / 9;
+    margin: 0 auto;
+    background: var(--color-bg);
+  }
+
+  /* View Transition target — only applied to the active slide */
+  :global([data-slide].is-active) {
+    view-transition-name: slide-content;
+  }
+
+  /* Directional animations */
+  @keyframes slide-in-right {
+    from { transform: translateX(6%); opacity: 0; }
+    to   { transform: translateX(0);  opacity: 1; }
+  }
+  @keyframes slide-out-left {
+    from { transform: translateX(0);   opacity: 1; }
+    to   { transform: translateX(-6%); opacity: 0; }
+  }
+  @keyframes slide-in-left {
+    from { transform: translateX(-6%); opacity: 0; }
+    to   { transform: translateX(0);   opacity: 1; }
+  }
+  @keyframes slide-out-right {
+    from { transform: translateX(0);  opacity: 1; }
+    to   { transform: translateX(6%); opacity: 0; }
+  }
+
+  :global(html[data-slide-dir="forward"] ::view-transition-new(slide-content)) {
+    animation: slide-in-right 0.22s ease;
+  }
+  :global(html[data-slide-dir="forward"] ::view-transition-old(slide-content)) {
+    animation: slide-out-left 0.22s ease;
+  }
+  :global(html[data-slide-dir="backward"] ::view-transition-new(slide-content)) {
+    animation: slide-in-left 0.22s ease;
+  }
+  :global(html[data-slide-dir="backward"] ::view-transition-old(slide-content)) {
+    animation: slide-out-right 0.22s ease;
+  }
+
+  /* Controls */
+  .slide-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: min(100%, calc((100vh - var(--header-height) - 140px) * 16 / 9));
+    margin: 0 auto;
+    padding: var(--spacing-sm) 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .ctrl-btn {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition:
+      color var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  .ctrl-btn:hover:not(:disabled) {
+    color: var(--color-text);
+    border-color: var(--color-primary);
+  }
+
+  .ctrl-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .ctrl-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .slide-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  :global(.dot) {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background var(--transition-fast);
+  }
+
+  :global(.dot--active) {
+    background: var(--color-primary);
+  }
+
+  .slide-counter {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+  }
+</style>
+
+<script>
+  const container = document.getElementById('slides-container');
+  if (!container) throw new Error('slides-container not found');
+
+  const slides = Array.from(container.querySelectorAll<HTMLElement>('[data-slide]'));
+  const total = slides.length;
+  let current = 0;
+
+  function showSlide(nextIndex: number, animate = true) {
+    if (nextIndex < 0 || nextIndex >= total) return;
+    const dir = nextIndex > current ? 'forward' : 'backward';
+
+    const doUpdate = () => {
+      slides[current].classList.remove('is-active');
+      slides[nextIndex].classList.add('is-active');
+      current = nextIndex;
+      updateUI();
+      history.replaceState(null, '', `?slide=${nextIndex}`);
+    };
+
+    if (animate && 'startViewTransition' in document) {
+      document.documentElement.dataset.slideDir = dir;
+      (document as any).startViewTransition(doUpdate).finished.finally(() => {
+        delete document.documentElement.dataset.slideDir;
+      });
+    } else {
+      doUpdate();
+    }
+  }
+
+  function updateUI() {
+    const counter = document.getElementById('slide-counter');
+    if (counter) counter.textContent = `${current + 1} / ${total}`;
+
+    const dotsEl = document.getElementById('slide-dots');
+    if (dotsEl) {
+      dotsEl.innerHTML = slides
+        .map((_, i) => `<span class="dot${i === current ? ' dot--active' : ''}"></span>`)
+        .join('');
+    }
+
+    const prevBtn = document.getElementById('prev-btn') as HTMLButtonElement;
+    const nextBtn = document.getElementById('next-btn') as HTMLButtonElement;
+    if (prevBtn) prevBtn.disabled = current === 0;
+    if (nextBtn) nextBtn.disabled = current === total - 1;
+  }
+
+  function init() {
+    const params = new URLSearchParams(location.search);
+    const startIndex = Math.min(
+      Math.max(parseInt(params.get('slide') ?? '0', 10), 0),
+      total - 1
+    );
+    slides[startIndex].classList.add('is-active');
+    current = startIndex;
+    updateUI();
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault();
+      showSlide(current + 1);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      showSlide(current - 1);
+    }
+  });
+
+  document.getElementById('prev-btn')?.addEventListener('click', () => showSlide(current - 1));
+  document.getElementById('next-btn')?.addEventListener('click', () => showSlide(current + 1));
+
+  init();
+</script>

@@ -1,0 +1,110 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+<section class:list={['slide', className]} data-slide>
+  <div class="slide-body">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .slide {
+    display: none;
+    position: absolute;
+    inset: 0;
+    flex-direction: column;
+    padding: clamp(1.5rem, 5%, 3rem);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+  }
+
+  .slide.is-active {
+    display: flex;
+  }
+
+  .slide-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    gap: 1rem;
+  }
+
+  .slide :global(h1) {
+    font-size: clamp(1.6rem, 4vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    line-height: 1.1;
+    margin: 0 0 0.3em;
+  }
+
+  .slide :global(h2) {
+    font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0 0 0.5em;
+  }
+
+  .slide :global(h3) {
+    font-size: clamp(0.95rem, 1.8vw, 1.4rem);
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 0.4em;
+  }
+
+  .slide :global(p) {
+    font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+    margin: 0 0 0.5em;
+  }
+
+  .slide :global(ul),
+  .slide :global(ol) {
+    font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    padding-left: 1.4em;
+    margin: 0;
+  }
+
+  .slide :global(li + li) {
+    margin-top: 0.3em;
+  }
+
+  .slide :global(strong) {
+    color: var(--color-text);
+    font-weight: 700;
+  }
+
+  .slide :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-bg-secondary);
+    padding: 0.1em 0.4em;
+    border: 1px solid var(--color-border);
+    color: var(--color-accent-2);
+  }
+
+  .slide :global(pre) {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+    line-height: 1.6;
+  }
+
+  .slide :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-text);
+  }
+</style>

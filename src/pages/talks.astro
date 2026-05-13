@@ -1,10 +1,14 @@
 ---
 export const prerender = true;
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import talksData from '../data/talks.json';
 
 const upcomingTalks = talksData.upcoming || [];
 const pastTalks = talksData.past || [];
+const slideDecks = (await getCollection('slides')).sort(
+  (a, b) => b.data.date.localeCompare(a.data.date)
+);
 ---
 
 <BaseLayout title="Talks | RK / Portfolio" description="Upcoming and past talks, presentations, and slides">
@@ -74,6 +78,31 @@ const pastTalks = talksData.past || [];
         </section>
       ))}
     </div>
+
+    <!-- Local Slide Decks -->
+    {slideDecks.length > 0 && (
+      <>
+        <div class="section-divider"><span class="section-divider__label">03 · Slides</span></div>
+        <div class="slide-decks-grid">
+          {slideDecks.map((deck) => {
+            const slug = deck.id.replace(/\.mdx?$/, '');
+            return (
+              <a href={`/slides/${slug}`} class="slide-deck-card bento-card">
+                <div class="deck-info">
+                  <span class="talk-date">{deck.data.date}</span>
+                  {deck.data.event && <span class="talk-event">{deck.data.event}</span>}
+                  <h3 class="talk-title">{deck.data.title}</h3>
+                  {deck.data.description && (
+                    <p class="deck-description">{deck.data.description}</p>
+                  )}
+                </div>
+                <span class="deck-cta">VIEW SLIDES →</span>
+              </a>
+            );
+          })}
+        </div>
+      </>
+    )}
   </div>
 </BaseLayout>
 
@@ -256,5 +285,48 @@ const pastTalks = talksData.past || [];
     height: 200px;
     background-color: var(--color-bg-secondary);
     border: 1px dashed var(--color-border);
+  }
+
+  /* Local Slide Decks */
+  .slide-decks-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .slide-deck-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    text-decoration: none;
+    transition: border-color var(--transition-fast);
+  }
+
+  .slide-deck-card:hover {
+    border-color: var(--color-primary);
+  }
+
+  .deck-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .deck-description {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 4px 0 0;
+    line-height: 1.5;
+  }
+
+  .deck-cta {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--color-primary);
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 </style>

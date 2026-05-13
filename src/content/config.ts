@@ -12,6 +12,17 @@ const postsCollection = defineCollection({
     }),
 });
 
+const slidesCollection = defineCollection({
+    type: 'content',
+    schema: z.object({
+        title: z.string(),
+        date: z.string(),
+        event: z.string().optional(),
+        description: z.string().optional(),
+    }),
+});
+
 export const collections = {
     posts: postsCollection,
+    slides: slidesCollection,
 };
