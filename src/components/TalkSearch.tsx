@@ -162,6 +162,11 @@ export function TalkSearch({ talks, allTags }: TalkSearchProps) {
         resetPage();
     };
 
+    const clearTags = () => {
+        setSelectedTags(new Set());
+        resetPage();
+    };
+
     return (
         <div>
             <SearchInput query={query} setQuery={setQuery} resetPage={resetPage} />
@@ -185,9 +190,41 @@ export function TalkSearch({ talks, allTags }: TalkSearchProps) {
                     <option value="newest">Newest</option>
                     <option value="oldest">Oldest</option>
                 </select>
-                <span style={{ fontSize: '0.65rem', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)' }}>
-                    {filteredTalks.length} talks
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.65rem', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)' }}>
+                    <span>{filteredTalks.length} talks</span>
+                    {selectedTags.size > 0 && (
+                        <>
+                            <span style={{ color: 'var(--color-border)' }}>·</span>
+                            <span>{selectedTags.size} tag{selectedTags.size === 1 ? '' : 's'}</span>
+                            <button
+                                onClick={clearTags}
+                                style={{
+                                    background: 'none',
+                                    border: '1px solid var(--color-border)',
+                                    color: 'var(--color-text-muted)',
+                                    fontFamily: 'var(--font-mono)',
+                                    fontSize: '0.6rem',
+                                    fontWeight: 600,
+                                    letterSpacing: '0.1em',
+                                    textTransform: 'uppercase',
+                                    padding: '2px 8px',
+                                    cursor: 'pointer',
+                                    transition: 'color var(--transition-fast), border-color var(--transition-fast)',
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.color = 'var(--color-primary)';
+                                    e.currentTarget.style.borderColor = 'var(--color-primary)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.color = 'var(--color-text-muted)';
+                                    e.currentTarget.style.borderColor = 'var(--color-border)';
+                                }}
+                            >
+                                × Clear
+                            </button>
+                        </>
+                    )}
+                </div>
             </div>
 
             <div style={{ display: 'grid', gap: 'var(--spacing-md)' }}>
