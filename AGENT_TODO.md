@@ -46,11 +46,6 @@
 
 ## タスク化する前のアイデア
 
-- モバイル（375px）でみたときに、headerのナビゲーションが破綻する。ロゴをもっとがっつり小さくしていい。hamburger menuは嫌いなので使わない。
-- posts,talksページでtagを選択しているとき、選択をリセットするためのリセットボタンがほしい。
-- Upcomigなイベントにもイベントのリンク（connpassやpeatix）のリンクを設定したい。情報を示すカードをクリックするとその外部サイトに飛べるように。
-- Talksにあるスライドをクリックしてlording中に、ローディングアニメーションがほしい。
-
 -
 
 ## 🚧 進行中タスク (In Progress)
@@ -58,6 +53,56 @@
 ---
 
 ## ✅ 完了タスク (Done)
+
+### [タスク名: モバイルヘッダーの再調整（ロゴ短縮＋ナビ拡大）]
+
+**完了日時:** 2026-05-16
+**サマリー:**
+375px 対応で `RK / PORTFOLIO` を縮小したことでナビ項目（Posts/About/Talks）もタップ困難なサイズになっていた問題を解消。
+
+- ロゴをモバイル（≤500px）では `RK` のみ表示する `.logo-full` / `.logo-short` 構造に変更。
+- `.nav-link` を 500px 以下で `0.7rem`、375px 以下で `0.65rem` に再調整し、視認性とタップサイズを確保。
+- `.theme-toggle` は 375px のみ最小化。
+
+### [タスク名: /posts・/talks のタグフィルタリセットボタン]
+
+**完了日時:** 2026-05-16
+**サマリー:**
+タグ選択時に件数表示の隣に `× Clear` ボタンを表示し、選択数（`N tags`）も併記。
+
+- `PostSearch.tsx` / `TalkSearch.tsx` に `clearTags()` を追加し `setSelectedTags(new Set())` + `resetPage()`。
+- 選択がないときはボタン非表示。
+
+### [タスク名: Upcoming イベントカードに外部リンク]
+
+**完了日時:** 2026-05-16
+**サマリー:**
+`src/data/talks.json` の upcoming entry に任意の `url` フィールドを導入。
+
+- `talks.astro` で `url` が存在するとき `<li>` 内を `<a target="_blank">` で描画し、`↗` アイコン＋ホバーで枠線を `--color-primary` 化。
+- 未設定のカードは従来通りの静的表示を維持。
+
+### [タスク名: スライドページのスケルトン読込アニメ]
+
+**完了日時:** 2026-05-16
+**サマリー:**
+`/slides/[slug]` は `prerender: false` なので初回ナビゲーションに遅延がある。Astro の `astro:before-preparation` を捕捉して、遷移先 URL が `/slides/...` のときだけ 16:9 スケルトン + コントロールバー風のオーバーレイを被せる実装を追加。
+
+- `BaseLayout.astro` に `transition:persist` 付きの `#slide-loading-overlay` を設置。
+- `astro:page-load` で hide。既存の `.skeleton` パターン（パルスアニメ）と一貫させた `.slide-loading-pulse` / `.skeleton-line` を `global.css` に追加。
+
+### [タスク名: スライドの draft 状態管理と /talks の 3 状態表示]
+
+**完了日時:** 2026-05-16
+**サマリー:**
+`slidesCollection` に `draft: z.boolean().optional().default(false)` を追加し、posts と同様に prod では draft を除外する `getPublishedSlides()` を `src/utils/slides.ts` に実装。
+
+- `/slides/[slug]` は `getPublishedSlides` を経由するため、prod では draft slug が 404 になる（dev では引き続きプレビュー可能）。
+- `/talks` の Archive 側カードは状態を 3 つに分類：
+  - `no-slides` — slides も embedUrl もない（登壇予定のみ）。非クリッカブル＋「登壇予定」バッジ。
+  - `draft-slides` — slides は存在するが draft。embedUrl/externalUrl にフォールバック、無ければ非クリッカブル。「準備中」バッジ。
+  - `published` — 通常表示（`/slides/[slug]` または embed URL へリンク）。
+- `TalkSearch` の `TalkMeta` に `status` を追加し、メタ行にバッジを表示。
 
 ### [タスク名: View Transitions の本格活用]
 
