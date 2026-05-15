@@ -19,6 +19,7 @@ const slidesCollection = defineCollection({
         date: z.string(),
         event: z.string().optional(),
         description: z.string().optional(),
+        draft: z.boolean().optional().default(false),
     }),
 });
 

@@ -11,6 +11,7 @@ export interface TalkMeta {
     href: string;
     isExternal: boolean;
     type: 'Speaker Deck' | 'Slides';
+    status: 'no-slides' | 'draft-slides' | 'published';
 }
 
 interface TalkSearchProps {
@@ -228,60 +229,98 @@ export function TalkSearch({ talks, allTags }: TalkSearchProps) {
             </div>
 
             <div style={{ display: 'grid', gap: 'var(--spacing-md)' }}>
-                {pagedTalks.map((talk) => (
-                    <a
-                        key={talk.id}
-                        href={talk.href}
-                        target={talk.isExternal ? '_blank' : undefined}
-                        rel={talk.isExternal ? 'noopener noreferrer' : undefined}
-                        style={{
-                            display: 'block', padding: 'var(--spacing-lg)',
-                            backgroundColor: 'var(--color-bg-card)',
+                {pagedTalks.map((talk) => {
+                    const isClickable = talk.href !== '#';
+                    const cardStyle: React.CSSProperties = {
+                        display: 'block', padding: 'var(--spacing-lg)',
+                        backgroundColor: 'var(--color-bg-card)',
+                        border: '1px solid var(--color-border)',
+                        textDecoration: 'none', color: 'inherit',
+                        transition: 'border-color var(--transition-fast)',
+                        opacity: talk.status === 'no-slides' ? 0.7 : 1,
+                    };
+                    const statusBadge = talk.status === 'draft-slides' ? (
+                        <span style={{
+                            padding: '1px 6px', fontSize: '0.55rem', fontWeight: 600,
+                            border: '1px solid var(--color-text-muted)',
+                            color: 'var(--color-text-muted)',
+                            letterSpacing: '0.1em', textTransform: 'uppercase',
+                        }}>準備中</span>
+                    ) : talk.status === 'no-slides' ? (
+                        <span style={{
+                            padding: '1px 6px', fontSize: '0.55rem', fontWeight: 600,
                             border: '1px solid var(--color-border)',
-                            textDecoration: 'none', color: 'inherit',
-                            transition: 'border-color var(--transition-fast)',
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
-                    >
+                            color: 'var(--color-text-muted)',
+                            letterSpacing: '0.1em', textTransform: 'uppercase',
+                        }}>登壇予定</span>
+                    ) : null;
+                    const meta = (
                         <div className="text-muted" style={{ fontSize: '0.65rem', marginBottom: 'var(--spacing-xs)', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)', display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'center', flexWrap: 'wrap' }}>
                             <span>{talk.date}</span>
                             <span style={{ color: 'var(--color-border)' }}>/</span>
                             <span style={{ color: 'var(--color-accent-2)', fontWeight: 600 }}>{talk.event}</span>
                             <span style={{ color: 'var(--color-border)' }}>/</span>
                             <span>{talk.type}{talk.isExternal ? ' ↗' : ''}</span>
+                            {statusBadge && (
+                                <>
+                                    <span style={{ color: 'var(--color-border)' }}>/</span>
+                                    {statusBadge}
+                                </>
+                            )}
                         </div>
-                        <h2 className="font-bold" style={{ fontSize: '1.05rem', marginBottom: talk.description ? 'var(--spacing-sm)' : 0, letterSpacing: '-0.01em' }}>
-                            {talk.title}
-                        </h2>
-                        {talk.description && (
-                            <p className="text-secondary mb-sm" style={{
-                                fontSize: '0.85rem',
-                                display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                            }}>
-                                {talk.description}
-                            </p>
-                        )}
-                        {talk.tags.length > 0 && (
-                            <div className="flex flex-wrap" style={{ gap: 'var(--spacing-xs)' }}>
-                                {talk.tags.map((tag) => (
-                                    <span
-                                        key={tag}
-                                        className="text-primary font-semibold"
-                                        style={{
-                                            display: 'inline-flex', alignItems: 'center',
-                                            padding: '1px 6px', fontSize: '0.6rem',
-                                            border: '1px solid var(--color-primary)',
-                                            letterSpacing: '0.05em', textTransform: 'uppercase',
-                                        }}
-                                    >
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                        )}
-                    </a>
-                ))}
+                    );
+                    const body = (
+                        <>
+                            {meta}
+                            <h2 className="font-bold" style={{ fontSize: '1.05rem', marginBottom: talk.description ? 'var(--spacing-sm)' : 0, letterSpacing: '-0.01em' }}>
+                                {talk.title}
+                            </h2>
+                            {talk.description && (
+                                <p className="text-secondary mb-sm" style={{
+                                    fontSize: '0.85rem',
+                                    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                                }}>
+                                    {talk.description}
+                                </p>
+                            )}
+                            {talk.tags.length > 0 && (
+                                <div className="flex flex-wrap" style={{ gap: 'var(--spacing-xs)' }}>
+                                    {talk.tags.map((tag) => (
+                                        <span
+                                            key={tag}
+                                            className="text-primary font-semibold"
+                                            style={{
+                                                display: 'inline-flex', alignItems: 'center',
+                                                padding: '1px 6px', fontSize: '0.6rem',
+                                                border: '1px solid var(--color-primary)',
+                                                letterSpacing: '0.05em', textTransform: 'uppercase',
+                                            }}
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                        </>
+                    );
+                    return isClickable ? (
+                        <a
+                            key={talk.id}
+                            href={talk.href}
+                            target={talk.isExternal ? '_blank' : undefined}
+                            rel={talk.isExternal ? 'noopener noreferrer' : undefined}
+                            style={cardStyle}
+                            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
+                        >
+                            {body}
+                        </a>
+                    ) : (
+                        <div key={talk.id} style={cardStyle}>
+                            {body}
+                        </div>
+                    );
+                })}
             </div>
 
             {filteredTalks.length === 0 && (

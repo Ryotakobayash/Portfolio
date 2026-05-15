@@ -1,10 +1,11 @@
 ---
 export const prerender = false;
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedSlides } from '../../utils/slides';
 
 const { slug } = Astro.params;
-const allDecks = await getCollection('slides');
+const allDecks = await getPublishedSlides();
 const deck = allDecks.find(d => d.id.replace(/\.mdx?$/, '') === slug);
 
 if (!deck) {

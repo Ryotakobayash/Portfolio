@@ -4,16 +4,40 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import talksData from '../data/talks.json';
 import TalkSearch, { type TalkMeta } from '../components/TalkSearch';
+import { getPublishedSlides } from '../utils/slides';
 
 const upcomingTalks = talksData.upcoming || [];
 
 const talkEntries = await getCollection('talks');
+const publishedSlides = await getPublishedSlides();
+const publishedSlideIds = new Set(publishedSlides.map((s) => s.id));
 
 const talks: TalkMeta[] = talkEntries.map((entry) => {
-  const isExternal = !!entry.data.embedUrl;
-  const href = entry.data.slides
-    ? `/slides/${entry.data.slides.id.replace(/\.mdx?$/, '')}`
-    : (entry.data.externalUrl || entry.data.embedUrl || '#');
+  const slidesRef = entry.data.slides;
+  const slidePublished = slidesRef ? publishedSlideIds.has(slidesRef.id) : false;
+  const isExternal = !!entry.data.embedUrl && !slidePublished;
+
+  let href: string;
+  let type: TalkMeta['type'];
+  let status: TalkMeta['status'];
+
+  if (slidesRef && slidePublished) {
+    href = `/slides/${slidesRef.id.replace(/\.mdx?$/, '')}`;
+    type = 'Slides';
+    status = 'published';
+  } else if (slidesRef) {
+    href = entry.data.externalUrl || entry.data.embedUrl || '#';
+    type = entry.data.embedUrl ? 'Speaker Deck' : 'Slides';
+    status = 'draft-slides';
+  } else if (entry.data.embedUrl || entry.data.externalUrl) {
+    href = entry.data.externalUrl || entry.data.embedUrl || '#';
+    type = 'Speaker Deck';
+    status = 'published';
+  } else {
+    href = '#';
+    type = 'Speaker Deck';
+    status = 'no-slides';
+  }
 
   return {
     id: entry.id,
@@ -24,7 +48,8 @@ const talks: TalkMeta[] = talkEntries.map((entry) => {
     tags: entry.data.tags,
     href,
     isExternal,
-    type: entry.data.slides ? 'Slides' : 'Speaker Deck',
+    type,
+    status,
   };
 }).sort((a, b) => (a.date < b.date ? 1 : -1));
 
