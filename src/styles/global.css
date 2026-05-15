@@ -126,6 +126,7 @@ html {
   text-size-adjust: none;
   -webkit-text-size-adjust: none;
   scroll-behavior: smooth;
+  overflow-y: scroll;
 }
 
 body {

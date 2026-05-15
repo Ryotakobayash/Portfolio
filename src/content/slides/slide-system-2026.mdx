@@ -7,6 +7,7 @@ description: MDX × View Transitions API で作ったポートフォリオ内蔵
 import Slide from '../../components/slides/Slide.astro';
 import SlideTitle from '../../components/slides/SlideTitle.astro';
 import TwoColumn from '../../components/slides/TwoColumn.astro';
+import Notes from '../../components/slides/Notes.astro';
 
 <Slide>
   <SlideTitle
@@ -14,6 +15,10 @@ import TwoColumn from '../../components/slides/TwoColumn.astro';
     subtitle="MDX × View Transitions API"
     meta="2026-05-13 · このポートフォリオ"
   />
+  <Notes>
+  - つかみ: なぜ自前のスライドシステムを作ったか
+  - 時間配分の目安: イントロは1分以内
+  </Notes>
 </Slide>
 
 <Slide>
@@ -23,6 +28,11 @@ import TwoColumn from '../../components/slides/TwoColumn.astro';
 - **Marpの課題**: 外部画像パスの管理が煩雑。HTMLに出力すると画像を別途配置する必要がある
 - **MDXの利点**: サイトのデザインシステム（CSS変数・フォント）と完全に統合できる
 - **Astroらしさ**: コンポーネント駆動・ゼロJS・コンテンツコレクション管理
+
+<Notes>
+- Marp で発表したときの画像パス事故を引き合いに出す
+- 「サイトのCSSが効く」が一番大きい利点
+</Notes>
 
 </Slide>
 

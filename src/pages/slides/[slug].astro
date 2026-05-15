@@ -12,18 +12,46 @@ if (!deck) {
 }
 
 const { Content } = await render(deck);
+const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'audience';
 ---
 
 <BaseLayout title={`${deck.data.title} | Slides`} description={deck.data.description ?? ''}>
-  <div class="slide-viewer">
+  <div class="slide-viewer" data-mode={mode} data-slug={slug}>
     <div class="deck-meta">
       {deck.data.event && <span class="deck-event">{deck.data.event}</span>}
       <span class="deck-date">{deck.data.date}</span>
+      {mode === 'present' && <span class="mode-badge">PRESENTER</span>}
     </div>
 
     <div class="slides-container" id="slides-container">
       <Content />
     </div>
+
+    {mode === 'present' && (
+      <aside class="presenter-panel">
+        <div class="panel-section">
+          <div class="panel-label">Up Next</div>
+          <div class="next-preview-frame">
+            <div class="next-preview-content" id="next-preview-content"></div>
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-label">Timer</div>
+          <div class="timer-display" id="timer-display">00:00:00</div>
+          <div class="timer-controls">
+            <button class="ctrl-btn" id="timer-toggle-btn">Start</button>
+            <button class="ctrl-btn" id="timer-reset-btn">Reset</button>
+          </div>
+        </div>
+      </aside>
+    )}
+
+    {mode === 'present' && (
+      <section class="notes-panel" id="notes-panel" aria-label="Speaker notes">
+        <div class="panel-label">Speaker Notes</div>
+        <div class="notes-content" id="notes-content"></div>
+      </section>
+    )}
 
     <nav class="slide-controls" id="slide-controls" aria-label="Slide navigation">
       <button class="ctrl-btn" id="prev-btn" aria-label="Previous slide" disabled>
@@ -33,9 +61,21 @@ const { Content } = await render(deck);
         <div class="slide-dots" id="slide-dots" aria-hidden="true"></div>
         <span class="slide-counter" id="slide-counter"></span>
       </div>
-      <button class="ctrl-btn" id="next-btn" aria-label="Next slide">
-        NEXT →
-      </button>
+      <div class="ctrl-right">
+        {mode === 'audience' && (
+          <>
+            <button class="ctrl-btn" id="fullscreen-btn" aria-label="Toggle fullscreen">
+              FULLSCREEN ⛶
+            </button>
+            <button class="ctrl-btn ctrl-btn--accent" id="open-presenter-btn">
+              OPEN SPEAKER VIEW ↗
+            </button>
+          </>
+        )}
+        <button class="ctrl-btn" id="next-btn" aria-label="Next slide">
+          NEXT →
+        </button>
+      </div>
     </nav>
   </div>
 </BaseLayout>
@@ -64,7 +104,14 @@ const { Content } = await render(deck);
     font-weight: 600;
   }
 
-  /* 16:9 container that fits within viewport */
+  .mode-badge {
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    padding: 1px 6px;
+    font-weight: 700;
+  }
+
+  /* 16:9 container that fits within viewport (audience default) */
   .slides-container {
     position: relative;
     width: min(100%, calc((100vh - var(--header-height) - 140px) * 16 / 9));
@@ -114,10 +161,17 @@ const { Content } = await render(deck);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--spacing-md);
     width: min(100%, calc((100vh - var(--header-height) - 140px) * 16 / 9));
     margin: 0 auto;
     padding: var(--spacing-sm) 0;
     border-top: 1px solid var(--color-border);
+  }
+
+  .ctrl-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
   }
 
   .ctrl-btn {
@@ -144,6 +198,11 @@ const { Content } = await render(deck);
   .ctrl-btn:disabled {
     opacity: 0.3;
     cursor: default;
+  }
+
+  .ctrl-btn--accent {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
   }
 
   .ctrl-center {
@@ -176,15 +235,245 @@ const { Content } = await render(deck);
     letter-spacing: 0.1em;
     color: var(--color-text-muted);
   }
+
+  /* ===== Fullscreen (audience) ===== */
+  .slide-viewer:fullscreen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg);
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .slide-viewer:fullscreen > :not(.slides-container) {
+    display: none;
+  }
+
+  .slide-viewer:fullscreen .slides-container {
+    width: min(100vw, 100vh * 16 / 9);
+    height: min(100vh, 100vw * 9 / 16);
+    aspect-ratio: 16 / 9;
+    margin: 0;
+  }
+
+  /* ===== Presenter mode layout ===== */
+  .slide-viewer[data-mode="present"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      "meta meta"
+      "main panel"
+      "notes notes"
+      "controls controls";
+    gap: var(--spacing-md);
+    align-items: start;
+  }
+
+  .slide-viewer[data-mode="present"] .deck-meta {
+    grid-area: meta;
+  }
+
+  .slide-viewer[data-mode="present"] .slides-container {
+    grid-area: main;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    margin: 0;
+  }
+
+  .presenter-panel {
+    grid-area: panel;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    min-width: 0;
+  }
+
+  .panel-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .panel-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .next-preview-frame {
+    --preview-scale: 0.25;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+
+  .next-preview-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% / 0.25);
+    height: calc(100% / 0.25);
+    transform: scale(0.25);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+
+  /* Force any cloned .slide inside the preview to display */
+  .next-preview-content :global([data-slide]) {
+    display: flex !important;
+  }
+  .next-preview-content :global([data-notes]) {
+    display: none !important;
+  }
+
+  .preview-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    transform: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  .timer-display {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: 0.08em;
+  }
+
+  .timer-controls {
+    display: flex;
+    gap: var(--spacing-sm);
+  }
+
+  .notes-panel {
+    grid-area: notes;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .notes-content {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--color-text);
+  }
+
+  .notes-content :global(p),
+  .notes-content :global(ul),
+  .notes-content :global(ol) {
+    margin: 0 0 var(--spacing-sm);
+  }
+
+  .notes-content :global(ul),
+  .notes-content :global(ol) {
+    padding-left: 1.4em;
+  }
+
+  .notes-content :global(li + li) {
+    margin-top: 0.2em;
+  }
+
+  .notes-content :global(strong) {
+    color: var(--color-primary);
+  }
+
+  .notes-empty {
+    color: var(--color-text-muted);
+    font-style: italic;
+    font-size: 0.85rem;
+  }
+
+  .slide-viewer[data-mode="present"] .slide-controls {
+    grid-area: controls;
+    width: 100%;
+  }
+
+  /* ===== Remote laser pointer (created via JS — must be :global) ===== */
+  :global(.remote-cursor) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: 22px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms ease;
+    z-index: 50;
+    will-change: transform;
+  }
+
+  :global(.remote-cursor)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 120, 120, 1) 0%,
+      rgba(255, 30, 30, 0.95) 28%,
+      rgba(255, 0, 0, 0) 70%
+    );
+    box-shadow:
+      0 0 14px 4px rgba(255, 30, 30, 0.7),
+      0 0 28px 10px rgba(255, 0, 0, 0.32);
+  }
+
+  :global(.remote-cursor.is-visible) {
+    opacity: 1;
+  }
 </style>
 
 <script>
+  const viewer = document.querySelector<HTMLElement>('.slide-viewer');
+  if (!viewer) throw new Error('slide-viewer not found');
+
   const container = document.getElementById('slides-container');
   if (!container) throw new Error('slides-container not found');
+
+  const mode = viewer.dataset.mode === 'present' ? 'present' : 'audience';
+  const slug = viewer.dataset.slug ?? 'unknown';
 
   const slides = Array.from(container.querySelectorAll<HTMLElement>('[data-slide]'));
   const total = slides.length;
   let current = 0;
+  let suppressBroadcast = false;
+
+  // Cross-window sync (same-origin, same browser)
+  const channel = new BroadcastChannel(`slides-${slug}`);
+
+  function broadcast(index: number) {
+    if (suppressBroadcast) return;
+    channel.postMessage({ type: 'slide', index });
+  }
+
+  channel.addEventListener('message', (e) => {
+    if (e.data?.type === 'slide' && typeof e.data.index === 'number' && e.data.index !== current) {
+      suppressBroadcast = true;
+      showSlide(e.data.index, true);
+      suppressBroadcast = false;
+    }
+  });
 
   function showSlide(nextIndex: number, animate = true) {
     if (nextIndex < 0 || nextIndex >= total) return;
@@ -195,7 +484,11 @@ const { Content } = await render(deck);
       slides[nextIndex].classList.add('is-active');
       current = nextIndex;
       updateUI();
-      history.replaceState(null, '', `?slide=${nextIndex}`);
+      // Preserve other params (e.g. mode)
+      const url = new URL(location.href);
+      url.searchParams.set('slide', String(nextIndex));
+      history.replaceState(null, '', url.toString());
+      broadcast(nextIndex);
     };
 
     if (animate && 'startViewTransition' in document) {
@@ -219,10 +512,41 @@ const { Content } = await render(deck);
         .join('');
     }
 
-    const prevBtn = document.getElementById('prev-btn') as HTMLButtonElement;
-    const nextBtn = document.getElementById('next-btn') as HTMLButtonElement;
+    const prevBtn = document.getElementById('prev-btn') as HTMLButtonElement | null;
+    const nextBtn = document.getElementById('next-btn') as HTMLButtonElement | null;
     if (prevBtn) prevBtn.disabled = current === 0;
     if (nextBtn) nextBtn.disabled = current === total - 1;
+
+    if (mode === 'present') {
+      updateNotesPanel();
+      updateNextPreview();
+    }
+  }
+
+  function updateNotesPanel() {
+    const target = document.getElementById('notes-content');
+    if (!target) return;
+    const notes = slides[current].querySelector<HTMLElement>('[data-notes]');
+    if (notes && notes.innerHTML.trim()) {
+      target.innerHTML = notes.innerHTML;
+      target.classList.remove('notes-empty');
+    } else {
+      target.innerHTML = '<span class="notes-empty">No notes for this slide.</span>';
+    }
+  }
+
+  function updateNextPreview() {
+    const target = document.getElementById('next-preview-content');
+    if (!target) return;
+    target.innerHTML = '';
+    const nextIdx = current + 1;
+    if (nextIdx >= total) {
+      target.innerHTML = '<div class="preview-empty">END</div>';
+      return;
+    }
+    const clone = slides[nextIdx].cloneNode(true) as HTMLElement;
+    clone.classList.add('is-active');
+    target.appendChild(clone);
   }
 
   function init() {
@@ -234,20 +558,161 @@ const { Content } = await render(deck);
     slides[startIndex].classList.add('is-active');
     current = startIndex;
     updateUI();
+    // Announce initial state so a freshly-opened companion window can sync
+    broadcast(startIndex);
   }
 
+  // ===== Keyboard =====
   document.addEventListener('keydown', (e) => {
+    // Don't intercept browser shortcuts (Cmd/Ctrl+R reload, Cmd+L, etc.)
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    // Ignore key events when typing in inputs
+    const target = e.target as HTMLElement | null;
+    if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return;
+
     if (e.key === 'ArrowRight' || e.key === ' ') {
       e.preventDefault();
       showSlide(current + 1);
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
       showSlide(current - 1);
+    } else if (mode === 'present' && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      toggleTimer();
+    } else if (mode === 'present' && (e.key === 'r' || e.key === 'R')) {
+      e.preventDefault();
+      resetTimer();
+    } else if (mode === 'audience' && (e.key === 'f' || e.key === 'F')) {
+      e.preventDefault();
+      toggleFullscreen();
     }
   });
 
   document.getElementById('prev-btn')?.addEventListener('click', () => showSlide(current - 1));
   document.getElementById('next-btn')?.addEventListener('click', () => showSlide(current + 1));
+
+  // ===== Open Speaker View =====
+  document.getElementById('open-presenter-btn')?.addEventListener('click', () => {
+    const url = new URL(location.href);
+    url.searchParams.set('mode', 'present');
+    url.searchParams.set('slide', String(current));
+    window.open(url.toString(), `slides-presenter-${slug}`);
+  });
+
+  // ===== Fullscreen (audience only) =====
+  function toggleFullscreen() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      viewer!.requestFullscreen().catch(() => {});
+    }
+  }
+
+  document.getElementById('fullscreen-btn')?.addEventListener('click', toggleFullscreen);
+
+  // ===== Timer (presenter only) =====
+  let timerStart: number | null = null;
+  let timerAccumulated = 0;
+  let timerInterval: ReturnType<typeof setInterval> | null = null;
+
+  function fmt(ms: number) {
+    const total = Math.floor(ms / 1000);
+    const h = String(Math.floor(total / 3600)).padStart(2, '0');
+    const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+    const s = String(total % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+
+  function renderTimer() {
+    const el = document.getElementById('timer-display');
+    if (!el) return;
+    const elapsed = timerAccumulated + (timerStart != null ? Date.now() - timerStart : 0);
+    el.textContent = fmt(elapsed);
+  }
+
+  function toggleTimer() {
+    const btn = document.getElementById('timer-toggle-btn');
+    if (timerStart != null) {
+      timerAccumulated += Date.now() - timerStart;
+      timerStart = null;
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = null;
+      if (btn) btn.textContent = 'Start';
+    } else {
+      timerStart = Date.now();
+      timerInterval = setInterval(renderTimer, 250);
+      if (btn) btn.textContent = 'Pause';
+    }
+    renderTimer();
+  }
+
+  function resetTimer() {
+    timerAccumulated = 0;
+    if (timerStart != null) timerStart = Date.now();
+    renderTimer();
+  }
+
+  if (mode === 'present') {
+    document.getElementById('timer-toggle-btn')?.addEventListener('click', toggleTimer);
+    document.getElementById('timer-reset-btn')?.addEventListener('click', resetTimer);
+    renderTimer();
+  }
+
+  // ===== Laser pointer (presenter → audience, same-browser sync) =====
+  const POINTER_IDLE_MS = 1500;
+
+  if (mode === 'present') {
+    let rafPending = false;
+    let lastX = 0;
+    let lastY = 0;
+    let idleTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const flush = () => {
+      rafPending = false;
+      channel.postMessage({ type: 'pointer', x: lastX, y: lastY, visible: true });
+    };
+
+    container.addEventListener('pointermove', (e) => {
+      const rect = container.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      if (x < 0 || x > 1 || y < 0 || y > 1) return;
+      lastX = x;
+      lastY = y;
+      if (!rafPending) {
+        rafPending = true;
+        requestAnimationFrame(flush);
+      }
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        channel.postMessage({ type: 'pointer', visible: false });
+      }, POINTER_IDLE_MS);
+    });
+
+    container.addEventListener('pointerleave', () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      channel.postMessage({ type: 'pointer', visible: false });
+    });
+  }
+
+  if (mode === 'audience') {
+    const cursor = document.createElement('div');
+    cursor.className = 'remote-cursor';
+    container.appendChild(cursor);
+
+    channel.addEventListener('message', (e) => {
+      if (e.data?.type !== 'pointer') return;
+      if (e.data.visible === false) {
+        cursor.classList.remove('is-visible');
+        return;
+      }
+      const rect = container.getBoundingClientRect();
+      const px = e.data.x * rect.width - 11;
+      const py = e.data.y * rect.height - 11;
+      cursor.style.transform = `translate(${px}px, ${py}px)`;
+      cursor.classList.add('is-visible');
+    });
+  }
 
   init();
 </script>

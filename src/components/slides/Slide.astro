@@ -12,11 +12,14 @@ const { class: className } = Astro.props;
 
 <style>
   .slide {
+    /* Container query unit basis: child sizes (cqi) scale with slide width,
+       so layout looks identical whether windowed or fullscreen. */
+    container-type: inline-size;
     display: none;
     position: absolute;
     inset: 0;
     flex-direction: column;
-    padding: clamp(1.5rem, 5%, 3rem);
+    padding: 4cqi 5cqi;
     background: var(--color-bg);
     border: 1px solid var(--color-border);
     overflow: hidden;
@@ -26,17 +29,23 @@ const { class: className } = Astro.props;
     display: flex;
   }
 
+  /* SSR fallback: show first slide when JS hasn't yet marked one active.
+     Prevents an all-black flash on initial load / View Transitions race. */
+  :global(.slides-container:not(:has(.slide.is-active))) .slide:first-of-type {
+    display: flex;
+  }
+
   .slide-body {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
-    gap: 1rem;
+    gap: 1.2cqi;
   }
 
   .slide :global(h1) {
-    font-size: clamp(1.6rem, 4vw, 3rem);
+    font-size: 4cqi;
     font-weight: 900;
     letter-spacing: -0.02em;
     color: var(--color-text);
@@ -45,21 +54,21 @@ const { class: className } = Astro.props;
   }
 
   .slide :global(h2) {
-    font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+    font-size: 2.4cqi;
     font-weight: 700;
     color: var(--color-primary);
     margin: 0 0 0.5em;
   }
 
   .slide :global(h3) {
-    font-size: clamp(0.95rem, 1.8vw, 1.4rem);
+    font-size: 1.8cqi;
     font-weight: 600;
     color: var(--color-text);
     margin: 0 0 0.4em;
   }
 
   .slide :global(p) {
-    font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+    font-size: 1.5cqi;
     line-height: 1.65;
     color: var(--color-text-secondary);
     margin: 0 0 0.5em;
@@ -67,7 +76,7 @@ const { class: className } = Astro.props;
 
   .slide :global(ul),
   .slide :global(ol) {
-    font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+    font-size: 1.5cqi;
     line-height: 1.8;
     color: var(--color-text-secondary);
     padding-left: 1.4em;
@@ -97,7 +106,7 @@ const { class: className } = Astro.props;
     border: 1px solid var(--color-border);
     padding: 1rem 1.25rem;
     overflow-x: auto;
-    font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+    font-size: 1.2cqi;
     line-height: 1.6;
   }
 

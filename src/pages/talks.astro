@@ -3,106 +3,78 @@ export const prerender = true;
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import talksData from '../data/talks.json';
+import TalkSearch, { type TalkMeta } from '../components/TalkSearch';
 
 const upcomingTalks = talksData.upcoming || [];
-const pastTalks = talksData.past || [];
-const slideDecks = (await getCollection('slides')).sort(
-  (a, b) => b.data.date.localeCompare(a.data.date)
-);
+
+const talkEntries = await getCollection('talks');
+
+const talks: TalkMeta[] = talkEntries.map((entry) => {
+  const isExternal = !!entry.data.embedUrl;
+  const href = entry.data.slides
+    ? `/slides/${entry.data.slides.id.replace(/\.mdx?$/, '')}`
+    : (entry.data.externalUrl || entry.data.embedUrl || '#');
+
+  return {
+    id: entry.id,
+    title: entry.data.title,
+    date: entry.data.date,
+    event: entry.data.event,
+    description: entry.data.description,
+    tags: entry.data.tags,
+    href,
+    isExternal,
+    type: entry.data.slides ? 'Slides' : 'Speaker Deck',
+  };
+}).sort((a, b) => (a.date < b.date ? 1 : -1));
+
+const tagCount = new Map<string, number>();
+talks.forEach((t) => t.tags.forEach((tag) => tagCount.set(tag, (tagCount.get(tag) || 0) + 1)));
+const allTags = Array.from(tagCount.entries())
+  .sort((a, b) => b[1] - a[1])
+  .map(([tag]) => tag);
 ---
 
 <BaseLayout title="Talks | RK / Portfolio" description="Upcoming and past talks, presentations, and slides">
   <div class="talks-page">
     <header class="talks-header">
       <h1 class="page-title">Talks</h1>
-      <p class="page-description">
-        登壇予定および過去の登壇資料（Speaker Deck / Marp）をまとめています。
-      </p>
+      <div class="stats-row">
+        <span class="stat-item">{talks.length} Talks</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-item">{allTags.length} Tags</span>
+        {talks[0] && (
+          <>
+            <span class="stat-separator">/</span>
+            <span class="stat-item">Latest: {talks[0].date}</span>
+          </>
+        )}
+      </div>
     </header>
 
-    <!-- Upcoming Talks Timeline -->
-    <div class="section-divider"><span class="section-divider__label">01 · Upcoming</span></div>
-    <section class="bento-card">
-      {upcomingTalks.length > 0 ? (
-        <ul class="timeline">
-          {upcomingTalks.map((talk) => (
-            <li class="timeline-item">
-              <div class="timeline-marker"></div>
-              <div class="timeline-content">
-                <span class="talk-date">{talk.date}</span>
-                <span class="talk-event">{talk.event}</span>
-                <h3 class="talk-title">{talk.title}</h3>
-                <span class="talk-status">{talk.status}</span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p class="text-muted">Currently, there are no upcoming talks scheduled.</p>
-      )}
-    </section>
-
-    <!-- Past Talks / Slides -->
-    <div class="section-divider"><span class="section-divider__label">02 · Archives & Slides</span></div>
-    <div class="talks-grid">
-      {pastTalks.map((talk) => (
-        <section class="bento-card talk-card">
-          <div class="talk-info">
-            <span class="talk-date">{talk.date}</span>
-            <span class="talk-event">{talk.event}</span>
-            <h3 class="talk-title">{talk.title}</h3>
-            {talk.link && (
-              <a href={talk.link} target="_blank" rel="noopener noreferrer" class="talk-link link-arrow">
-                View on {talk.type} →
-              </a>
-            )}
-          </div>
-          
-          {talk.embedUrl ? (
-            <div class="slide-embed-container">
-              <iframe
-                class="speakerdeck-iframe"
-                src={talk.embedUrl}
-                title={talk.title}
-                allowfullscreen="true"
-                mozallowfullscreen="true"
-                webkitallowfullscreen="true"
-                data-ratio="1.7777777777777777"
-              ></iframe>
-            </div>
-          ) : (
-            <div class="slide-placeholder">
-              <span class="text-muted text-sm">No slide embed available.</span>
-            </div>
-          )}
-        </section>
-      ))}
-    </div>
-
-    <!-- Local Slide Decks -->
-    {slideDecks.length > 0 && (
+    {upcomingTalks.length > 0 && (
       <>
-        <div class="section-divider"><span class="section-divider__label">03 · Slides</span></div>
-        <div class="slide-decks-grid">
-          {slideDecks.map((deck) => {
-            const slug = deck.id.replace(/\.mdx?$/, '');
-            return (
-              <a href={`/slides/${slug}`} class="slide-deck-card bento-card">
-                <div class="deck-info">
-                  <span class="talk-date">{deck.data.date}</span>
-                  {deck.data.event && <span class="talk-event">{deck.data.event}</span>}
-                  <h3 class="talk-title">{deck.data.title}</h3>
-                  {deck.data.description && (
-                    <p class="deck-description">{deck.data.description}</p>
-                  )}
+        <div class="section-divider"><span class="section-divider__label">Upcoming</span></div>
+        <section class="bento-card">
+          <ul class="timeline">
+            {upcomingTalks.map((talk) => (
+              <li class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <span class="talk-date">{talk.date}</span>
+                  <span class="talk-event">{talk.event}</span>
+                  <h3 class="talk-title">{talk.title}</h3>
+                  <span class="talk-status">{talk.status}</span>
                 </div>
-                <span class="deck-cta">VIEW SLIDES →</span>
-              </a>
-            );
-          })}
-        </div>
+              </li>
+            ))}
+          </ul>
+        </section>
       </>
     )}
+
+    <div class="section-divider"><span class="section-divider__label">Archive</span></div>
+    <TalkSearch client:load talks={talks} allTags={allTags} />
   </div>
 </BaseLayout>
 
@@ -118,21 +90,33 @@ const slideDecks = (await getCollection('slides')).sort(
   }
 
   .page-title {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 900;
     letter-spacing: -0.02em;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
     color: var(--color-primary);
   }
 
-  .page-description {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--color-text-secondary);
-    max-width: 600px;
+  .stats-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
   }
 
-  /* Section Divider */
+  .stat-item {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .stat-separator {
+    color: var(--color-border);
+  }
+
   .section-divider {
     display: flex;
     align-items: center;
@@ -152,7 +136,6 @@ const slideDecks = (await getCollection('slides')).sort(
     background: var(--color-border);
   }
 
-  /* Timeline */
   .timeline {
     list-style: none;
     padding: 0;
@@ -197,7 +180,6 @@ const slideDecks = (await getCollection('slides')).sort(
     gap: 4px;
   }
 
-  /* Talk Info Items */
   .talk-date {
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -231,102 +213,5 @@ const slideDecks = (await getCollection('slides')).sort(
     border: 1px solid var(--color-border);
     align-self: flex-start;
     margin-top: 4px;
-  }
-
-  /* Past Talks */
-  .talks-grid {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xl);
-  }
-
-  .talk-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-
-  .talk-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .talk-link {
-    font-size: 0.8rem;
-    align-self: flex-start;
-    margin-top: var(--spacing-sm);
-  }
-
-  /* Responsive iframe container for 16:9 slides */
-  .slide-embed-container {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    height: 0;
-    overflow: hidden;
-    background-color: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-  }
-
-  .speakerdeck-iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-  }
-
-  .slide-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
-    background-color: var(--color-bg-secondary);
-    border: 1px dashed var(--color-border);
-  }
-
-  /* Local Slide Decks */
-  .slide-decks-grid {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-
-  .slide-deck-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-lg);
-    text-decoration: none;
-    transition: border-color var(--transition-fast);
-  }
-
-  .slide-deck-card:hover {
-    border-color: var(--color-primary);
-  }
-
-  .deck-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .deck-description {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    margin: 4px 0 0;
-    line-height: 1.5;
-  }
-
-  .deck-cta {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    color: var(--color-primary);
-    white-space: nowrap;
-    flex-shrink: 0;
   }
 </style>
