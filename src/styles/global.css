@@ -205,10 +205,15 @@ a:hover {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-text);
+  text-decoration: none;
 }
 
 .logo:hover {
   color: var(--color-primary);
+}
+
+.logo-short {
+  display: none;
 }
 
 .nav-links {
@@ -246,33 +251,38 @@ a:hover {
 }
 
 @media (max-width: 500px) {
+  .logo-full {
+    display: none;
+  }
+
+  .logo-short {
+    display: inline;
+  }
+
   .nav-links {
     gap: var(--spacing-md);
   }
 
   .nav-link {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    padding: var(--spacing-xs) 2px;
   }
 }
 
 @media (max-width: 375px) {
-  .logo {
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
-  }
-
   .nav-links {
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm);
   }
 
   .nav-link {
-    font-size: 0.55rem;
-    letter-spacing: 0.1em;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
   }
 
   .theme-toggle {
     font-size: 0.55rem;
-    padding: 2px 6px;
+    padding: 3px 6px;
     letter-spacing: 0.08em;
   }
 }

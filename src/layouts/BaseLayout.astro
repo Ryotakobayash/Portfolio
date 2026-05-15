@@ -87,7 +87,10 @@ const isActive = (path: string) => {
 
     <header class="header">
       <div class="container header-content">
-        <a href="/" class="logo" transition:name="site-logo">RK / PORTFOLIO</a>
+        <a href="/" class="logo" transition:name="site-logo">
+          <span class="logo-full">RK / PORTFOLIO</span>
+          <span class="logo-short">RK</span>
+        </a>
         <nav class="nav-links">
           <a href="/posts" class={`nav-link ${isActive('/posts') ? 'nav-link--accent' : ''}`}>Posts</a>
           <a href="/about" class={`nav-link ${isActive('/about') ? 'nav-link--accent' : ''}`}>About</a>
