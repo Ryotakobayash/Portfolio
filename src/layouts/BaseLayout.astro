@@ -109,6 +109,29 @@ const isActive = (path: string) => {
       </div>
     </main>
 
+    <div
+      id="slide-loading-overlay"
+      class="slide-loading-overlay"
+      hidden
+      aria-hidden="true"
+      transition:persist="slide-loading-overlay"
+    >
+      <div class="container">
+        <div class="slide-loading-meta">
+          <span class="skeleton-line skeleton-line--sm" style="width: 5rem;"></span>
+          <span class="skeleton-line skeleton-line--sm" style="width: 10rem;"></span>
+        </div>
+        <div class="slide-loading-frame">
+          <div class="slide-loading-pulse"></div>
+        </div>
+        <div class="slide-loading-controls">
+          <span class="skeleton-line" style="width: 4rem; height: 1.5rem;"></span>
+          <span class="skeleton-line" style="width: 6rem; height: 0.75rem;"></span>
+          <span class="skeleton-line" style="width: 4rem; height: 1.5rem;"></span>
+        </div>
+      </div>
+    </div>
+
     <script>
       function initTheme() {
         const stored = localStorage.getItem('theme');
@@ -173,12 +196,24 @@ const isActive = (path: string) => {
       // astro:page-load は初回ロード時とページ遷移後に発火する
       document.addEventListener('astro:page-load', () => {
         setupThemeToggle();
+        const overlay = document.getElementById('slide-loading-overlay');
+        if (overlay) overlay.hidden = true;
       });
 
       // astro:after-swap は新しいHTMLに入れ替わった直後（表示前）に発火
       // ここでテーマを再適用しないと、一瞬デフォルトテーマに戻るチラつきや、属性消失によるアイコン重複が起きる
       document.addEventListener('astro:after-swap', () => {
         initTheme();
+      });
+
+      // /slides/[slug] への遷移開始時にスケルトンを被せる
+      document.addEventListener('astro:before-preparation', (event) => {
+        // @ts-ignore — Astro Transition event
+        const to: URL | undefined = event.to;
+        if (to && /^\/slides\/[^/]+/.test(to.pathname)) {
+          const overlay = document.getElementById('slide-loading-overlay');
+          if (overlay) overlay.hidden = false;
+        }
       });
     </script>
 
