@@ -57,17 +57,37 @@ const allTags = Array.from(tagCount.entries())
         <div class="section-divider"><span class="section-divider__label">Upcoming</span></div>
         <section class="bento-card">
           <ul class="timeline">
-            {upcomingTalks.map((talk) => (
-              <li class="timeline-item">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
+            {upcomingTalks.map((talk) => {
+              const hasUrl = !!(talk as { url?: string }).url;
+              const Inner = (
+                <>
                   <span class="talk-date">{talk.date}</span>
-                  <span class="talk-event">{talk.event}</span>
+                  <span class="talk-event">
+                    {talk.event}
+                    {hasUrl && <span class="talk-event-icon" aria-hidden="true"> ↗</span>}
+                  </span>
                   <h3 class="talk-title">{talk.title}</h3>
                   <span class="talk-status">{talk.status}</span>
-                </div>
-              </li>
-            ))}
+                </>
+              );
+              return (
+                <li class="timeline-item">
+                  <div class="timeline-marker"></div>
+                  {hasUrl ? (
+                    <a
+                      class="timeline-content timeline-content--link"
+                      href={(talk as { url: string }).url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {Inner}
+                    </a>
+                  ) : (
+                    <div class="timeline-content">{Inner}</div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </section>
       </>
@@ -180,6 +200,32 @@ const allTags = Array.from(tagCount.entries())
     gap: 4px;
   }
 
+  .timeline-content--link {
+    color: inherit;
+    text-decoration: none;
+    padding: var(--spacing-sm);
+    margin: calc(var(--spacing-sm) * -1);
+    border: 1px solid transparent;
+    transition:
+      border-color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .timeline-content--link:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-bg-card);
+  }
+
+  .timeline-content--link:hover .talk-title {
+    color: var(--color-primary);
+  }
+
+  .talk-event-icon {
+    color: var(--color-text-muted);
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
   .talk-date {
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -200,6 +246,7 @@ const allTags = Array.from(tagCount.entries())
     font-weight: 700;
     color: var(--color-text);
     margin: 4px 0;
+    transition: color var(--transition-fast);
   }
 
   .talk-status {
