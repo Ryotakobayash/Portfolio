@@ -12,115 +12,190 @@ slug: astro-meetup-japan_v1
 import Slide from '../../components/slides/Slide.astro';
 import SlideTitle from '../../components/slides/SlideTitle.astro';
 import TwoColumn from '../../components/slides/TwoColumn.astro';
+import Columns from '../../components/slides/Columns.astro';
+import ImageSlide from '../../components/slides/ImageSlide.astro';
+import ImageWithText from '../../components/slides/ImageWithText.astro';
+import Quote from '../../components/slides/Quote.astro';
+import Section from '../../components/slides/Section.astro';
+import BigText from '../../components/slides/BigText.astro';
 import Notes from '../../components/slides/Notes.astro';
 
 <Slide>
   <SlideTitle
-    title="AstroとReactを用いたポートフォリオ構築事例"
+    title="AstroとReactを用いた個人サイト構築事例"
     subtitle="個人サイトを作って気付いたAstroの良さ"
-    meta="2026-05-13 · このポートフォリオ"
+    meta="2026-05-19 · Astro Meetup Japan"
   />
-  <Notes>
-  ここに書く。
-  </Notes>
 </Slide>
 
 <Slide>
-
-# 話す内容を書き出してみる
-- 自己紹介&サイボウズとしても使っている（mugiさんの紹介）けど、今回は自分の話。
-- 今回のイベントの趣旨を一回見てみましょう
-- 「Astroでポートフォリオやブログを自分で作ってみたいデザイナー」
-- 今時個人サイトとかいらなくないですか…？
-- なぜ作るのか、なぜAstroか。
-  - 単純なドキュメントだけだと面白くないじゃんね。
-  - 具体的にどんなことをしているの？
-    - 仕事でちょっと触るライブラリを入れてみて、
-    - スライド発表モード
-- 使ってみた感想
-  - 初心者に優しくていい感じですね。MCPとかあるし。
-  - 
-- まとめ
-  結構楽しんでます。今日のイベントも楽しみにしていました。一緒に楽しみましょう！
-
+  <Section title="導入" />
 </Slide>
+
 
 <Slide>
 
-## なぜMDXか
+## サイボウズの話
 
-- **Marpの課題**: 外部画像パスの管理が煩雑。HTMLに出力すると画像を別途配置する必要がある
-- **MDXの利点**: サイトのデザインシステム（CSS変数・フォント）と完全に統合できる
-- **Astroらしさ**: コンポーネント駆動・ゼロJS・コンテンツコレクション管理
+画像を何枚か（多分スライドを分けながらシュシュっと説明する）
 
 <Notes>
-- Marp で発表したときの画像パス事故を引き合いに出す
-- 「サイトのCSSが効く」が一番大きい利点
+とはいえ、忘れないうちにサイボウズの紹介から入ります。
+サイボウズは〜〜。
+製品としてはkintoneが広告などもよく出ていますね。
+そんな感じで、はいはい知ってる知ってる、toBのSaaSを作ってる結構前からある会社でしょ。みたいな感じで知ってくれている方は多いと思います。
+そんなサイボウズですが、Astroを使ってつくられているものもあったりします。
+</Notes>
+</Slide>
+
+<Slide>
+
+## ヘルプサイト
+
+ヘルプサイトのスクリーンショットを入れる
+
+[AIと乗り切った1,500ページ超のヘルプサイト基盤刷新とさらにその先の話 - Speaker Deck](https://speakerdeck.com/mugi_uno/help-site-renewal-with-ai)
+
+読み応えあって面白いぞ！
+
+ですが、今回はあくまで私個人の話。
+
+<Notes>
+2026/5/09 フロントエンドカンファレンスにて発表。
+タイトルの通りかなり大変なヘルプサイトの移行を少人数で行った結果の話。
+読み応えあって面白いぞ！興味があったらぜひmugiさんの方もみてみてくれ！
+ですが、私はこれに一切関わっていません。
+なので今回はあくまで私個人の話。
+</Notes>
+</Slide>
+
+<Slide>
+
+## 自己紹介
+
+<ImageWithText
+  src="/talks/2026-05-19-astro-meetup-japan/2026-05-16-17-54-24.png"
+  alt="プロフィール写真"
+  side="left"
+>
+
+**小林 諒大 / Kobayashi Ryota**
+
+
+Cybozu Product Design / kintone, Dashboard
+
+**→「Astroでポートフォリオやブログを自分で作ってみたいデザイナー」（イベントページより）**
+
+
+</ImageWithText>
+
+<Notes>
+ここに該当する。デザイナー寄りのAstroユーザーとして感じたことを話させてもらえればと思います。
+（会場のあっため的なイメージ）会場でデザイナーの人🙋開発メインの人🙋
+</Notes>
+
+</Slide>
+
+<Slide>
+  <Section title="note/zenn/Notion じゃダメな理由" />
+</Slide>
+
+<Slide>
+
+## 今時個人サイトとかいらなくないですか…？
+
+note, zenn, Notion でよくないですか？おしゃれだし。
+
+## 私はこれが我慢できない。
+- 盛者必衰。サービスを簡単に乗り換えられるのがいい！
+- エディタも好きなの使いたい！入力はタイプライターモードじゃなきゃやだ！
+- 自分がやりたいこと（コロコロ変わる）ができないと嫌だ！
+
+## ＋αの部分
+- 実装（後述）触りたいな〜
+- イケてるものを作ってエンジニアとワイワイしたいな〜
+- 気軽に記事を投稿できる場所がほしいな〜
+
+→ もろもろとのマッチング（＋社内の友達からの後押し）で **Astro.js 使ってみよう！** となった。
+
+</Slide>
+
+<Slide>
+  <Section title="作ったものの話" />
+</Slide>
+
+
+<Slide>
+
+## コンセプト
+- 単純にブログにするよりも **1芸ほしい**なぁと思いがあった
+- ここでコアになったのは、仕事で使っている「**グラフ表示系のライブラリを使いたい**（ついでに詳しくなりたい）」という思い
+- ブログ × ダッシュボードみたいな
+- 表示するデータを集めるために **GA4, GitHub** など情報をとってこれそうなのも触れられるのも Good
+- 良さそうじゃないか
+
+<Notes>
+ryota5884.com 表示（10秒）
+コンセプト（30秒）
 </Notes>
 
 </Slide>
 
 <Slide>
 
-## アーキテクチャ
+## 全体の構成はこう。
 
-<TwoColumn>
-<div>
+画像：全体構成図
 
-**スライド記述**
+（画像：ページマップ）←いる？
 
-- MDX（Markdown + JSX）
-- Astroコンポーネント
-- `src/content/talks/` で管理
-
-</div>
-<div>
-
-**ビューア**
-
-- View Transitions API
-- `←` `→` キーボードナビ
-- `?slide=N` URLディープリンク
-
-</div>
-</TwoColumn>
+<Notes>
+Astroの特徴としてある、islandとかはこのへんで使っている。
+ブログ部分はAstroの良さが出るようにしつつ、データ表示系はReact コンポーネントを client:* で island 化している。
+ブログとしてのみやすさ・軽量さを確保しつつ、面白いものができたので個人的には満足。
+</Notes>
 
 </Slide>
 
 <Slide>
 
-## View Transitions API
+## 各ページの構成はこう
+そんなに変わったことはしていない。
+- Talks システム
+- Ascii-render など小ネタ（30秒）
 
-```js
-document.startViewTransition(() => {
-  showNextSlide();
-});
-```
+<Notes>
+Ascii-renderとか、（当日プレゼンターモードを解除して）：mdx → サイトとトンマナを合わせてスライドを作れる `Talks` とか
+</Notes>
 
-ブラウザネイティブのAPIでスライド切り替えをアニメーション。方向（前進・後退）に応じてアニメーションを切り替えます。
+</Slide>
+
+
+<Slide>
+
+## まとめ
+
+**使った理由**
+- 自分で記事を持っておける安心感
+- ちょっと強みとズレたこともできる懐の深さ
+- 個人的な趣味・嗜好とのマッチング
+
+**感想**
+- 好奇心・作りたい気持ちをあまり妨げられないのが、嬉しい。楽しい
+- 初心者に優しくていい感じですね。[MCP](https://docs.astro.build/ja/guides/build-with-ai/)とかあるし。
 
 </Slide>
 
 <Slide>
 
-## スライドの書き方
+## 最後に
 
-```mdx
-import Slide from "../../components/slides/Slide.astro";
-import SlideTitle from "../../components/slides/SlideTitle.astro";
 
-<Slide>
-  <SlideTitle title="タイトル" subtitle="サブタイトル" />
-</Slide>
 
-<Slide>
-
-## 通常スライド
-
-- MDXで自由に記述できます
-
-</Slide>
-```
+<BigText size="xl" accent>
+今日のイベントも楽しみにしていました。
+一緒に**楽しみましょう**！
+</BigText>
 
 </Slide>
 

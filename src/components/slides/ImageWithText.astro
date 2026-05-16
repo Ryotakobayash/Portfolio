@@ -1,0 +1,66 @@
+---
+interface Props {
+  src: string;
+  alt?: string;
+  side?: 'left' | 'right';
+  ratio?: string;
+  bare?: boolean;
+}
+const {
+  src,
+  alt = '',
+  side = 'right',
+  ratio = '1fr 1fr',
+  bare = false,
+} = Astro.props;
+---
+<div class="image-with-text" data-side={side} data-bare={bare} style={`--ratio: ${ratio}`}>
+  <div class="img-col">
+    <img src={src} alt={alt} />
+  </div>
+  <div class="text-col">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .image-with-text {
+    display: grid;
+    gap: 3cqi;
+    align-items: center;
+    grid-template-columns: var(--ratio);
+  }
+
+  .image-with-text[data-side="left"] .img-col { order: 0; }
+  .image-with-text[data-side="left"] .text-col { order: 1; }
+  .image-with-text[data-side="right"] .img-col { order: 1; }
+  .image-with-text[data-side="right"] .text-col { order: 0; }
+
+  .img-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .img-col img {
+    max-width: 100%;
+    max-height: 70cqb;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid var(--color-border);
+    margin: 0;
+  }
+
+  .image-with-text[data-bare="true"] .img-col img {
+    border: none;
+  }
+
+  .text-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    min-width: 0;
+  }
+</style>

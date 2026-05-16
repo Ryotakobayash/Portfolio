@@ -1,0 +1,51 @@
+---
+interface Props {
+  cite?: string;
+}
+const { cite } = Astro.props;
+---
+<blockquote class="slide-quote">
+  <div class="quote-body">
+    <slot />
+  </div>
+  {cite && <cite>— {cite}</cite>}
+</blockquote>
+
+<style>
+  .slide-quote {
+    margin: 0;
+    padding: 1cqi 0 1cqi 2.5cqi;
+    border-left: 3px solid var(--color-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5cqi;
+  }
+
+  .quote-body {
+    font-size: 2.4cqi;
+    line-height: 1.45;
+    font-weight: 300;
+    color: var(--color-text);
+    letter-spacing: -0.005em;
+  }
+
+  .quote-body :global(p) {
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+    margin: 0;
+  }
+
+  .quote-body :global(p + p) {
+    margin-top: 0.6em;
+  }
+
+  cite {
+    font-family: var(--font-mono);
+    font-size: 1.1cqi;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    font-style: normal;
+  }
+</style>

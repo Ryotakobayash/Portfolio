@@ -57,12 +57,12 @@ const archive: TalkMeta[] = allEntries
       href = `/slides/${slug}`;
       type = 'Slides';
       status = isPublished ? 'published' : 'draft-slides';
-    } else if (entry.data.embedUrl) {
-      href = entry.data.embedUrl;
-      type = 'Speaker Deck';
-      status = isPublished ? 'published' : 'draft-slides';
     } else if (entry.data.externalUrl) {
       href = entry.data.externalUrl;
+      type = 'Speaker Deck';
+      status = isPublished ? 'published' : 'draft-slides';
+    } else if (entry.data.embedUrl) {
+      href = entry.data.embedUrl;
       type = 'Speaker Deck';
       status = isPublished ? 'published' : 'draft-slides';
     } else {

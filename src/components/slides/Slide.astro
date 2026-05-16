@@ -83,6 +83,45 @@ const { class: className } = Astro.props;
     margin: 0;
   }
 
+  .slide :global(ul) {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .slide :global(ul > li) {
+    position: relative;
+    padding-left: 1.4em;
+  }
+
+  .slide :global(ul > li)::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  .slide :global(ul ul) {
+    margin-top: 0.3em;
+    font-size: 0.95em;
+  }
+
+  .slide :global(ul ul > li)::before {
+    content: "–";
+    color: var(--color-text-muted);
+  }
+
+  .slide :global(ol) {
+    list-style-position: outside;
+  }
+
+  .slide :global(ol > li)::marker {
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+
   .slide :global(li + li) {
     margin-top: 0.3em;
   }
@@ -90,6 +129,48 @@ const { class: className } = Astro.props;
   .slide :global(strong) {
     color: var(--color-text);
     font-weight: 700;
+  }
+
+  .slide :global(em) {
+    color: var(--color-accent-2);
+    font-style: normal;
+  }
+
+  .slide :global(a) {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .slide :global(mark) {
+    background: var(--color-primary-light);
+    color: inherit;
+    padding: 0 0.2em;
+  }
+
+  .slide :global(hr) {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 1.5cqi 0;
+  }
+
+  .slide :global(blockquote) {
+    margin: 0.8cqi 0;
+    padding: 0.4cqi 0 0.4cqi 1.5cqi;
+    border-left: 2px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 1.5cqi;
+    line-height: 1.6;
+  }
+
+  .slide :global(kbd) {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    padding: 0.1em 0.5em;
+    color: var(--color-text);
   }
 
   .slide :global(code) {
@@ -115,5 +196,34 @@ const { class: className } = Astro.props;
     border: none;
     padding: 0;
     color: var(--color-text);
+  }
+
+  .slide :global(img) {
+    display: block;
+    max-width: 100%;
+    max-height: 70cqb;
+    width: auto;
+    height: auto;
+    margin: 0.5em auto;
+    object-fit: contain;
+    border: 1px solid var(--color-border);
+  }
+
+  .slide :global(figure) {
+    margin: 0.5em auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4em;
+  }
+
+  .slide :global(figure img) {
+    margin: 0;
+  }
+
+  .slide :global(figcaption) {
+    font-size: 1.1cqi;
+    color: var(--color-text-secondary);
+    text-align: center;
   }
 </style>

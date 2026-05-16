@@ -1,0 +1,54 @@
+---
+interface Props {
+  size?: 'md' | 'lg' | 'xl' | '2xl';
+  align?: 'start' | 'center' | 'end';
+  accent?: boolean;
+}
+const { size = 'xl', align = 'center', accent = false } = Astro.props;
+---
+<div class="big-text" data-size={size} data-align={align} data-accent={accent}>
+  <slot />
+</div>
+
+<style>
+  .big-text {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--color-text);
+  }
+
+  .big-text[data-align="start"] {
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .big-text[data-align="center"] {
+    justify-content: center;
+    text-align: center;
+  }
+  .big-text[data-align="end"] {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .big-text[data-size="md"] { font-size: 4cqi; }
+  .big-text[data-size="lg"] { font-size: 5.5cqi; }
+  .big-text[data-size="xl"] { font-size: 7cqi; }
+  .big-text[data-size="2xl"] { font-size: 9cqi; }
+
+  .big-text[data-accent="true"] { color: var(--color-primary); }
+
+  .big-text :global(strong) {
+    color: var(--color-primary);
+    font-weight: inherit;
+  }
+
+  .big-text :global(em) {
+    color: var(--color-accent-2);
+    font-style: normal;
+  }
+</style>

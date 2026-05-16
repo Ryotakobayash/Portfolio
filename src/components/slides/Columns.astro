@@ -1,0 +1,34 @@
+---
+interface Props {
+  cols?: number;
+  gap?: string;
+  ratio?: string;
+}
+const { cols = 2, gap = '3cqi', ratio } = Astro.props;
+const template = ratio ?? `repeat(${cols}, 1fr)`;
+---
+<div class="columns" style={`--cols-template: ${template}; --col-gap: ${gap}`}>
+  <slot />
+</div>
+
+<style>
+  .columns {
+    display: grid;
+    grid-template-columns: var(--cols-template);
+    gap: var(--col-gap);
+    align-items: start;
+  }
+
+  .columns :global(> div) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    min-width: 0;
+  }
+
+  @media (max-width: 600px) {
+    .columns {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

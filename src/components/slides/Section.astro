@@ -1,0 +1,52 @@
+---
+interface Props {
+  number?: string | number;
+  title: string;
+  subtitle?: string;
+}
+const { number, title, subtitle } = Astro.props;
+const numberLabel =
+  number !== undefined ? String(number).padStart(2, '0') : undefined;
+---
+<div class="section-divider">
+  {numberLabel && <div class="section-number">{numberLabel}</div>}
+  <h1 class="section-title">{title}</h1>
+  {subtitle && <p class="section-subtitle">{subtitle}</p>}
+</div>
+
+<style>
+  .section-divider {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5cqi;
+  }
+
+  .section-number {
+    font-family: var(--font-mono);
+    font-size: 1.1cqi;
+    letter-spacing: 0.3em;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    padding: 0.4cqi 1.2cqi;
+    align-self: flex-start;
+  }
+
+  .section-title {
+    font-size: 6cqi;
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .section-subtitle {
+    font-size: 1.8cqi;
+    font-weight: 400;
+    color: var(--color-text-muted);
+    margin: 0;
+    max-width: 60ch;
+  }
+</style>

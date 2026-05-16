@@ -1,7 +1,7 @@
 ---
 title: AstroとMDXで作るスライドシステム
 date: '2026-05-13'
-event: いい感じのイベント
+event: サンプルイベント
 description: MDX × View Transitions API で作ったポートフォリオ内蔵のスライドシステムについて
 tags:
   - Astro
@@ -12,6 +12,12 @@ slug: slide-system-2026
 import Slide from '../../components/slides/Slide.astro';
 import SlideTitle from '../../components/slides/SlideTitle.astro';
 import TwoColumn from '../../components/slides/TwoColumn.astro';
+import Columns from '../../components/slides/Columns.astro';
+import ImageSlide from '../../components/slides/ImageSlide.astro';
+import ImageWithText from '../../components/slides/ImageWithText.astro';
+import Quote from '../../components/slides/Quote.astro';
+import Section from '../../components/slides/Section.astro';
+import BigText from '../../components/slides/BigText.astro';
 import Notes from '../../components/slides/Notes.astro';
 
 <Slide>
@@ -100,6 +106,123 @@ import SlideTitle from '../../components/slides/SlideTitle.astro';
 
 </Slide>
 ```
+
+</Slide>
+
+<Slide>
+  <Section number={2} title="レイアウトコンポーネント" subtitle="MDX に貼るだけで使える定型レイアウト" />
+</Slide>
+
+<Slide>
+
+## Columns — 汎用マルチカラム
+
+<Columns cols={3}>
+<div>
+
+**Before**
+- Marpで運用
+- 画像パス事故
+
+</div>
+<div>
+
+**During**
+- 自前ビルダーを試作
+- View Transitions検証
+
+</div>
+<div>
+
+**After**
+- MDXに統一
+- サイトCSSを共有
+
+</div>
+</Columns>
+
+</Slide>
+
+<Slide>
+
+## Columns — 比率指定もできる
+
+<Columns ratio="2fr 1fr">
+<div>
+
+メイン側の説明をここに書きます。`ratio` プロパティに CSS grid の `grid-template-columns` 値をそのまま渡せるので、`2fr 1fr` でも `1fr 2fr 1fr` でも自由に組めます。
+
+</div>
+<div>
+
+**補足**
+- `cols` だけなら均等
+- `ratio` 指定で非対称
+
+</div>
+</Columns>
+
+</Slide>
+
+<Slide>
+  <ImageSlide
+    src="/talks/2026-05-19-astro-meetup-japan/2026-05-16-17-54-24.png"
+    alt="スライドのスクリーンショット"
+    caption="ImageSlide — 一枚見せ用のフルブリードレイアウト"
+  />
+</Slide>
+
+<Slide>
+
+## ImageWithText — 画像 + テキスト
+
+<ImageWithText
+  src="/talks/2026-05-19-astro-meetup-japan/2026-05-16-17-50-05.png"
+  alt="エディタのスクリーンショット"
+  side="left"
+>
+
+**ペースト 1 発で完了**
+
+- `Cmd+Option+V` で画像保存
+- `public/talks/<slug>/` に自動配置
+- `![](/talks/...)` が挿入
+
+`side="left" | "right"` で左右入れ替え可能。
+
+</ImageWithText>
+
+</Slide>
+
+<Slide>
+  <Quote cite="Edsger W. Dijkstra">
+    Simplicity is prerequisite for reliability.
+  </Quote>
+</Slide>
+
+<Slide>
+  <BigText size="2xl" accent>
+    Just **MDX**.
+  </BigText>
+</Slide>
+
+<Slide>
+
+## タイポグラフィの細かい話
+
+- 箇条書きは `▸` マーカー（プライマリ色）
+- ネストすると `–` に切り替わる
+  - こんな感じで
+  - 視覚的にも階層が分かりやすい
+- *斜体* は accent-2 で強調、**太字** は通常色のまま
+- <mark>マーカー</mark> や [リンク](https://astro.build) も整備済み
+- <kbd>Cmd</kbd> + <kbd>K</kbd> のようなキー表記も
+
+> ブロッククォートはこの細い左ボーダー付き。`Quote` コンポーネントとは別物で、軽い引用に。
+
+---
+
+`hr` は薄い区切り線として使えます。
 
 </Slide>
 
