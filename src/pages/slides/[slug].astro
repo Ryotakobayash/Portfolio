@@ -2,13 +2,13 @@
 export const prerender = false;
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPublishedSlides } from '../../utils/slides';
+import { getPublishedTalks, talkSlug, hasSlideBody } from '../../utils/talks';
 
 const { slug } = Astro.params;
-const allDecks = await getPublishedSlides();
-const deck = allDecks.find(d => d.id.replace(/\.mdx?$/, '') === slug);
+const allDecks = await getPublishedTalks();
+const deck = allDecks.find(d => talkSlug(d) === slug);
 
-if (!deck) {
+if (!deck || !hasSlideBody(deck)) {
   return Astro.redirect('/404');
 }
 

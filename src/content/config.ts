@@ -1,4 +1,4 @@
-import { defineCollection, reference, z } from 'astro:content';
+import { defineCollection, z } from 'astro:content';
 
 const postsCollection = defineCollection({
     type: 'content',
@@ -12,17 +12,6 @@ const postsCollection = defineCollection({
     }),
 });
 
-const slidesCollection = defineCollection({
-    type: 'content',
-    schema: z.object({
-        title: z.string(),
-        date: z.string(),
-        event: z.string().optional(),
-        description: z.string().optional(),
-        draft: z.boolean().optional().default(false),
-    }),
-});
-
 const talksCollection = defineCollection({
     type: 'content',
     schema: z.object({
@@ -31,15 +20,16 @@ const talksCollection = defineCollection({
         event: z.string(),
         description: z.string().optional(),
         tags: z.array(z.string()).default([]),
-        // Exactly one of embedUrl (Speaker Deck) or slides (local MDX) is expected.
+        draft: z.boolean().optional().default(false),
+        slug: z.string().optional(),
+        // External slide service (Speaker Deck etc.) — used when the file has no MDX body.
         embedUrl: z.string().url().optional(),
+        // Event page (connpass, peatix, etc.) — used as fallback link or for Upcoming cards.
         externalUrl: z.string().url().optional(),
-        slides: reference('slides').optional(),
     }),
 });
 
 export const collections = {
     posts: postsCollection,
-    slides: slidesCollection,
     talks: talksCollection,
 };

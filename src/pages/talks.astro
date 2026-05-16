@@ -1,60 +1,83 @@
 ---
 export const prerender = true;
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import talksData from '../data/talks.json';
 import TalkSearch, { type TalkMeta } from '../components/TalkSearch';
-import { getPublishedSlides } from '../utils/slides';
+import { getAllTalks, talkSlug, hasSlideBody } from '../utils/talks';
 
-const upcomingTalks = talksData.upcoming || [];
+const allEntries = await getAllTalks();
 
-const talkEntries = await getCollection('talks');
-const publishedSlides = await getPublishedSlides();
-const publishedSlideIds = new Set(publishedSlides.map((s) => s.id));
+interface UpcomingTalk {
+  id: string;
+  date: string;
+  event: string;
+  title: string;
+  url?: string;
+}
 
-const talks: TalkMeta[] = talkEntries.map((entry) => {
-  const slidesRef = entry.data.slides;
-  const slidePublished = slidesRef ? publishedSlideIds.has(slidesRef.id) : false;
-  const isExternal = !!entry.data.embedUrl && !slidePublished;
+const today = new Date().toISOString().slice(0, 10);
 
-  let href: string;
-  let type: TalkMeta['type'];
-  let status: TalkMeta['status'];
-
-  if (slidesRef && slidePublished) {
-    href = `/slides/${slidesRef.id.replace(/\.mdx?$/, '')}`;
-    type = 'Slides';
-    status = 'published';
-  } else if (slidesRef) {
-    href = entry.data.externalUrl || entry.data.embedUrl || '#';
-    type = entry.data.embedUrl ? 'Speaker Deck' : 'Slides';
-    status = 'draft-slides';
-  } else if (entry.data.embedUrl || entry.data.externalUrl) {
-    href = entry.data.externalUrl || entry.data.embedUrl || '#';
-    type = 'Speaker Deck';
-    status = 'published';
-  } else {
-    href = '#';
-    type = 'Speaker Deck';
-    status = 'no-slides';
-  }
-
-  return {
+const upcomingTalks: UpcomingTalk[] = allEntries
+  .filter((entry) => entry.data.date >= today)
+  .sort((a, b) => (a.data.date < b.data.date ? -1 : 1))
+  .map((entry) => ({
     id: entry.id,
-    title: entry.data.title,
     date: entry.data.date,
     event: entry.data.event,
-    description: entry.data.description,
-    tags: entry.data.tags,
-    href,
-    isExternal,
-    type,
-    status,
-  };
-}).sort((a, b) => (a.date < b.date ? 1 : -1));
+    title: entry.data.title,
+    url: entry.data.externalUrl,
+  }));
+
+const isProd = import.meta.env.PROD;
+
+const archive: TalkMeta[] = allEntries
+  .filter((entry) => entry.data.date < today)
+  .map((entry) => {
+    const slug = talkSlug(entry);
+    const hasBody = hasSlideBody(entry);
+    const isDraft = entry.data.draft === true;
+    const slidesAccessible = hasBody && (!isDraft || !isProd);
+
+    let href: string;
+    let type: TalkMeta['type'];
+    let status: TalkMeta['status'];
+
+    if (slidesAccessible) {
+      href = `/slides/${slug}`;
+      type = 'Slides';
+      status = isDraft ? 'draft-slides' : 'published';
+    } else if (entry.data.embedUrl) {
+      href = entry.data.embedUrl;
+      type = 'Speaker Deck';
+      status = isDraft ? 'draft-slides' : 'published';
+    } else if (entry.data.externalUrl) {
+      href = entry.data.externalUrl;
+      type = 'Speaker Deck';
+      status = isDraft ? 'draft-slides' : 'published';
+    } else {
+      href = '#';
+      type = 'Speaker Deck';
+      status = isDraft ? 'draft-slides' : 'no-slides';
+    }
+
+    const isExternal = href !== '#' && !href.startsWith('/');
+
+    return {
+      id: entry.id,
+      title: entry.data.title,
+      date: entry.data.date,
+      event: entry.data.event,
+      description: entry.data.description,
+      tags: entry.data.tags,
+      href,
+      isExternal,
+      type,
+      status,
+    };
+  })
+  .sort((a, b) => (a.date < b.date ? 1 : -1));
 
 const tagCount = new Map<string, number>();
-talks.forEach((t) => t.tags.forEach((tag) => tagCount.set(tag, (tagCount.get(tag) || 0) + 1)));
+archive.forEach((t) => t.tags.forEach((tag) => tagCount.set(tag, (tagCount.get(tag) || 0) + 1)));
 const allTags = Array.from(tagCount.entries())
   .sort((a, b) => b[1] - a[1])
   .map(([tag]) => tag);
@@ -65,13 +88,13 @@ const allTags = Array.from(tagCount.entries())
     <header class="talks-header">
       <h1 class="page-title">Talks</h1>
       <div class="stats-row">
-        <span class="stat-item">{talks.length} Talks</span>
+        <span class="stat-item">{archive.length} Talks</span>
         <span class="stat-separator">/</span>
         <span class="stat-item">{allTags.length} Tags</span>
-        {talks[0] && (
+        {archive[0] && (
           <>
             <span class="stat-separator">/</span>
-            <span class="stat-item">Latest: {talks[0].date}</span>
+            <span class="stat-item">Latest: {archive[0].date}</span>
           </>
         )}
       </div>
@@ -83,7 +106,7 @@ const allTags = Array.from(tagCount.entries())
         <section class="bento-card">
           <ul class="timeline">
             {upcomingTalks.map((talk) => {
-              const hasUrl = !!(talk as { url?: string }).url;
+              const hasUrl = !!talk.url;
               const Inner = (
                 <>
                   <span class="talk-date">{talk.date}</span>
@@ -92,7 +115,7 @@ const allTags = Array.from(tagCount.entries())
                     {hasUrl && <span class="talk-event-icon" aria-hidden="true"> ↗</span>}
                   </span>
                   <h3 class="talk-title">{talk.title}</h3>
-                  <span class="talk-status">{talk.status}</span>
+                  <span class="talk-status">準備中</span>
                 </>
               );
               return (
@@ -101,7 +124,7 @@ const allTags = Array.from(tagCount.entries())
                   {hasUrl ? (
                     <a
                       class="timeline-content timeline-content--link"
-                      href={(talk as { url: string }).url}
+                      href={talk.url}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -119,7 +142,7 @@ const allTags = Array.from(tagCount.entries())
     )}
 
     <div class="section-divider"><span class="section-divider__label">Archive</span></div>
-    <TalkSearch client:load talks={talks} allTags={allTags} />
+    <TalkSearch client:load talks={archive} allTags={allTags} />
   </div>
 </BaseLayout>
 
