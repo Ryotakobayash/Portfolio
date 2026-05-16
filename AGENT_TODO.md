@@ -54,6 +54,21 @@
 
 ## ✅ 完了タスク (Done)
 
+### [タスク名: talks / slides / talks.json の一本化と公開フラグのフェイルセーフ化]
+
+**完了日時:** 2026-05-16
+**サマリー:**
+3 つに散っていた登壇関連の真実のソースを `talks` コレクション 1 つに統合し、さらに公開判定をフェイルセーフな opt-in 方式に変更。
+
+- `slidesCollection` 廃止、`src/data/talks.json` 削除、`talks` コレクション schema に `published / slug / embedUrl / externalUrl` を集約。
+- 拡張子で本体の有無を表現：`.mdx` = スライド本体あり、`.md` = frontmatter のみ（Upcoming や外部埋め込み専用）。
+- `/talks` の Upcoming / Archive は `date >= today` で自動分割（旧 `talks.json` の status テキストは廃止、Upcoming は「準備中」一律表示）。
+- 公開判定を `draft: true` → `published: true` opt-in に反転。
+  - フラグが存在しない／値が `false` なら prod では `/slides/[slug]` は 404。
+  - 「公開を忘れて非公開」より「フラグを書き忘れて誤って公開」のほうがリスクが大きいため明示 opt-in 採用。
+- `src/utils/slides.ts` を `src/utils/talks.ts` に統合し `getAllTalks` / `getPublishedTalks` / `talkSlug` / `hasSlideBody` を提供。
+- 既存 `/slides/slide-system-2026` URL は frontmatter の `slug` フィールドで維持。
+
 ### [タスク名: モバイルヘッダーの再調整（ロゴ短縮＋ナビ拡大）]
 
 **完了日時:** 2026-05-16

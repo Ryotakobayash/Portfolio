@@ -9,12 +9,13 @@ export async function getAllTalks(): Promise<TalkEntry[]> {
 
 /**
  * Talks whose slide pages are accessible in the current environment.
- * In production, draft entries are hidden from /slides/[slug] (they 404).
- * In dev, everything is previewable.
+ * In production, only entries with `published: true` are reachable at /slides/[slug];
+ * everything else 404s. Failsafe: missing the flag keeps the slide non-public.
+ * In dev, everything is previewable so drafts can be checked locally.
  */
 export async function getPublishedTalks(): Promise<TalkEntry[]> {
     return await getCollection('talks', ({ data }) => {
-        return import.meta.env.PROD ? data.draft !== true : true;
+        return import.meta.env.PROD ? data.published === true : true;
     });
 }
 

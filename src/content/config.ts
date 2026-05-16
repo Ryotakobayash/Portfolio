@@ -20,7 +20,9 @@ const talksCollection = defineCollection({
         event: z.string(),
         description: z.string().optional(),
         tags: z.array(z.string()).default([]),
-        draft: z.boolean().optional().default(false),
+        // Opt-in publish flag. Missing/false keeps the slide URL non-public in prod —
+        // safer than a draft flag whose absence accidentally exposes work in progress.
+        published: z.boolean().optional().default(false),
         slug: z.string().optional(),
         // External slide service (Speaker Deck etc.) — used when the file has no MDX body.
         embedUrl: z.string().url().optional(),
