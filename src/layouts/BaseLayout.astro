@@ -114,7 +114,6 @@ const isActive = (path: string) => {
       class="slide-loading-overlay"
       hidden
       aria-hidden="true"
-      transition:persist="slide-loading-overlay"
     >
       <div class="container">
         <div class="slide-loading-meta">
@@ -196,17 +195,16 @@ const isActive = (path: string) => {
       // astro:page-load は初回ロード時とページ遷移後に発火する
       document.addEventListener('astro:page-load', () => {
         setupThemeToggle();
-        const overlay = document.getElementById('slide-loading-overlay');
-        if (overlay) overlay.hidden = true;
       });
 
       // astro:after-swap は新しいHTMLに入れ替わった直後（表示前）に発火
       // ここでテーマを再適用しないと、一瞬デフォルトテーマに戻るチラつきや、属性消失によるアイコン重複が起きる
+      // 新しいページの overlay は HTML 上 hidden=true で出てくるので、ここで明示的なリセットは不要。
       document.addEventListener('astro:after-swap', () => {
         initTheme();
       });
 
-      // /slides/[slug] への遷移開始時にスケルトンを被せる
+      // /slides/[slug] への遷移開始時にスケルトンを被せる（現在ページの overlay に対して）
       document.addEventListener('astro:before-preparation', (event) => {
         // @ts-ignore — Astro Transition event
         const to: URL | undefined = event.to;
