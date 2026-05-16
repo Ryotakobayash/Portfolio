@@ -1,14 +1,14 @@
 ---
-title: AstroとMDXで作るスライドシステム
-date: '2026-05-13'
-event: いい感じのイベント
-description: MDX × View Transitions API で作ったポートフォリオ内蔵のスライドシステムについて
+title: AstroとReactを用いたポートフォリオ構築事例
+date: "2026-05-19"
+event: Astro Meetup Japan
+description: ここには説明をかく
 tags:
   - Astro
-  - MDX
 published: true
-slug: slide-system-2026
+slug: astro-meetup-japan_v1
 ---
+
 import Slide from '../../components/slides/Slide.astro';
 import SlideTitle from '../../components/slides/SlideTitle.astro';
 import TwoColumn from '../../components/slides/TwoColumn.astro';
@@ -49,6 +49,7 @@ import Notes from '../../components/slides/Notes.astro';
 <div>
 
 **スライド記述**
+
 - MDX（Markdown + JSX）
 - Astroコンポーネント
 - `src/content/talks/` で管理
@@ -57,6 +58,7 @@ import Notes from '../../components/slides/Notes.astro';
 <div>
 
 **ビューア**
+
 - View Transitions API
 - `←` `→` キーボードナビ
 - `?slide=N` URLディープリンク
@@ -85,8 +87,8 @@ document.startViewTransition(() => {
 ## スライドの書き方
 
 ```mdx
-import Slide from '../../components/slides/Slide.astro';
-import SlideTitle from '../../components/slides/SlideTitle.astro';
+import Slide from "../../components/slides/Slide.astro";
+import SlideTitle from "../../components/slides/SlideTitle.astro";
 
 <Slide>
   <SlideTitle title="タイトル" subtitle="サブタイトル" />

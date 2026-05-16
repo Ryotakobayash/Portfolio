@@ -12,22 +12,34 @@ interface UpcomingTalk {
   event: string;
   title: string;
   url?: string;
+  isExternal: boolean;
 }
 
 const today = new Date().toISOString().slice(0, 10);
+const isProd = import.meta.env.PROD;
 
 const upcomingTalks: UpcomingTalk[] = allEntries
   .filter((entry) => entry.data.date >= today)
   .sort((a, b) => (a.data.date < b.data.date ? -1 : 1))
-  .map((entry) => ({
-    id: entry.id,
-    date: entry.data.date,
-    event: entry.data.event,
-    title: entry.data.title,
-    url: entry.data.externalUrl,
-  }));
+  .map((entry) => {
+    const slug = talkSlug(entry);
+    const hasBody = hasSlideBody(entry);
+    const isPublished = entry.data.published === true;
+    const slidesAccessible = hasBody && (isPublished || !isProd);
 
-const isProd = import.meta.env.PROD;
+    const url = slidesAccessible
+      ? `/slides/${slug}`
+      : entry.data.externalUrl;
+
+    return {
+      id: entry.id,
+      date: entry.data.date,
+      event: entry.data.event,
+      title: entry.data.title,
+      url,
+      isExternal: !!url && !slidesAccessible,
+    };
+  });
 
 const archive: TalkMeta[] = allEntries
   .filter((entry) => entry.data.date < today)
@@ -112,7 +124,7 @@ const allTags = Array.from(tagCount.entries())
                   <span class="talk-date">{talk.date}</span>
                   <span class="talk-event">
                     {talk.event}
-                    {hasUrl && <span class="talk-event-icon" aria-hidden="true"> ↗</span>}
+                    {hasUrl && talk.isExternal && <span class="talk-event-icon" aria-hidden="true"> ↗</span>}
                   </span>
                   <h3 class="talk-title">{talk.title}</h3>
                   <span class="talk-status">準備中</span>
@@ -125,8 +137,8 @@ const allTags = Array.from(tagCount.entries())
                     <a
                       class="timeline-content timeline-content--link"
                       href={talk.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      target={talk.isExternal ? '_blank' : undefined}
+                      rel={talk.isExternal ? 'noopener noreferrer' : undefined}
                     >
                       {Inner}
                     </a>
