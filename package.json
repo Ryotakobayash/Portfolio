@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "clean": "rm -rf .astro dist node_modules/.vite",
+    "dev:fresh": "pnpm clean && pnpm dev"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
