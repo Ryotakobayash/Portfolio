@@ -25,9 +25,9 @@ const talksCollection = defineCollection({
         published: z.boolean().optional().default(false),
         slug: z.string().optional(),
         // External slide service (Speaker Deck etc.) — used when the file has no MDX body.
-        embedUrl: z.string().url().optional(),
+        embedUrl: z.url().optional(),
         // Event page (connpass, peatix, etc.) — used as fallback link or for Upcoming cards.
-        externalUrl: z.string().url().optional(),
+        externalUrl: z.url().optional(),
     }),
 });
 
