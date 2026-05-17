@@ -33,11 +33,12 @@ const charCount = body.length;
 const readingTime = Math.max(1, Math.ceil(charCount / 500));
 
 // TOC用にheadingsをフォーマット
+// rehype-autolink-headings が見出し末尾に '#' を append するため、TOC 表示用には除去する
 const toc = headings
   .filter((h) => h.depth >= 2 && h.depth <= 3)
   .map((h) => ({
     id: h.slug,
-    text: h.text,
+    text: h.text.replace(/#\s*$/, ''),
     level: h.depth,
   }));
 
