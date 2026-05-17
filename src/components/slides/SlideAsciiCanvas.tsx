@@ -48,15 +48,31 @@ export default function SlideAsciiCanvas({
   // Hidden slides are display: none, so IntersectionObserver reports them
   // as not intersecting — preventing wasted WebGL contexts and the frame-loop
   // errors that result when a Canvas keeps ticking on a zero-sized parent.
+  //
+  // When transitioning to visible, defer one rAF before mounting so layout
+  // settles. Mounting on the same frame as display: none → flex triggers
+  // drei's AsciiEffect to call getImageData on a still-zero-sized canvas,
+  // throwing "Value is not of type 'long'".
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    let raf = 0;
     const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
+      ([entry]) => {
+        cancelAnimationFrame(raf);
+        if (entry.isIntersecting && entry.boundingClientRect.width > 0) {
+          raf = requestAnimationFrame(() => setVisible(true));
+        } else {
+          setVisible(false);
+        }
+      },
       { threshold: 0 },
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      cancelAnimationFrame(raf);
+      observer.disconnect();
+    };
   }, []);
 
   return (
