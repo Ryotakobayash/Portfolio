@@ -2,7 +2,7 @@
 title: AstroとReactを用いたポートフォリオ構築事例
 date: "2026-05-19"
 event: Astro Meetup Japan
-description: ここには説明をかく
+description: 個人ポートフォリオを Astro × React で作ってみて気づいたことを、デザイナー視点で話します。
 tags:
   - Astro
 published: false
@@ -26,9 +26,13 @@ import cybozuAstro from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-0
 <Slide>
   <SlideTitle
     title="AstroとReactを用いた個人サイト構築事例"
-    subtitle="個人サイトを作って気付いたAstroの良さ"
+    subtitle="個人サイトを作って気付いた Astro の良さ"
     meta="2026-05-19 · Astro Meetup Japan"
   />
+  <Notes>
+  - 元気よく挨拶（LT 5分）
+  - 「デザイナーが Astro を触ってみた話です」と前置き
+  </Notes>
 </Slide>
 
 <Slide>
@@ -40,174 +44,243 @@ import cybozuAstro from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-0
   alt="プロフィール写真"
   side="left"
 >
-### kobaryo | Kobayashi Ryota
 
-Org: サイボウズ株式会社
-Role: プロダクトデザイナー / kintone, Dashboard
+### kobaryo / Kobayashi Ryota
 
-**→「Astroでポートフォリオやブログを自分で作ってみたいデザイナー」（イベントページより）**
+- **Org** — サイボウズ株式会社
+- **Role** — プロダクトデザイナー / kintone, Dashboard
+- **Site** — [ryota5884.com](https://www.ryota5884.com)
+
+> 「Astroでポートフォリオやブログを自分で作ってみたいデザイナー」
+> — イベントページより
+
 </ImageWithText>
 
 <Notes>
-デザイナー寄りのAstroユーザーとして感じたことを話させてもらえればと思います。
-（会場のあっため的なイメージ）会場でデザイナーの人🙋開発メインの人🙋
+- デザイナー寄りの Astro ユーザーとして感じたことを話します
+- 会場のあっため: 「デザイナーの方🙋 / 開発メインの方🙋」を軽く挙手
 </Notes>
 </Slide>
 
 <Slide>
+
+## まずは会社紹介から
 
 <ImageSlide
   src={cybozuOverview}
-  alt="サイボウズ会社概要"
-  caption="サイボウズ"
+  alt="サイボウズの理念とカルチャー"
+  caption="Cybozu — Purpose & Culture"
   fit="contain"
 />
-<Notes>
-会場枠のLTということで、簡単にサイボウズの紹介から入ります。
-サイボウズは〜〜。
-</Notes>
 
+<Notes>
+- 会場枠 LT なので軽く触れる（15秒くらい）
+- 「チームワークあふれる社会を創る」を掲げる会社です、と一言
+</Notes>
 </Slide>
 
-
 <Slide>
+
+## プロダクトはこのあたり
 
 <ImageSlide
   src={cybozuAstro}
-  alt="サイボウズのAstro活用"
-  caption=""
+  alt="サイボウズの主要プロダクト"
+  caption="kintone / Garoon / サイボウズ Office / Mailwise"
   fit="contain"
 />
 
-歴史が長いプロダクトが多くあるサイボウズですが、Astroで作られているものもあります。
-
 <Notes>
-製品としてはkintoneが広告などもよく出ていますね。
-そんな感じで、はいはい知ってる知ってる、toBのSaaSを作ってる結構前からある会社でしょ。みたいな感じで知ってくれている方は多いと思います。
-そんなサイボウズですが、Astroを使ってつくられているものもあったりします。
+- 「kintone は広告でも見たことあるかも」とつかみ
+- 「toB SaaS をやってる、結構前からある会社」程度の認識でOK
 </Notes>
 </Slide>
 
 <Slide>
 
-## ヘルプサイトはAstro製
+## ヘルプサイトは Astro 製
 
-ヘルプサイトのスクリーンショットを入れる
+歴史が長いプロダクトが多いサイボウズですが、ヘルプサイトは **Astro** で作られています。
 
-[AIと乗り切った1,500ページ超のヘルプサイト基盤刷新とさらにその先の話 - Speaker Deck](https://speakerdeck.com/mugi_uno/help-site-renewal-with-ai)
+> [AIと乗り切った1,500ページ超のヘルプサイト基盤刷新とさらにその先の話 — mugi_uno さん](https://speakerdeck.com/mugi_uno/help-site-renewal-with-ai)
 
-読み応えあって面白いぞ！
-
-ですが、今回はあくまで私個人の話。
+**読み応えあって面白いぞ！** ……ですが、今回はあくまで *私個人* の話です。
 
 <Notes>
-2026/5/09 フロントエンドカンファレンスにて発表。
-タイトルの通りかなり大変なヘルプサイトの移行を少人数で行った結果の話。
-読み応えあって面白いぞ！興味があったらぜひmugiさんの方もみてみてくれ！
-ですが、私はこれに一切関わっていません。
-なので今回はあくまで私個人の話。
+- 2026/5/9 フロントエンドカンファレンスでの発表
+- 私はこの移行プロジェクトには関わっていません
+- 「個人の趣味で触ってみた話」へ話を戻す
 </Notes>
 </Slide>
 
 <Slide>
-  <Section title="note/zenn/Notion じゃダメな理由" />
+  <Section number={1} title="note / zenn / Notion じゃダメな理由" />
 </Slide>
 
 <Slide>
 
-## 今時個人サイトとかいらなくないですか…？
+## 「今時、個人サイトいらなくない？」
 
-note, zenn, Notion でよくないですか？おしゃれだし。
+> note, zenn, Notion でよくない？おしゃれだし。
 
-## 私はこれが我慢できない。
-- 盛者必衰。サービスを簡単に乗り換えられるのがいい！
-- エディタも好きなの使いたい！入力はタイプライターモードじゃなきゃやだ！
-- 自分がやりたいこと（コロコロ変わる）ができないと嫌だ！
+……ぐぬぬ。でも、こんな *我慢できないポイント* がありました。
 
-## ＋αの部分
-- 実装（後述）触りたいな〜
-- イケてるものを作ってエンジニアとワイワイしたいな〜
-- 気軽に記事を投稿できる場所がほしいな〜
+<TwoColumn>
+<div>
 
-→ もろもろとのマッチング（＋社内の友達からの後押し）で **Astro.js 使ってみよう！** となった。
+### 我慢できないこと
+- **盛者必衰** — サービスを乗り換えやすくしたい
+- **エディタの自由** — タイプライターモードで書きたい
+- **やりたいことの自由** — 興味がコロコロ変わる派
 
-</Slide>
+</div>
+<div>
 
-<Slide>
-  <Section title="作ったものの話" />
-</Slide>
+### ＋αでやりたかったこと
+- 実装も**触りたい**（後述）
+- イケてるものを作って**エンジニアとワイワイ**したい
+- **気軽に記事を投稿**できる場所がほしい
 
+</div>
+</TwoColumn>
 
-<Slide>
-
-## コンセプト
-- 単純にブログにするよりも **1芸ほしい**なぁと思いがあった
-- ここでコアになったのは、仕事で使っている「**グラフ表示系のライブラリを使いたい**（ついでに詳しくなりたい）」という思い
-- ブログ × ダッシュボードみたいな
-- 表示するデータを集めるために **GA4, GitHub** など情報をとってこれそうなのも触れられるのも Good
-- 良さそうじゃないか
+→ もろもろのマッチング（＋社内の友達の後押し）で **Astro.js 使ってみよう！** となりました。
 
 <Notes>
-ryota5884.com 表示（10秒）
-コンセプト（30秒）
+- 「みなさんも同じこと感じませんか？」と問いかけ気味に
+- 「我慢できない3つ → ＋α3つ」をリズム良く
 </Notes>
+</Slide>
 
+<Slide>
+  <Section number={2} title="作ったものの話" />
 </Slide>
 
 <Slide>
 
-## 全体の構成はこう。
+## コンセプト：**ブログ × ダッシュボード**
 
-画像：全体構成図
+- 普通にブログを作るだけだと物足りない、**1芸ほしい**
+- 仕事で触っている **グラフ表示系のライブラリを使いたい**（ついでに詳しくなりたい）
+- データソースとして **GA4 / GitHub** が触れるのも Good
 
-（画像：ページマップ）←いる？
+→ ブログ × ダッシュボードの個人サイトを作ろう、と決めました。
+
+<BigText size="md" accent>
+[ryota5884.com](https://www.ryota5884.com)
+</BigText>
 
 <Notes>
-Astroの特徴としてある、islandとかはこのへんで使っている。
-ブログ部分はAstroの良さが出るようにしつつ、データ表示系はReact コンポーネントを client:* で island 化している。
-ブログとしてのみやすさ・軽量さを確保しつつ、面白いものができたので個人的には満足。
+- ここで実機の ryota5884.com を10秒ほど表示するのが理想（プレゼンタモードを抜ける）
+- コンセプト説明は20秒目安
 </Notes>
-
 </Slide>
 
 <Slide>
 
-## 各ページの構成はこう
-そんなに変わったことはしていない。
-- Talks システム
-- Ascii-render など小ネタ（30秒）
+## 全体の構成
+
+<TwoColumn>
+<div>
+
+### Astro が主役のところ
+- **Pages / Layouts** — `src/pages` でルーティング
+- **Content Collections** — `posts` / `talks` を MDX 管理
+- **静的に出せるもの** — 一覧, SEO, OGP, RSS
+
+</div>
+<div>
+
+### React を island 化したところ
+- `client:load` / `client:only="react"` で島化
+- **Highcharts** で記事 PV / GitHub Activity
+- 動くもの・重いものだけクライアントに
+
+</div>
+</TwoColumn>
+
+> ブログとしての **みやすさ・軽量さ** を保ちつつ、**ダッシュボード** も成立。
 
 <Notes>
-Ascii-renderとか、（当日プレゼンターモードを解除して）：mdx → サイトとトンマナを合わせてスライドを作れる `Talks` とか
+- island の話はここで一言だけ
+- 「主役は Astro / 必要なところだけ React」の構図を強調
 </Notes>
-
 </Slide>
 
+<Slide>
+
+## 各ページの小ネタ
+
+<Columns cols={3}>
+<div>
+
+### `/about`
+- LifeProgress
+- GitHub Activity
+- PostBurndown
+
+</div>
+<div>
+
+### `/posts`
+- PV Treemap
+- 関連記事
+- 検索（Fuse.js）
+
+</div>
+<div>
+
+### `/talks`
+- MDX で書くスライド
+- View Transitions
+- **このスライド自身**
+
+</div>
+</Columns>
+
+ほかにも AsciiBackground など、小ネタを散らしています。
+
+<Notes>
+- 「このスライド自体も talks システムで動いてます」と軽く触れる
+- 当日プレゼンターモードを解除してデモするのもアリ
+</Notes>
+</Slide>
 
 <Slide>
 
 ## まとめ
 
-**使った理由**
-- 自分で記事を持っておける安心感
-- ちょっと強みとズレたこともできる懐の深さ
-- 個人的な趣味・嗜好とのマッチング
+<TwoColumn>
+<div>
 
-**感想**
-- 好奇心・作りたい気持ちをあまり妨げられないのが、嬉しい。楽しい
-- 初心者に優しくていい感じですね。[MCP](https://docs.astro.build/ja/guides/build-with-ai/)とかあるし。
+### 使った理由
+- 自分で記事を**持っておける**安心感
+- 強みからズレたこともできる**懐の深さ**
+- 個人の趣味・嗜好との**マッチング**
 
+</div>
+<div>
+
+### やってみての感想
+- **作りたい気持ち** を妨げないのが嬉しい・楽しい
+- 初心者にも優しい（[MCP](https://docs.astro.build/ja/guides/build-with-ai/) もある）
+
+</div>
+</TwoColumn>
+
+<Notes>
+- 「とにかく楽しい」をテンション高めで
+- MCP の話題は1秒で軽く触れる程度
+</Notes>
 </Slide>
 
 <Slide>
 
 ## 最後に
 
-
-
 <BigText size="xl" accent>
 今日のイベントも楽しみにしていました。
-一緒に**楽しみましょう**！
+一緒に **楽しみましょう**！
 </BigText>
 
 </Slide>
