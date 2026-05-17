@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { getPublishedPosts } from '../../utils/posts';
 import StickyToc from '../../components/StickyToc';
 import ImageZoom from '../../components/ImageZoom';
@@ -25,7 +25,7 @@ interface Props {
 
 const { post } = Astro.props;
 const slug = (post.data.slug || post.id.replace(/\.mdx?$/, ''));
-const { Content, headings } = await post.render();
+const { Content, headings } = await render(post);
 
 // 読了時間を推定（日本語は1分あたり約500文字、英語は200語）
 const body = post.body || '';

@@ -54,4 +54,7 @@ export default defineConfig({
     ],
   },
   adapter: vercel(),
+  legacy: {
+    collectionsBackwardsCompat: true,
+  },
 });
