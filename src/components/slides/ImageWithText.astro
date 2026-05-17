@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
+
 interface Props {
-  src: string;
+  src: string | ImageMetadata;
   alt?: string;
   side?: 'left' | 'right';
   ratio?: string;
@@ -16,7 +18,11 @@ const {
 ---
 <div class="image-with-text" data-side={side} data-bare={bare} style={`--ratio: ${ratio}`}>
   <div class="img-col">
-    <img src={src} alt={alt} />
+    {typeof src === 'string' ? (
+      <img src={src} alt={alt} loading="lazy" decoding="async" />
+    ) : (
+      <Image src={src} alt={alt} loading="lazy" decoding="async" />
+    )}
   </div>
   <div class="text-col">
     <slot />

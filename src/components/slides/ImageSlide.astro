@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
+
 interface Props {
-  src: string;
+  src: string | ImageMetadata;
   alt?: string;
   caption?: string;
   fit?: 'contain' | 'cover';
@@ -9,7 +11,11 @@ interface Props {
 const { src, alt = '', caption, fit = 'contain', bare = false } = Astro.props;
 ---
 <figure class="image-slide" data-fit={fit} data-bare={bare}>
-  <img src={src} alt={alt} />
+  {typeof src === 'string' ? (
+    <img src={src} alt={alt} loading="lazy" decoding="async" />
+  ) : (
+    <Image src={src} alt={alt} loading="lazy" decoding="async" />
+  )}
   {caption && <figcaption>{caption}</figcaption>}
 </figure>
 
