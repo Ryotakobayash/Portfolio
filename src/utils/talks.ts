@@ -19,12 +19,9 @@ export async function getPublishedTalks(): Promise<TalkEntry[]> {
     });
 }
 
-/** The URL slug for a talk: explicit `slug` frontmatter wins, otherwise filename id. */
+/** The URL slug for a talk: explicit `slug` frontmatter wins, otherwise the entry id (filename without extension). */
 export function talkSlug(entry: TalkEntry): string {
-    // Astro consumes `slug` from frontmatter as `entry.slug` (the auto-route slug),
-    // which is why `entry.data.slug` is undefined when only frontmatter sets it.
-    const explicit = entry.data.slug || (entry as { slug?: string }).slug;
-    return explicit || entry.id.replace(/\.mdx?$/, '');
+    return entry.data.slug || entry.id;
 }
 
 /**
@@ -33,5 +30,5 @@ export function talkSlug(entry: TalkEntry): string {
  * stubs (upcoming events or external-only entries).
  */
 export function hasSlideBody(entry: TalkEntry): boolean {
-    return entry.id.endsWith('.mdx');
+    return entry.filePath?.endsWith('.mdx') ?? false;
 }

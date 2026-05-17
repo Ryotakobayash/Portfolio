@@ -1,7 +1,8 @@
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 const postsCollection = defineCollection({
-    type: 'content',
+    loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posts' }),
     schema: z.object({
         title: z.string(),
         date: z.string(),
@@ -13,7 +14,7 @@ const postsCollection = defineCollection({
 });
 
 const talksCollection = defineCollection({
-    type: 'content',
+    loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/talks' }),
     schema: z.object({
         title: z.string(),
         date: z.string(),
@@ -25,9 +26,9 @@ const talksCollection = defineCollection({
         published: z.boolean().optional().default(false),
         slug: z.string().optional(),
         // External slide service (Speaker Deck etc.) — used when the file has no MDX body.
-        embedUrl: z.string().url().optional(),
+        embedUrl: z.url().optional(),
         // Event page (connpass, peatix, etc.) — used as fallback link or for Upcoming cards.
-        externalUrl: z.string().url().optional(),
+        externalUrl: z.url().optional(),
     }),
 });
 
