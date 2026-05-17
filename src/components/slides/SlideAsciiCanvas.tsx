@@ -44,33 +44,69 @@ export default function SlideAsciiCanvas({
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
-  // Only mount the Canvas when the slide is actually on screen.
-  // Hidden slides are display: none, so IntersectionObserver reports them
-  // as not intersecting — preventing wasted WebGL contexts and the frame-loop
-  // errors that result when a Canvas keeps ticking on a zero-sized parent.
-  //
-  // When transitioning to visible, defer one rAF before mounting so layout
-  // settles. Mounting on the same frame as display: none → flex triggers
-  // drei's AsciiEffect to call getImageData on a still-zero-sized canvas,
-  // throwing "Value is not of type 'long'".
+  // Mount the Canvas only when:
+  //   (a) the slide is actually on screen — IntersectionObserver filters out
+  //       display: none slides so hidden Canvases don't burn WebGL contexts.
+  //   (b) the slide system's view transition has finished animating. While
+  //       the transition is in flight, drei's AsciiEffect can read transient
+  //       sizes from the captured pseudo-element and throw
+  //       "Value is not of type 'long'" from getImageData. The slide system
+  //       (src/pages/slides/[slug].astro) sets html[data-slide-dir] for the
+  //       duration of startViewTransition().finished — watch its removal.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
     let raf = 0;
+    let slideDirObserver: MutationObserver | null = null;
+
+    const cancelPending = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      slideDirObserver?.disconnect();
+      slideDirObserver = null;
+    };
+
+    const armMount = () => {
+      cancelPending();
+      const root = document.documentElement;
+      const mountNext = () => {
+        raf = requestAnimationFrame(() => setVisible(true));
+      };
+
+      if (root.dataset.slideDir == null) {
+        mountNext();
+        return;
+      }
+
+      slideDirObserver = new MutationObserver(() => {
+        if (root.dataset.slideDir == null) {
+          slideDirObserver?.disconnect();
+          slideDirObserver = null;
+          mountNext();
+        }
+      });
+      slideDirObserver.observe(root, {
+        attributes: true,
+        attributeFilter: ['data-slide-dir'],
+      });
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        cancelAnimationFrame(raf);
         if (entry.isIntersecting && entry.boundingClientRect.width > 0) {
-          raf = requestAnimationFrame(() => setVisible(true));
+          armMount();
         } else {
+          cancelPending();
           setVisible(false);
         }
       },
       { threshold: 0 },
     );
     observer.observe(el);
+
     return () => {
-      cancelAnimationFrame(raf);
+      cancelPending();
       observer.disconnect();
     };
   }, []);
