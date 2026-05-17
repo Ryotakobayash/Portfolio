@@ -82,6 +82,11 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
 </BaseLayout>
 
 <style>
+  /* スライド内見出しには autolink-headings の '#' を出さない（投稿ページのみで使う想定） */
+  .slide-viewer :global(.heading-anchor) {
+    display: none;
+  }
+
   .slide-viewer {
     display: flex;
     flex-direction: column;
