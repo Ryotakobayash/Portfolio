@@ -9,6 +9,7 @@ import expressiveCode from 'astro-expressive-code';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeExternalLinks from 'rehype-external-links';
+import remarkBreaks from 'remark-breaks';
 
 // https://astro.build/config
 export default defineConfig({
@@ -31,6 +32,7 @@ export default defineConfig({
     sitemap(),
   ],
   markdown: {
+    remarkPlugins: [remarkBreaks],
     rehypePlugins: [
       rehypeSlug,
       [
@@ -54,4 +56,12 @@ export default defineConfig({
     ],
   },
   adapter: vercel(),
+  vite: {
+    // Pre-bundle r3f + drei + three together so dev mode doesn't split them
+    // across chunks. Without this, AsciiRenderer (drei) can't see the Canvas
+    // context from fiber and throws "R3F: Hooks can only be used within Canvas".
+    optimizeDeps: {
+      include: ['@react-three/fiber', '@react-three/drei', 'three'],
+    },
+  },
 });
