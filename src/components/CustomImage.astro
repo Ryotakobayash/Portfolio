@@ -5,9 +5,14 @@ interface Props {
   src: string | ImageMetadata;
   alt: string;
   title?: string;
+  // Astro が Markdown 画像レンダリング時に注入する最適化属性
+  width?: number | string;
+  height?: number | string;
+  srcset?: string;
+  sizes?: string;
 }
 
-const { src, alt, title } = Astro.props;
+const { src, alt, title, width, height, srcset, sizes, ...rest } = Astro.props;
 
 // Markdownの記法 `![alt](url "title")` において、title がない場合は alt をキャプションとして扱うようにします
 const caption = title || alt;
@@ -17,9 +22,21 @@ const showCaption = caption && caption.trim().length > 0;
 <figure class="blog-figure">
   {
     typeof src === 'string' ? (
-      <img src={src} alt={alt} title={title} loading="lazy" class="blog-figure-img" />
+      <img
+        src={src}
+        alt={alt}
+        title={title}
+        width={width}
+        height={height}
+        srcset={srcset}
+        sizes={sizes}
+        loading="lazy"
+        decoding="async"
+        class="blog-figure-img"
+        {...rest}
+      />
     ) : (
-      <Image src={src} alt={alt} title={title} loading="lazy" class="blog-figure-img" />
+      <Image src={src} alt={alt} title={title} loading="lazy" decoding="async" class="blog-figure-img" />
     )
   }
   {
