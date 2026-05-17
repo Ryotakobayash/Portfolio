@@ -280,6 +280,58 @@
 
 - quadtree-artを使った演出を入れたいが、まだ具体的なイメージが固まっていないため延期。
 
+---
+
+### [タスク名: Astro v6 アップグレード後の dev 警告調査]
+
+**背景・目的:**
+
+- 2026-05-17 の Astro 5 → 6 メジャー更新後、`pnpm dev` で `/posts/[slug]` を SSR するときに React の "Invalid hook call" 警告が dev コンソールに出るようになった。
+- 200 レスポンスは返り、本番ビルドも成功、HTML 出力にエラーマーカーも含まれないため、機能影響はなし。dev のノイズ削減と将来の React 19 / @astrojs/react 5 アップデート時のリスク低減のために原因を特定したい。
+
+**要件・仕様:**
+
+- [ ] 警告が `/posts/[slug]` の SSR 経路で発生していることを再現
+- [ ] 5 つの `client:load` コンポーネント (`ImageZoom`, `StickyToc`, `ArticlePerformance`, `ShareButtons`, `RelatedPosts`) を 1 つずつ外して切り分け、原因コンポーネントを特定
+- [ ] React 19 + @astrojs/react v5 で名前付き + デフォルト export を併用している箇所 (`StickyToc.tsx`, `ImageZoom.tsx`) の SSR 挙動を確認
+- [ ] `node_modules/.pnpm` 内に React が二重に入っていないか `pnpm why react` で再確認
+
+**関連する既存ファイル:**
+
+- `src/pages/posts/[slug].astro`
+- `src/components/{ImageZoom,StickyToc,ArticlePerformance,ShareButtons,RelatedPosts}.tsx`
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] `pnpm dev` で `/posts/[slug]` を表示しても "Invalid hook call" 警告が出ないこと
+- [ ] 既存の挙動 (TOC ハイライト、PV 表示、シェアボタン等) が維持されていること
+
+---
+
+### [タスク名: Astro v6 後続タスク — astro:env / astro/zod / Vercel preview 検証]
+
+**背景・目的:**
+
+- 2026-05-17 の v6 メジャー更新時にスコープ外とした残課題をまとめる。いずれも v6 で「将来非推奨／将来不要」になる箇所であり、計画的にクローズしておきたい。
+
+**要件・仕様:**
+
+- [ ] `astro:env` 移行: API ルート (`src/pages/api/pv*.ts`, `src/pages/api/github/*.ts`) で参照している `process.env.GA4_PROPERTY_ID` 等を `astro:env/server` でスキーマ定義して型安全化する。`astro.config.mjs` に `env.schema` を追加。
+- [ ] `import { z } from 'astro:content'` → `import { z } from 'astro/zod'` への置換 (`src/content.config.ts`)。`astro:content` 経由の zod re-export は将来非推奨。
+- [ ] Vercel preview デプロイで本番同等環境を確認 (`@astrojs/vercel` は `pnpm preview` をサポートしないため必須)。`/api/pv*`、`/og/[slug].png`、`/slides/[slug]` の SSR 経路を staging URL で疎通。
+
+**関連する既存ファイル:**
+
+- `astro.config.mjs`
+- `src/content.config.ts`
+- `src/pages/api/pv.ts`, `src/pages/api/pv/{ranking,treemap,timeline,[slug]}.ts`, `src/pages/api/github/contributions.ts`
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] `process.env.GA4_PROPERTY_ID` 等の直接参照が無くなり、`astro:env` 経由になっていること
+- [ ] `astro:content` から `z` を import する箇所が無いこと
+- [ ] Vercel preview URL で API/SSR ルートが 200 を返すこと
+
 ## タスクにしたいこと（メモ）
 
 ### 改善系タスク
