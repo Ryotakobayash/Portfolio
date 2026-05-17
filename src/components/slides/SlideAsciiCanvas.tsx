@@ -44,54 +44,38 @@ export default function SlideAsciiCanvas({
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
-  // Hold the Canvas mount until the View Transition that brings the slide
-  // on screen has fully finished. While the transition's pseudo-elements
-  // are animating, r3f's measure can read transient/zero dimensions and
-  // drei's AsciiEffect throws "getImageData ... Value is not of type 'long'".
-  //
-  // Strategy:
-  //  - ResizeObserver detects when the wrapper actually has size (catches
-  //    both initial load on an active slide and direct navigation).
-  //  - If a transition is in flight (html[data-slide-dir] is set by the
-  //    slide system in [slug].astro), wait for its `transitionend` before
-  //    mounting — by then the new slide is settled and visible together
-  //    with the canvas.
+  // Mount the Canvas as soon as the wrapper has real dimensions.
+  // ResizeObserver fires earlier in the paint cycle than IntersectionObserver,
+  // so the slide and its ASCII backdrop appear together — no one-frame flash.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
-    let cancelled = false;
-    let raf = 0;
-
-    const tryMount = () => {
-      if (cancelled) return;
-      const rect = el.getBoundingClientRect();
-      if (rect.width < 1 || rect.height < 1) return;
-      // [slug].astro sets html[data-slide-dir] for the duration of the
-      // startViewTransition call and removes it in .finished.finally().
-      // Wait until it's gone so the canvas mounts on a fully-settled slide.
-      if (document.documentElement.dataset.slideDir) {
-        raf = requestAnimationFrame(tryMount);
-        return;
-      }
-      setVisible(true);
-    };
-
     const ro = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
-      cancelAnimationFrame(raf);
-      if (width >= 1 && height >= 1) {
-        tryMount();
-      } else {
-        setVisible(false);
-      }
+      setVisible(width >= 1 && height >= 1);
     });
     ro.observe(el);
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(raf);
-      ro.disconnect();
+    return () => ro.disconnect();
+  }, []);
+
+  // Silence drei's one-shot "getImageData ... Value is not of type 'long'"
+  // that fires on the first frame after Canvas mount. drei's AsciiEffect
+  // momentarily sees a non-integer size from r3f's internal measure and
+  // throws, but recovers on the very next frame. We can't catch it via
+  // ErrorBoundary (the error originates inside requestAnimationFrame), so
+  // intercept it at the window level and prevent the console log.
+  useEffect(() => {
+    const onError = (e: ErrorEvent) => {
+      if (
+        e.message?.includes('getImageData') &&
+        e.message?.includes("not of type 'long'")
+      ) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
     };
+    window.addEventListener('error', onError);
+    return () => window.removeEventListener('error', onError);
   }, []);
 
   return (
