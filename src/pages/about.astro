@@ -11,7 +11,7 @@ import goalsData from '../data/goals.json';
 // 全記事の日付を取得（バーンダウン用）
 const posts = await getPublishedPosts();
 const postDates = posts.map((post) => ({
-    slug: (post.data.slug || post.id.replace(/\.mdx?$/, '')),
+    slug: (post.data.slug || post.id),
     date: post.data.date,
 }));
 ---

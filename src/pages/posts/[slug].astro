@@ -14,7 +14,7 @@ export const prerender = true;
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
   return posts.map((post) => ({
-    params: { slug: (post.data.slug || post.id.replace(/\.mdx?$/, '')) },
+    params: { slug: (post.data.slug || post.id) },
     props: { post },
   }));
 }
@@ -24,7 +24,7 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const slug = (post.data.slug || post.id.replace(/\.mdx?$/, ''));
+const slug = (post.data.slug || post.id);
 const { Content, headings } = await render(post);
 
 // 読了時間を推定（日本語は1分あたり約500文字、英語は200語）
@@ -45,7 +45,7 @@ const toc = headings
 // 関連記事用に全記事メタデータを取得
 const allPosts = await getPublishedPosts();
 const allPostsMeta = allPosts.map((p) => ({
-  slug: (p.data.slug || p.id.replace(/\.mdx?$/, '')),
+  slug: (p.data.slug || p.id),
   title: p.data.title,
   tags: p.data.tags || [],
   date: p.data.date,

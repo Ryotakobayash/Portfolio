@@ -22,7 +22,7 @@ export async function GET(context: APIContext) {
         description: "Ryota Kobayashi's blog and portfolio",
         site: context.site ?? 'https://www.ryota5884.com',
         items: sortedPosts.map((post) => {
-            const slug = post.data.slug || post.id.replace(/\.mdx?$/, '');
+            const slug = post.data.slug || post.id;
             return {
                 title: post.data.title,
                 pubDate: new Date(post.data.date),
