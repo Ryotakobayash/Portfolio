@@ -44,70 +44,53 @@ export default function SlideAsciiCanvas({
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
-  // Mount the Canvas only when:
-  //   (a) the slide is actually on screen — IntersectionObserver filters out
-  //       display: none slides so hidden Canvases don't burn WebGL contexts.
-  //   (b) the slide system's view transition has finished animating. While
-  //       the transition is in flight, drei's AsciiEffect can read transient
-  //       sizes from the captured pseudo-element and throw
-  //       "Value is not of type 'long'" from getImageData. The slide system
-  //       (src/pages/slides/[slug].astro) sets html[data-slide-dir] for the
-  //       duration of startViewTransition().finished — watch its removal.
+  // Hold the Canvas mount until the View Transition that brings the slide
+  // on screen has fully finished. While the transition's pseudo-elements
+  // are animating, r3f's measure can read transient/zero dimensions and
+  // drei's AsciiEffect throws "getImageData ... Value is not of type 'long'".
+  //
+  // Strategy:
+  //  - ResizeObserver detects when the wrapper actually has size (catches
+  //    both initial load on an active slide and direct navigation).
+  //  - If a transition is in flight (html[data-slide-dir] is set by the
+  //    slide system in [slug].astro), wait for its `transitionend` before
+  //    mounting — by then the new slide is settled and visible together
+  //    with the canvas.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
+    let cancelled = false;
     let raf = 0;
-    let slideDirObserver: MutationObserver | null = null;
 
-    const cancelPending = () => {
-      cancelAnimationFrame(raf);
-      raf = 0;
-      slideDirObserver?.disconnect();
-      slideDirObserver = null;
-    };
-
-    const armMount = () => {
-      cancelPending();
-      const root = document.documentElement;
-      const mountNext = () => {
-        raf = requestAnimationFrame(() => setVisible(true));
-      };
-
-      if (root.dataset.slideDir == null) {
-        mountNext();
+    const tryMount = () => {
+      if (cancelled) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.width < 1 || rect.height < 1) return;
+      // [slug].astro sets html[data-slide-dir] for the duration of the
+      // startViewTransition call and removes it in .finished.finally().
+      // Wait until it's gone so the canvas mounts on a fully-settled slide.
+      if (document.documentElement.dataset.slideDir) {
+        raf = requestAnimationFrame(tryMount);
         return;
       }
-
-      slideDirObserver = new MutationObserver(() => {
-        if (root.dataset.slideDir == null) {
-          slideDirObserver?.disconnect();
-          slideDirObserver = null;
-          mountNext();
-        }
-      });
-      slideDirObserver.observe(root, {
-        attributes: true,
-        attributeFilter: ['data-slide-dir'],
-      });
+      setVisible(true);
     };
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && entry.boundingClientRect.width > 0) {
-          armMount();
-        } else {
-          cancelPending();
-          setVisible(false);
-        }
-      },
-      { threshold: 0 },
-    );
-    observer.observe(el);
-
+    const ro = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      cancelAnimationFrame(raf);
+      if (width >= 1 && height >= 1) {
+        tryMount();
+      } else {
+        setVisible(false);
+      }
+    });
+    ro.observe(el);
     return () => {
-      cancelPending();
-      observer.disconnect();
+      cancelled = true;
+      cancelAnimationFrame(raf);
+      ro.disconnect();
     };
   }, []);
 
