@@ -5,6 +5,7 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 <section class:list={['slide', className]} data-slide>
+  <slot name="backdrop" />
   <div class="slide-body">
     <slot />
   </div>
@@ -36,6 +37,8 @@ const { class: className } = Astro.props;
   }
 
   .slide-body {
+    position: relative;
+    z-index: 1;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -45,7 +48,7 @@ const { class: className } = Astro.props;
   }
 
   .slide :global(h1) {
-    font-size: 4cqi;
+    font-size: 5.5cqi;
     font-weight: 900;
     letter-spacing: -0.02em;
     color: var(--color-text);
@@ -54,21 +57,21 @@ const { class: className } = Astro.props;
   }
 
   .slide :global(h2) {
-    font-size: 2.4cqi;
+    font-size: 3.2cqi;
     font-weight: 700;
     color: var(--color-primary);
     margin: 0 0 0.5em;
   }
 
   .slide :global(h3) {
-    font-size: 1.8cqi;
+    font-size: 2.4cqi;
     font-weight: 600;
     color: var(--color-text);
     margin: 0 0 0.4em;
   }
 
   .slide :global(p) {
-    font-size: 1.5cqi;
+    font-size: 2cqi;
     line-height: 1.65;
     color: var(--color-text-secondary);
     margin: 0 0 0.5em;
@@ -76,7 +79,7 @@ const { class: className } = Astro.props;
 
   .slide :global(ul),
   .slide :global(ol) {
-    font-size: 1.5cqi;
+    font-size: 2cqi;
     line-height: 1.8;
     color: var(--color-text-secondary);
     padding-left: 1.4em;
@@ -160,7 +163,7 @@ const { class: className } = Astro.props;
     padding: 0.4cqi 0 0.4cqi 1.5cqi;
     border-left: 2px solid var(--color-border);
     color: var(--color-text-secondary);
-    font-size: 1.5cqi;
+    font-size: 2cqi;
     line-height: 1.6;
   }
 
@@ -187,7 +190,7 @@ const { class: className } = Astro.props;
     border: 1px solid var(--color-border);
     padding: 1rem 1.25rem;
     overflow-x: auto;
-    font-size: 1.2cqi;
+    font-size: 1.6cqi;
     line-height: 1.6;
   }
 
@@ -222,7 +225,7 @@ const { class: className } = Astro.props;
   }
 
   .slide :global(figcaption) {
-    font-size: 1.1cqi;
+    font-size: 1.4cqi;
     color: var(--color-text-secondary);
     text-align: center;
   }

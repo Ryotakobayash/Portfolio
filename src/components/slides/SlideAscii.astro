@@ -27,16 +27,14 @@ const {
 </div>
 
 <style>
-  /* Establish a stacking context on the slide-body that holds this backdrop,
-     so z-index: -1 puts it behind sibling content but above the slide background. */
-  :global(.slide-body:has(> .slide-ascii)) {
-    isolation: isolate;
-  }
-
+  /* Positioned against the Slide section (via name="backdrop" slot).
+     Negative inset extends past Slide's padding to cover edge-to-edge. */
   .slide-ascii {
     position: absolute;
-    inset: 0;
-    z-index: -1;
+    top: -4cqi;
+    right: -5cqi;
+    bottom: -4cqi;
+    left: -5cqi;
     pointer-events: none;
     opacity: var(--ascii-opacity);
     color: var(--color-text-muted);
