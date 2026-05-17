@@ -1,0 +1,45 @@
+---
+import SlideAsciiCanvas from './SlideAsciiCanvas';
+
+interface Props {
+  opacity?: number;
+  characters?: string;
+  modelUrl?: string;
+  scale?: number;
+  speed?: number;
+}
+const {
+  opacity = 0.45,
+  characters,
+  modelUrl,
+  scale,
+  speed,
+} = Astro.props;
+---
+<div class="slide-ascii" style={`--ascii-opacity: ${opacity}`}>
+  <SlideAsciiCanvas
+    client:only="react"
+    characters={characters}
+    modelUrl={modelUrl}
+    scale={scale}
+    speed={speed}
+  />
+</div>
+
+<style>
+  /* Establish a stacking context on the slide-body that holds this backdrop,
+     so z-index: -1 puts it behind sibling content but above the slide background. */
+  :global(.slide-body:has(> .slide-ascii)) {
+    isolation: isolate;
+  }
+
+  .slide-ascii {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: var(--ascii-opacity);
+    color: var(--color-text-muted);
+    overflow: hidden;
+  }
+</style>
