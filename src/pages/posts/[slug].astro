@@ -165,11 +165,41 @@ const allPostsMeta = allPosts.map((p) => ({
   document.addEventListener('DOMContentLoaded', () => {
     setupImageFigures();
     setupSidenotes();
+    setupHeadingAnchorCopy();
   });
   document.addEventListener('astro:page-load', () => {
     setupImageFigures();
     setupSidenotes();
+    setupHeadingAnchorCopy();
   });
+
+  /**
+   * 見出し横の '#' クリックでセクション URL をクリップボードにコピー、
+   * 直後に 'Copied!' ツールチップに切り替える。
+   * 委譲リスナを document に 1 回だけ登録する。
+   */
+  function setupHeadingAnchorCopy() {
+    if ((window as any).__headingAnchorCopyBound) return;
+    (window as any).__headingAnchorCopyBound = true;
+
+    document.addEventListener('click', async (event) => {
+      const target = event.target as HTMLElement | null;
+      const anchor = target?.closest('.heading-anchor') as HTMLAnchorElement | null;
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href');
+      if (!href) return;
+
+      const url = `${window.location.origin}${window.location.pathname}${href}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        anchor.classList.add('is-copied');
+        window.setTimeout(() => anchor.classList.remove('is-copied'), 1500);
+      } catch (err) {
+        console.warn('Failed to copy section URL', err);
+      }
+    });
+  }
 
   /**
    * 脚注（.footnotes セクション）をサイドノートとして本文横に展開する
@@ -355,22 +385,58 @@ const allPostsMeta = allPosts.map((p) => ({
   }
 
   .prose :global(.heading-anchor) {
+    position: relative;
     margin-left: 0.4em;
     color: var(--color-text-muted);
     font-weight: 400;
     text-decoration: none;
     opacity: 0;
-    transition: opacity 150ms ease;
+    transition: opacity 150ms ease, color 80ms ease;
   }
 
   .prose :global(h2:hover .heading-anchor),
   .prose :global(h3:hover .heading-anchor),
-  .prose :global(.heading-anchor:focus) {
+  .prose :global(.heading-anchor:focus),
+  .prose :global(.heading-anchor.is-copied) {
     opacity: 1;
   }
 
-  .prose :global(.heading-anchor:hover) {
+  .prose :global(.heading-anchor:hover),
+  .prose :global(.heading-anchor:focus) {
     color: var(--color-primary);
+  }
+
+  /* 自前ツールチップ (native title はラグがあるため使わない) */
+  .prose :global(.heading-anchor::after) {
+    content: 'このセクションへのリンク';
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background-color: var(--color-bg-card);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    padding: 4px 8px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 80ms ease;
+  }
+
+  .prose :global(.heading-anchor:hover::after),
+  .prose :global(.heading-anchor:focus::after),
+  .prose :global(.heading-anchor.is-copied::after) {
+    opacity: 1;
+  }
+
+  .prose :global(.heading-anchor.is-copied::after) {
+    content: 'Copied!';
+    color: var(--color-primary);
+    border-color: var(--color-primary);
   }
 
   .prose :global(p) {

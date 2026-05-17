@@ -40,7 +40,6 @@ export default defineConfig({
           properties: {
             className: ['heading-anchor'],
             ariaLabel: 'このセクションへのリンク',
-            title: 'このセクションへのリンク',
           },
           content: { type: 'text', value: '#' },
         },
