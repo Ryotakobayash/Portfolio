@@ -20,6 +20,8 @@ import Section from '../../components/slides/Section.astro';
 import BigText from '../../components/slides/BigText.astro';
 import Notes from '../../components/slides/Notes.astro';
 import profilePhoto from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-05-16-17-54-24.png';
+import cybozuOverview from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-05-17-20-02-26.png';
+import cybozuAstro from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-05-17-20-11-00.png';
 
 <Slide>
   <SlideTitle
@@ -30,19 +32,56 @@ import profilePhoto from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-
 </Slide>
 
 <Slide>
-  <Section title="導入" />
+
+## 自己紹介
+
+<ImageWithText
+  src={profilePhoto}
+  alt="プロフィール写真"
+  side="left"
+>
+### kobaryo | Kobayashi Ryota
+
+Org: サイボウズ株式会社
+Role: プロダクトデザイナー / kintone, Dashboard
+
+**→「Astroでポートフォリオやブログを自分で作ってみたいデザイナー」（イベントページより）**
+</ImageWithText>
+
+<Notes>
+デザイナー寄りのAstroユーザーとして感じたことを話させてもらえればと思います。
+（会場のあっため的なイメージ）会場でデザイナーの人🙋開発メインの人🙋
+</Notes>
+</Slide>
+
+<Slide>
+
+<ImageSlide
+  src={cybozuOverview}
+  alt="サイボウズ会社概要"
+  caption="サイボウズ"
+  fit="contain"
+/>
+<Notes>
+会場枠のLTということで、簡単にサイボウズの紹介から入ります。
+サイボウズは〜〜。
+</Notes>
+
 </Slide>
 
 
 <Slide>
 
-## サイボウズの話
+<ImageSlide
+  src={cybozuAstro}
+  alt="サイボウズのAstro活用"
+  caption=""
+  fit="contain"
+/>
 
-画像を何枚か（多分スライドを分けながらシュシュっと説明する）
+歴史が長いプロダクトが多くあるサイボウズですが、Astroで作られているものもあります。
 
 <Notes>
-とはいえ、忘れないうちにサイボウズの紹介から入ります。
-サイボウズは〜〜。
 製品としてはkintoneが広告などもよく出ていますね。
 そんな感じで、はいはい知ってる知ってる、toBのSaaSを作ってる結構前からある会社でしょ。みたいな感じで知ってくれている方は多いと思います。
 そんなサイボウズですが、Astroを使ってつくられているものもあったりします。
@@ -51,7 +90,7 @@ import profilePhoto from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-
 
 <Slide>
 
-## ヘルプサイト
+## ヘルプサイトはAstro製
 
 ヘルプサイトのスクリーンショットを入れる
 
@@ -68,33 +107,6 @@ import profilePhoto from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-
 ですが、私はこれに一切関わっていません。
 なので今回はあくまで私個人の話。
 </Notes>
-</Slide>
-
-<Slide>
-
-## 自己紹介
-
-<ImageWithText
-  src={profilePhoto}
-  alt="プロフィール写真"
-  side="left"
->
-
-**小林 諒大 / Kobayashi Ryota**
-
-
-Cybozu Product Design / kintone, Dashboard
-
-**→「Astroでポートフォリオやブログを自分で作ってみたいデザイナー」（イベントページより）**
-
-
-</ImageWithText>
-
-<Notes>
-ここに該当する。デザイナー寄りのAstroユーザーとして感じたことを話させてもらえればと思います。
-（会場のあっため的なイメージ）会場でデザイナーの人🙋開発メインの人🙋
-</Notes>
-
 </Slide>
 
 <Slide>
