@@ -13,6 +13,7 @@ interface UpcomingTalk {
   title: string;
   url?: string;
   isExternal: boolean;
+  isPublished: boolean;
 }
 
 const today = new Date().toISOString().slice(0, 10);
@@ -38,6 +39,7 @@ const upcomingTalks: UpcomingTalk[] = allEntries
       title: entry.data.title,
       url,
       isExternal: !!url && !slidesAccessible,
+      isPublished,
     };
   });
 
@@ -127,7 +129,7 @@ const allTags = Array.from(tagCount.entries())
                     {hasUrl && talk.isExternal && <span class="talk-event-icon" aria-hidden="true"> ↗</span>}
                   </span>
                   <h3 class="talk-title">{talk.title}</h3>
-                  <span class="talk-status">準備中</span>
+                  {!talk.isPublished && <span class="talk-status">準備中</span>}
                 </>
               );
               return (
