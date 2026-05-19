@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # vscode local settings (e.g. MCP server configs)
 .vscode/mcp.json
+
+# Claude Code agent worktrees (isolated agent workspaces — never commit)
+.claude/worktrees/
