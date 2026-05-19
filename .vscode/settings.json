@@ -1,8 +1,7 @@
 {
-    "pasteImage.path": "${projectRoot}/public/talks/${currentFileNameWithoutExt}",
-    "pasteImage.basePath": "${projectRoot}/public",
+    "pasteImage.path": "${projectRoot}/src/assets/talks/${currentFileNameWithoutExt}",
+    "pasteImage.basePath": "${currentFileDir}",
     "pasteImage.forceUnixStyleSeparator": true,
-    "pasteImage.prefix": "/",
     "pasteImage.defaultName": "Y-MM-DD-HH-mm-ss",
     "pasteImage.insertPattern": "![](${imageFilePath})"
 }

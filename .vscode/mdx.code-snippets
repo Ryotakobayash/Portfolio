@@ -1,0 +1,207 @@
+{
+  // Slide snippets for src/content/talks/*.mdx
+  //
+  // ルール:
+  //   すべて `/sl-` で始まる。`/sl-` まで打てば slide 関連が一覧表示される。
+  //   prefix を覚える必要はなし — リストから矢印キー＋Tabで選べる。
+
+  "Slide": {
+    "scope": "mdx",
+    "prefix": "/sl-slide",
+    "description": "本文スライド（## タイトル付き）",
+    "body": [
+      "<Slide>",
+      "",
+      "## ${1:タイトル}",
+      "",
+      "$0",
+      "",
+      "</Slide>",
+      ""
+    ]
+  },
+
+  "SlideTitle": {
+    "scope": "mdx",
+    "prefix": "/sl-title",
+    "description": "表紙（<Slide> 内に挿入する用）",
+    "body": [
+      "<SlideTitle",
+      "  title=\"${1:タイトル}\"",
+      "  subtitle=\"${2:サブタイトル}\"",
+      "  meta=\"${3:日付 · イベント名}\"",
+      "/>",
+      ""
+    ]
+  },
+
+  "Section": {
+    "scope": "mdx",
+    "prefix": "/sl-section",
+    "description": "章区切り（<Slide> 内に挿入する用）",
+    "body": [
+      "<Section",
+      "  number=\"${1:01}\"",
+      "  title=\"${2:章タイトル}\"",
+      "  subtitle=\"${3:サブタイトル}\"",
+      "/>",
+      ""
+    ]
+  },
+
+  "ImageSlide": {
+    "scope": "mdx",
+    "prefix": "/sl-image",
+    "description": "1枚絵（import した変数を src に渡す）",
+    "body": [
+      "<ImageSlide",
+      "  src={${1:imageVar}}",
+      "  alt=\"${2:alt}\"",
+      "  caption=\"${3:キャプション}\"",
+      "  fit=\"${4|contain,cover|}\"",
+      "/>",
+      ""
+    ]
+  },
+
+  "Asset import": {
+    "scope": "mdx",
+    "prefix": "/sl-import",
+    "description": "src/assets 配下の画像 import 文",
+    "body": [
+      "import ${1:imageVar} from '../../assets/talks/${TM_FILENAME_BASE}/${2:filename}.png';"
+    ]
+  },
+
+  "ImageWithText": {
+    "scope": "mdx",
+    "prefix": "/sl-imagetext",
+    "description": "画像＋テキストの2カラム",
+    "body": [
+      "<ImageWithText",
+      "  src={${1:image}}",
+      "  alt=\"${2:alt}\"",
+      "  side=\"${3|left,right|}\"",
+      ">",
+      "",
+      "$0",
+      "",
+      "</ImageWithText>",
+      ""
+    ]
+  },
+
+  "Quote": {
+    "scope": "mdx",
+    "prefix": "/sl-quote",
+    "description": "引用スライド",
+    "body": [
+      "<Quote cite=\"${1:出典}\">",
+      "",
+      "$0",
+      "",
+      "</Quote>",
+      ""
+    ]
+  },
+
+  "BigText": {
+    "scope": "mdx",
+    "prefix": "/sl-bigtext",
+    "description": "大見せテキスト",
+    "body": [
+      "<BigText size=\"${1|xl,2xl,lg,md|}\" align=\"${2|center,start,end|}\"${3: accent}>",
+      "$0",
+      "</BigText>",
+      ""
+    ]
+  },
+
+  "TwoColumn": {
+    "scope": "mdx",
+    "prefix": "/sl-2col",
+    "description": "等幅2カラム",
+    "body": [
+      "<TwoColumn>",
+      "  <div>",
+      "",
+      "  ${1:左カラム}",
+      "",
+      "  </div>",
+      "  <div>",
+      "",
+      "  ${2:右カラム}",
+      "",
+      "  </div>",
+      "</TwoColumn>",
+      ""
+    ]
+  },
+
+  "Columns": {
+    "scope": "mdx",
+    "prefix": "/sl-cols",
+    "description": "Nカラム",
+    "body": [
+      "<Columns cols={${1:3}} gap=\"${2:3cqi}\">",
+      "  <div>$3</div>",
+      "  <div>$4</div>",
+      "  <div>$0</div>",
+      "</Columns>",
+      ""
+    ]
+  },
+
+  "Notes": {
+    "scope": "mdx",
+    "prefix": "/sl-notes",
+    "description": "発表者ノート",
+    "body": [
+      "<Notes>",
+      "$0",
+      "</Notes>",
+      ""
+    ]
+  },
+
+  "AnimatedEmoji": {
+    "scope": "mdx",
+    "prefix": "/sl-emoji",
+    "description": "Noto Animated Emoji（Google CDN）。デフォルトで挿入位置の text-size に追従",
+    "body": [
+      "<AnimatedEmoji emoji=\"${1:🎉}\" />"
+    ]
+  },
+
+  "Talk init": {
+    "scope": "mdx",
+    "prefix": "/sl-init",
+    "description": "talks 用 frontmatter と全 import を一括展開",
+    "body": [
+      "---",
+      "title: ${1:タイトル}",
+      "date: \"${2:YYYY-MM-DD}\"",
+      "event: ${3:イベント名}",
+      "description: ${4:説明}",
+      "tags:",
+      "  - ${5:Astro}",
+      "published: false",
+      "slug: ${6:slug}",
+      "---",
+      "",
+      "import Slide from '../../components/slides/Slide.astro';",
+      "import SlideTitle from '../../components/slides/SlideTitle.astro';",
+      "import Section from '../../components/slides/Section.astro';",
+      "import TwoColumn from '../../components/slides/TwoColumn.astro';",
+      "import Columns from '../../components/slides/Columns.astro';",
+      "import ImageSlide from '../../components/slides/ImageSlide.astro';",
+      "import ImageWithText from '../../components/slides/ImageWithText.astro';",
+      "import Quote from '../../components/slides/Quote.astro';",
+      "import BigText from '../../components/slides/BigText.astro';",
+      "import Notes from '../../components/slides/Notes.astro';",
+      "import AnimatedEmoji from '../../components/AnimatedEmoji.astro';",
+      "",
+      "$0"
+    ]
+  }
+}

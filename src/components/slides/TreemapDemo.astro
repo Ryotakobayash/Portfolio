@@ -1,0 +1,36 @@
+---
+import ArticleTreemap from '../ArticleTreemap';
+import { getPublishedPosts } from '../../utils/posts';
+
+const posts = await getPublishedPosts();
+const treemapPosts = posts.map((post) => {
+  const slug = post.data.slug || post.id;
+  const body = post.body || '';
+  const wordCount = body
+    .replace(/[#*\-\[\]()>|`~]/g, '')
+    .replace(/\s+/g, '').length;
+  return {
+    slug,
+    title: post.data.title,
+    tags: post.data.tags || [],
+    wordCount: wordCount || 100,
+    date: post.data.date,
+  };
+});
+---
+
+<div class="treemap-demo">
+  <ArticleTreemap client:only="react" posts={treemapPosts} />
+</div>
+
+<style>
+  .treemap-demo {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* Highcharts の凡例・注釈はスライドでは過剰なので抑える */
+  .treemap-demo :global(.highcharts-container) {
+    max-width: 100%;
+  }
+</style>

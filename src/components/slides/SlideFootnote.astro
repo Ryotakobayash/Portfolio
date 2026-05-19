@@ -1,0 +1,43 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+<aside class:list={['slide-footnote', className]} aria-label="用語">
+  <slot />
+</aside>
+
+<style>
+  /* Placed in Slide's named "footnote" slot — sibling of .slide-body,
+     so it sits at the bottom of the slide regardless of body content. */
+  .slide-footnote {
+    position: relative;
+    z-index: 1;
+    padding-top: 0.6cqi;
+    border-top: 1px dashed var(--color-border);
+    font-size: 1.2cqi;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .slide-footnote :global(p) {
+    font-size: inherit;
+    color: inherit;
+    margin: 0;
+    line-height: inherit;
+  }
+
+  .slide-footnote :global(strong) {
+    color: var(--color-text-secondary);
+    font-weight: 600;
+  }
+
+  .slide-footnote :global(code) {
+    font-size: 0.95em;
+    border: none;
+    padding: 0.05em 0.3em;
+    background: var(--color-bg-secondary);
+    color: var(--color-text-secondary);
+  }
+</style>

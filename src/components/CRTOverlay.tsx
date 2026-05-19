@@ -15,6 +15,7 @@ export default function CRTOverlay() {
             {/* Scanlines */}
             <div
                 aria-hidden="true"
+                className="crt-scanlines"
                 style={{
                     position: 'fixed',
                     inset: 0,
@@ -33,6 +34,7 @@ export default function CRTOverlay() {
             {/* Vignette */}
             <div
                 aria-hidden="true"
+                className="crt-vignette"
                 style={{
                     position: 'fixed',
                     inset: 0,
@@ -49,6 +51,7 @@ export default function CRTOverlay() {
             {/* Film Grain (Noise) */}
             <div
                 aria-hidden="true"
+                className="crt-grain"
                 style={{
                     position: 'fixed',
                     inset: 0,

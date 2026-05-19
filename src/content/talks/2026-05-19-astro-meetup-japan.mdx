@@ -5,7 +5,7 @@ event: Astro Meetup Japan
 description: 個人ポートフォリオを Astro × React で作ってみて気づいたことを、デザイナー視点で話します。
 tags:
   - Astro
-published: false
+published: true
 slug: astro-meetup-japan_v1
 ---
 
@@ -20,19 +20,24 @@ import Section from '../../components/slides/Section.astro';
 import SlideAscii from '../../components/slides/SlideAscii.astro';
 import BigText from '../../components/slides/BigText.astro';
 import Notes from '../../components/slides/Notes.astro';
+import SlideFootnote from '../../components/slides/SlideFootnote.astro';
+import AnimatedEmoji from '../../components/AnimatedEmoji.astro';
 import profilePhoto from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-05-16-17-54-24.png';
+import discordSS from '../../assets/talks/2026-05-19-astro-meetup-japan/discordSS.png';
+import siteQR from '../../assets/talks/2026-05-19-astro-meetup-japan/siteQR.png';
+import ss_top from '../../assets/talks/2026-05-19-astro-meetup-japan/ss_top.png';
 import cybozuOverview from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-05-17-20-02-26.png';
 import cybozuAstro from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-05-17-20-11-00.png';
 
 <Slide>
+  <SlideAscii slot="backdrop" />
   <SlideTitle
-    title="AstroとReactを用いた個人サイト構築事例"
-    subtitle="個人サイトを作って気付いた Astro の良さ"
+    title="「作りたい気持ちを妨げない」"
+    subtitle="── デザイナーが個人サイトを作って気付いた Astro の良さ"
     meta="2026-05-19 · Astro Meetup Japan"
   />
   <Notes>
-  - 元気よく挨拶（LT 5分）
-  - 「デザイナーが Astro を触ってみた話です」と前置き
+  会場スポンサー LT、作りたい気持ちを妨げない、デザイナーが個人サイトを作って気づいたAstroの良さに付いて発表を始めます。
   </Notes>
 </Slide>
 
@@ -52,14 +57,11 @@ import cybozuAstro from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-0
 - **Role** — プロダクトデザイナー / kintone, Dashboard
 - **Site** — [ryota5884.com](https://www.ryota5884.com)
 
-> 「Astroでポートフォリオやブログを自分で作ってみたいデザイナー」
-> — イベントページより
-
 </ImageWithText>
 
 <Notes>
-- デザイナー寄りの Astro ユーザーとして感じたことを話します
-- 会場のあっため: 「デザイナーの方🙋 / 開発メインの方🙋」を軽く挙手
+- スライドの内容を紹介
+- 作成したサイトのURLはryota5884.comになっています。登壇内容のネタバレになってしまいますが、本日のスライドもこちらに載せてあるのでよければご覧ください。
 </Notes>
 </Slide>
 
@@ -75,14 +77,14 @@ import cybozuAstro from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-0
 />
 
 <Notes>
-- 会場枠 LT なので軽く触れる（15秒くらい）
-- 「チームワークあふれる社会を創る」を掲げる会社です、と一言
+- 会場枠 LT なのではじめにサイボウズについて簡単に紹介です。
+- 「チームワークあふれる社会を創る」を掲げる会社です。
 </Notes>
 </Slide>
 
 <Slide>
 
-## プロダクトはこのあたり
+## プロダクト
 
 <ImageSlide
   src={cybozuAstro}
@@ -92,66 +94,98 @@ import cybozuAstro from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-0
 />
 
 <Notes>
-- 「kintone は広告でも見たことあるかも」とつかみ
-- 「toB SaaS をやってる、結構前からある会社」程度の認識でOK
+サイボウズの製品は大きく4つあります。
+すべてtoB向けのSaaS製品ですが、kintoneは広告で見たことあるという方は多いかもしれません。
+長いものだと20年以上の歴史を持つ製品もあるサイボウズですが、astroで作られたものもあります
 </Notes>
 </Slide>
 
 <Slide>
 
-## ヘルプサイトは Astro 製
+## サイボウズのヘルプサイトは Astro 製
 
-歴史が長いプロダクトが多いサイボウズですが、ヘルプサイトは Astro で作られています。
+2026/5/9 フロントエンドカンファレンス名古屋にて発表
 
-> [AIと乗り切った1,500ページ超のヘルプサイト基盤刷新とさらにその先の話 — mugi_uno さん](https://speakerdeck.com/mugi_uno/help-site-renewal-with-ai)
+<Quote cite="https://speakerdeck.com/mugi_uno/help-site-renewal-with-ai">
+[AIと乗り切った1,500ページ超のヘルプサイト基盤刷新とさらにその先の話 — mugi_uno さん](https://speakerdeck.com/mugi_uno/help-site-renewal-with-ai)
+- ドメイン知識/技術スタックともに皆無なコードベースにAIとどう立ち向かうか
+- 大量コードのマイグレーションをAIを活用してどう行うか
+- 「AI×刷新」において、どうナレッジを残し未来に繋げるか
 
-読み応えあって面白いぞ！ ……ですが、今回はあくまで *私個人* の話です。
+</Quote>
 
 <Notes>
-- 2026/5/9 フロントエンドカンファレンスでの発表
-- 私はこの移行プロジェクトには関わっていません
-- 「個人の趣味で触ってみた話」へ話を戻す
+- 2026/5/9 フロントエンドカンファレンスでの発表。複雑な条件の中、少人数でHugoからAstroへの移行を完了させた話。
+- 実務に生きる発表だと思うのでぜひご覧ください。着手前のストーリーから紹介されていて、面白かったです。
+- 私はこの移行プロジェクトには関わっていませんので、今回は私個人の話です。
 </Notes>
+</Slide>
+
+<Slide>
+
+## しかし、今回は私個人の話。
+
+**発表内容**
+
+- 個人サイト（作品なし,ブログのみ）の成果物
+- 学びを共有
+
+**こんな人向け**
+
+- Astroでポートフォリオやブログを自分で作ってみたいデザイナー
+- Astroを使っている／興味がある ウェブデザイナー・デザインエンジニア
+- 他の人がAstroで何を作っているのか見てみたい人
+
+
 </Slide>
 
 <Slide>
   <SlideAscii slot="backdrop" />
-  <Section number={1} title="note / zenn / Notion じゃダメな理由" />
+  <Section number={1} title="作成背景（サクッと！）" />
+</Slide>
+
+<Notes>
+いきなり個人の話をしても内容入ってきづらいと思うので、作成の背景を簡単に共有しておきます。
+</Notes>
+
+
+<Slide>
+
+## Q.なんで個人サイト作ったんですか？
+
+誰か 「note, Zenn, Notion でよくない？」
+
+<BigText size="fill" align="center" accent>
+A.既存プラットフォームで感じた小さな不満を自分で解決したくなった。
+</BigText>
+
+- **投稿先を気軽に乗り換えたい**
+- **好みのエディタで書きたい** ─── タイプライターモードが欲しい、emacsのキーバインドで移動したいetc
+- **自分が気に入る見た目にしたい** ─ 良いものを気軽に取り入れたい
+
 </Slide>
 
 <Slide>
 
-## 「今時、個人サイトいらなくない？」
+## Q.なぜAstro？
 
-> note, zenn, Notion でよくない？おしゃれだし。
+<BigText size="md" align="center" accent>
+→ A.npm→pnpmベースに切り替える作業をしていたときに友達におすすめされて。波に乗りたかった。
+</BigText>
 
-……ぐぬぬ。でも、こんな *我慢できないポイント* がありました。
+<ImageSlide
+  src={discordSS}
+  alt="discordのメッセージのスクリーンショット。「最近Astro移行の波きてるよ」と書かれている"
+  caption="きっかけになった投稿のスクリーンショット"
+  fit="contain"
+      />
 
-<TwoColumn>
-<div>
+<SlideFootnote slot="footnote">
+補足：最初はNext.jsで作成。基本の構造まで開発。
+</SlideFootnote>
 
-### 我慢できないこと
-- **盛者必衰** — サービスを乗り換えやすくしたい
-- **エディタの自由** — タイプライターモードで書きたい
-- **やりたいことの自由** — 興味がコロコロ変わる派
 
-</div>
-<div>
 
-### ＋αでやりたかったこと
-- 実装も触りたい（後述）
-- イケてるものを作ってエンジニアとワイワイしたい
-- 気軽に記事を投稿できる場所がほしい
-
-</div>
-</TwoColumn>
-
-→ もろもろのマッチング（＋社内の友達の後押し）で「Astro.js 使ってみよう」となりました。
-
-<Notes>
-- 「みなさんも同じこと感じませんか？」と問いかけ気味に
-- 「我慢できない3つ → ＋α3つ」をリズム良く
-</Notes>
 </Slide>
 
 <Slide>
@@ -160,128 +194,235 @@ import cybozuAstro from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-0
 </Slide>
 
 <Slide>
+<Columns ratio="1fr 2fr" gap="5cqi">
+  <div>
+    <ImageSlide
+  src={ss_top}
+  alt="個人サイトトップページのスクリーンショット。サイトトップにはKPI(投稿数、総合閲覧数)とほかページへのリンクが表示され、"
+/>
+  </div>
+  <div>
+## 概要
+  
+**コンセプト：ブログ × ダッシュボード**
 
-## コンセプト：ブログ × ダッシュボード
+`/Top`：「見る価値があるサイトか」を判断する情報提供の場
+┗`/Posts`：ブログをまとめる場所
+┗`/Talks`：登壇資料をまとめる場所
+┗`/About`：自分のデータでグラフを試す場所
 
-- 普通にブログを作るだけだと物足りない、1芸ほしい
-- 仕事で触っているグラフ表示系のライブラリを使いたい（ついでに詳しくなりたい）
-- データソースとして GA4 / GitHub が触れるのも Good
-
-→ ブログ × ダッシュボードの個人サイトを作ろう、と決めました。
+<ImageWithText
+  src={siteQR}
+  alt="site QRcode"
+  side="left"
+  ratio="1fr 1fr"
+  maxWidth="22cqi"
+>
 
 <BigText size="md" accent>
 [ryota5884.com](https://www.ryota5884.com)
 </BigText>
 
-<Notes>
-- ここで実機の ryota5884.com を10秒ほど表示するのが理想（プレゼンタモードを抜ける）
-- コンセプト説明は20秒目安
-</Notes>
-</Slide>
-
-<Slide>
-
-## 全体の構成
-
-<TwoColumn>
-<div>
-
-### Astro が主役のところ
-- **Pages / Layouts** — `src/pages` でルーティング
-- **Content Collections** — `posts` / `talks` を MDX 管理
-- **静的に出せるもの** — 一覧, SEO, OGP, RSS
-
-</div>
-<div>
-
-### React を island 化したところ
-- `client:load` / `client:only="react"` で島化
-- Highcharts で記事 PV / GitHub Activity
-- 動くもの・重いものだけクライアントに
-
-</div>
-</TwoColumn>
-
-> ブログとしてのみやすさ・軽量さを保ちつつ、ダッシュボードも成立。
-
-<Notes>
-- island の話はここで一言だけ
-- 「主役は Astro / 必要なところだけ React」の構図を強調
-</Notes>
-</Slide>
-
-<Slide>
-
-## 各ページの小ネタ
-
-<Columns cols={3}>
-<div>
-
-### `/about`
-- LifeProgress
-- GitHub Activity
-- PostBurndown
-
-</div>
-<div>
-
-### `/posts`
-- PV Treemap
-- 関連記事
-- 検索（Fuse.js）
-
-</div>
-<div>
-
-### `/talks`
-- MDX で書くスライド
-- View Transitions
-- このスライド自身
-
-</div>
+</ImageWithText>
+  </div>
 </Columns>
-
-ほかにも AsciiBackground など、小ネタを散らしています。
-
-<Notes>
-- 「このスライド自体も talks システムで動いてます」と軽く触れる
-- 当日プレゼンターモードを解除してデモするのもアリ
-</Notes>
 </Slide>
+
 
 <Slide>
 
-## まとめ
+## 現在の構成
 
 <TwoColumn>
 <div>
 
-### 使った理由
-- 自分で記事を持っておける安心感
-- 強みからズレたこともできる懐の深さ
-- 個人の趣味・嗜好とのマッチング
+### Astro — 骨格と配信
+
+- **Pages** — `src/pages/` のファイルがそのままルート
+- **Content Collections** — `posts` / `talks` を MDX + Zod で型付け
+- **ビルド時生成** — OGP（satori）/ RSS / sitemap / expressive-code
+- **View Transitions** — スライド遷移
 
 </div>
 <div>
 
-### やってみての感想
-- 作りたい気持ちを妨げないのが嬉しい・楽しい
-- 初心者にも優しい（[MCP](https://docs.astro.build/ja/guides/build-with-ai/) もある）
+### React — Island で動かす
+
+- **グラフ** — Highcharts（Treemap / Burndown / PV）
+- **3D 背景** — three.js + R3F（ASCII / Orbital）
+- **検索** — Fuse.js（PostSearch / TalkSearch）
+- **外部データ** — GitHubActivity / PopularPosts
+- **カウントダウン** — LifeProgress / CreativeLifeCountdown
+
+</div>
+</TwoColumn>
+
+> Astro = 骨格 / React = 動く部品。お客さんがサッと見たい部分は軽量にできた。
+
+<Notes>
+- 「Astro 主役、React は island」の構図を一望で示すスライド
+- お客さんはブログに書いてある情報をみるために仕方なくサイトを開く。自分のやりたいことでストレスを与えたくなかったので、まぁ満足。
+</Notes>
+</Slide>
+<Slide>
+  <SlideAscii slot="backdrop" speed={1.6} />
+  <Section number={3} title="学びの話" />
+</Slide>
+
+<Slide>
+
+## 学び① 一旦Astroの書き方に拘らず動くもの作っていい。
+
+<TwoColumn>
+<div>
+
+### 始めたときの認識
+
+- 「Astro なんとなく軽そう」で採用
+- 「ちゃんと動く ＝ ヨシ」で進めた
+
+</div>
+<div>
+
+### 例：画像の置き場所
+- 当時は画像を貼り付ける体験を優先して全部 `public/talks/foo.png` に直置き→`<img src="/talks/foo.png">` で参照。
+- **Astroの `astro:assets` , `<Image>` が活用できていないことにしばらく経って気付く**
 
 </div>
 </TwoColumn>
 
 <Notes>
-- 「とにかく楽しい」をテンション高めで
-- MCP の話題は1秒で軽く触れる程度
+- 「自己紹介の Astro 採用理由」を受けて、軽さの裏返しとして語る
+- 「画像は分かりやすい例」と前置きしてから次スライドで他の例も見せる
 </Notes>
+</Slide>
+
+<Slide>
+
+<TwoColumn>
+<div>
+
+### →後からまとめて書き直した
+
+- **画像** — `public/` → `src/assets/` + `astro:assets`
+- **CodeBlock** — `client:load` の React → `astro-expressive-code`（ビルド時）
+- **SEO / 見出し** — 手書き → `rehype-slug` / `autolink-headings` / `sitemap`
+
+</div>
+<div>
+
+### 感想
+
+- 色々な作り方を許容してくれるので、**一旦好奇心先行で作って後から改善できる。モチベ維持しやすい**
+- **MCPを使いつつ都度改善がいい**
+- 自分で頑張っても不慣れさからAstroに合った書き方かを見落しがちなので諦め。
+
+</div>
+</TwoColumn>
+
+<BigText size="md" accent align="start">
+「一旦Astroの書き方に拘らず動かすでいいんだ」
+</BigText>
+
+<Notes>
+- やりたいことと、Astro側に寄せる選択を天秤にかけやすかった。効率はよくなかったと思うけど、結果が見える分モチベは続きやすい
+</Notes>
+</Slide>
+
+<Slide>
+
+## 学び② View Transitions の遷移は "一瞬の未確定 DOM" を通る
+
+`/Talks`のスライド生成機構を作ったときの話
+
+<TwoColumn>
+<div>
+
+### 始めたときの認識
+
+- スライド機能を作る途中、トップページで使っている ASCII 装飾をスライドにも入れたい！
+- 学び① のノリで「一旦置いて、後で詰めればいける」と思った
+
+</div>
+<div>
+
+### 実際に起きたこと
+
+- 1 スライド目はちゃんと動く
+- View Transition で別スライドに遷移すると **`getImageData: Value is not of type 'long'` で drei がクラッシュ。遷移の瞬間だけ throw する**
+
+</div>
+</TwoColumn>
+
+<SlideFootnote slot="footnote">
+**drei** — R3F のヘルパーライブラリ集（`@react-three/drei`）／**Canvas** — Three.js シーンを描画する土台要素／**throw** — JavaScript で例外を投げる動作。投げた瞬間に実行が止まる
+</SlideFootnote>
+
+<Notes>
+- これ実は Astro 固有じゃなくて、VT 全般で起きる話なんですが、Astro 経由で気付いたので載せておきました。
+- 「トップで動かしている ASCII（Section ①② の裏でも動いていたあれ）をスライドにも入れたい話」と入る
+- 「学び① の "後で詰める" 戦法、今回は通用しなかった」と振って次へ
+
+</Notes>
+</Slide>
+
+<Slide>
+
+<TwoColumn>
+<div>
+
+### 原因になっていた VT の挙動
+
+1. VT は遷移中、古い DOM と新しい DOM が一瞬同居する
+2. 新しい DOM が出てきた直後、Canvas は「幅 0」のフレームを経由する
+3. そこで React Island がマウントされ、drei が `getImageData` を呼ぶと throw
+
+**「マウント時 ＝ サイズが確定した DOM」という前提が、VT の遷移中だけ崩れる**
+
+</div>
+<div>
+
+### LLM と粘った結果
+
+試した順: rAF 1 つ挟む → VT 完了を待つ → `ResizeObserver`
+
+- **着地点** — `ResizeObserver` で Canvas の実寸が出た瞬間にマウント
+- **保険** — drei が出す一回限りのエラーは window で `preventDefault`
+
+同じことやる人がいたら参考に。
+
+</div>
+</TwoColumn>
+
+<SlideFootnote slot="footnote">
+drei — R3F のヘルパーライブラリ集（`@react-three/drei`）／ **Canvas** — Three.js シーンを描画する土台要素 ／ **throw** — JavaScript で例外を投げる動作。投げた瞬間に実行が止まる ／ **rAF** — `requestAnimationFrame`。次の描画フレームまで処理を 1 つ遅らせるブラウザ API
+</SlideFootnote>
+
+
+
+<Notes>
+- 「VT は便利、でも遷移中の一瞬を切り取ると DOM 状態は不安定」を強調
+- 「AI と一緒に試行錯誤して着地した」を一言触れる
+</Notes>
+</Slide>
+
+<Slide>
+
+## 感想
+- **個人的には満足。現状不満はない。**
+- **作りたい気持ちを妨げないのが嬉しい・楽しい**
+- 初心者にも優しい（[MCP](https://docs.astro.build/ja/guides/build-with-ai/) もある）
+- ほかのデザイナーにも勧めたい。
+
+
+
 </Slide>
 
 <Slide>
 
 ## 最後に
 
-<BigText size="xl" accent>
+<BigText size="fill" accent>
 今日のイベントも楽しみにしていました。
 一緒に楽しみましょう！
 </BigText>
@@ -291,7 +432,7 @@ import cybozuAstro from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-0
 <Slide>
   <SlideTitle
     title="Thank you"
-    subtitle="← → キーまたはボタンで操作できます"
+    subtitle="イベント最後までいます。何でも聞いてください"
     meta="fin."
   />
 </Slide>

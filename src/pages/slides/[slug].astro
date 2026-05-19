@@ -87,6 +87,13 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     display: none;
   }
 
+  /* スライド画面では四隅に乗るシャドウ系オーバーレイを抑止する。
+     View Transitions のスナップショットで再フェードして見えるチラつきを避けるのが狙い。 */
+  :global(body:has(.slide-viewer) .crt-vignette),
+  :global(body:has(.slide-viewer) .ambient-glow) {
+    display: none;
+  }
+
   .slide-viewer {
     display: flex;
     flex-direction: column;
@@ -263,6 +270,16 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     height: min(100vh, 100vw * 9 / 16);
     aspect-ratio: 16 / 9;
     margin: 0;
+  }
+
+  /* When the deck is fullscreen, suppress page-level view-transition names on the
+     header. Without this, slide-to-slide startViewTransition() creates root-level
+     ::view-transition pseudo-elements (e.g. for the logo via transition:name="site-logo")
+     that get painted in the top layer above the fullscreen element — the logo briefly
+     reappears where the header used to be during each slide transition. */
+  :global(html:has(.slide-viewer:fullscreen)) :global(.header),
+  :global(html:has(.slide-viewer:fullscreen)) :global(.header *) {
+    view-transition-name: none !important;
   }
 
   /* ===== Presenter mode layout ===== */
@@ -463,26 +480,24 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
   const slides = Array.from(container.querySelectorAll<HTMLElement>('[data-slide]'));
   const total = slides.length;
   let current = 0;
-  let suppressBroadcast = false;
+  // Track in-flight view transitions so data-slide-dir survives interrupted runs
+  // (rapid keypresses) instead of being cleared by an earlier transition's .finally.
+  let pendingTransitions = 0;
 
   // Cross-window sync (same-origin, same browser)
   const channel = new BroadcastChannel(`slides-${slug}`);
 
-  function broadcast(index: number) {
-    if (suppressBroadcast) return;
-    channel.postMessage({ type: 'slide', index });
-  }
-
   channel.addEventListener('message', (e) => {
-    if (e.data?.type === 'slide' && typeof e.data.index === 'number' && e.data.index !== current) {
-      suppressBroadcast = true;
-      showSlide(e.data.index, true);
-      suppressBroadcast = false;
+    if (e.data?.type === 'slide' && typeof e.data.index === 'number') {
+      // broadcastChange=false: applying a remote change must not echo back,
+      // otherwise two windows can ping-pong between conflicting indices.
+      showSlide(e.data.index, true, false);
     }
   });
 
-  function showSlide(nextIndex: number, animate = true) {
+  function showSlide(nextIndex: number, animate = true, broadcastChange = true) {
     if (nextIndex < 0 || nextIndex >= total) return;
+    if (nextIndex === current) return;
     const dir = nextIndex > current ? 'forward' : 'backward';
 
     const doUpdate = () => {
@@ -494,13 +509,15 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
       const url = new URL(location.href);
       url.searchParams.set('slide', String(nextIndex));
       history.replaceState(null, '', url.toString());
-      broadcast(nextIndex);
+      if (broadcastChange) channel.postMessage({ type: 'slide', index: nextIndex });
     };
 
     if (animate && 'startViewTransition' in document) {
       document.documentElement.dataset.slideDir = dir;
+      pendingTransitions++;
       (document as any).startViewTransition(doUpdate).finished.finally(() => {
-        delete document.documentElement.dataset.slideDir;
+        pendingTransitions--;
+        if (pendingTransitions === 0) delete document.documentElement.dataset.slideDir;
       });
     } else {
       doUpdate();
@@ -565,7 +582,7 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     current = startIndex;
     updateUI();
     // Announce initial state so a freshly-opened companion window can sync
-    broadcast(startIndex);
+    channel.postMessage({ type: 'slide', index: startIndex });
   }
 
   // ===== Keyboard =====
@@ -606,11 +623,17 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
   });
 
   // ===== Fullscreen (audience only) =====
-  function toggleFullscreen() {
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      viewer!.requestFullscreen().catch(() => {});
+  async function toggleFullscreen() {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else if (viewer && typeof viewer.requestFullscreen === 'function') {
+        await viewer.requestFullscreen();
+      } else {
+        console.warn('Fullscreen API not available on slide viewer');
+      }
+    } catch (err) {
+      console.error('Fullscreen toggle failed:', err);
     }
   }
 

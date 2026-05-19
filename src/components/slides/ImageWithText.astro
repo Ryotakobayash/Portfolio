@@ -7,6 +7,7 @@ interface Props {
   side?: 'left' | 'right';
   ratio?: string;
   bare?: boolean;
+  maxWidth?: string;
 }
 const {
   src,
@@ -14,9 +15,15 @@ const {
   side = 'right',
   ratio = '1fr 1fr',
   bare = false,
+  maxWidth,
 } = Astro.props;
 ---
-<div class="image-with-text" data-side={side} data-bare={bare} style={`--ratio: ${ratio}`}>
+<div
+  class="image-with-text"
+  data-side={side}
+  data-bare={bare}
+  style={`--ratio: ${ratio}${maxWidth ? `; --img-max-width: ${maxWidth}` : ''}`}
+>
   <div class="img-col">
     {typeof src === 'string' ? (
       <img src={src} alt={alt} loading="lazy" decoding="async" />
@@ -50,7 +57,7 @@ const {
   }
 
   .img-col img {
-    max-width: 100%;
+    max-width: var(--img-max-width, 100%);
     max-height: 70cqb;
     width: auto;
     height: auto;

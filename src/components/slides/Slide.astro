@@ -9,6 +9,7 @@ const { class: className } = Astro.props;
   <div class="slide-body">
     <slot />
   </div>
+  <slot name="footnote" />
 </section>
 
 <style>
@@ -45,6 +46,7 @@ const { class: className } = Astro.props;
     justify-content: center;
     overflow: hidden;
     gap: 1.2cqi;
+    font-weight: 400;
   }
 
   .slide :global(h1) {
@@ -116,13 +118,40 @@ const { class: className } = Astro.props;
   }
 
   .slide :global(ol) {
-    list-style-position: outside;
+    list-style: none;
+    padding-left: 0;
+    counter-reset: slide-ol;
   }
 
-  .slide :global(ol > li)::marker {
+  .slide :global(ol > li) {
+    position: relative;
+    padding-left: 1.8em;
+    counter-increment: slide-ol;
+  }
+
+  .slide :global(ol > li)::before {
+    content: counter(slide-ol) ".";
+    position: absolute;
+    left: 0;
+    top: 0;
     color: var(--color-primary);
     font-family: var(--font-mono);
     font-weight: 700;
+  }
+
+  .slide :global(ol ol) {
+    margin-top: 0.3em;
+    font-size: 0.95em;
+    counter-reset: slide-ol-nested;
+  }
+
+  .slide :global(ol ol > li) {
+    counter-increment: slide-ol-nested;
+  }
+
+  .slide :global(ol ol > li)::before {
+    content: counter(slide-ol-nested, lower-alpha) ".";
+    color: var(--color-text-muted);
   }
 
   .slide :global(li + li) {

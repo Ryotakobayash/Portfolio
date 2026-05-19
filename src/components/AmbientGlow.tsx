@@ -7,6 +7,7 @@ export default function AmbientGlow() {
     return (
         <div
             aria-hidden="true"
+            className="ambient-glow"
             style={{
                 position: 'fixed',
                 inset: 0,

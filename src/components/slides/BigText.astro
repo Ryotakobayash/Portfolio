@@ -1,6 +1,6 @@
 ---
 interface Props {
-  size?: 'md' | 'lg' | 'xl' | '2xl';
+  size?: 'md' | 'lg' | 'xl' | '2xl' | 'fill';
   align?: 'start' | 'center' | 'end';
   accent?: boolean;
 }
@@ -39,8 +39,24 @@ const { size = 'xl', align = 'center', accent = false } = Astro.props;
   .big-text[data-size="lg"] { font-size: 5.5cqi; }
   .big-text[data-size="xl"] { font-size: 7cqi; }
   .big-text[data-size="2xl"] { font-size: 9cqi; }
+  /* fill — 一番長い行（およそ 16 文字想定）がスライド幅の 8 割ほどに収まり、
+     折り返さずに横いっぱいへ伸びるサイズ感。 */
+  .big-text[data-size="fill"] {
+    font-size: 5cqi;
+    line-height: 1.15;
+  }
 
-  .big-text[data-accent="true"] { color: var(--color-primary); }
+  .big-text[data-accent="true"] { color: var(--color-text); }
+
+  /* MDX が中身を <p> で包むため、Slide.astro 側の `.slide :global(p)`
+     （font-size: 2cqi, color: var(--color-text-secondary), margin あり）
+     を打ち消して BigText 自身の font-size / 色 / 行送りを継承させる。 */
+  .big-text :global(p) {
+    font-size: inherit;
+    color: inherit;
+    line-height: inherit;
+    margin: 0;
+  }
 
   .big-text :global(strong) {
     color: var(--color-primary);

@@ -1,0 +1,62 @@
+---
+/**
+ * AnimatedEmoji
+ * Google Fonts の Noto Animated Emoji を CDN からそのまま貼る軽量ラッパ。
+ * https://googlefonts.github.io/noto-emoji-animation/
+ *
+ * 使い方:
+ *   <AnimatedEmoji emoji="🎉" />
+ *   <AnimatedEmoji emoji="🚀" size="2em" />
+ *   <AnimatedEmoji emoji="❤️" format="gif" alt="love" />
+ */
+interface Props {
+  emoji: string;
+  size?: string;          // CSS の長さ。デフォルト 1em（挿入位置の text-size に揃える）
+  alt?: string;
+  format?: 'webp' | 'gif';
+  class?: string;
+}
+const {
+  emoji,
+  size = '1em',
+  alt,
+  format = 'webp',
+  class: className,
+} = Astro.props;
+
+// 絵文字を codepoint 列に変換。VS16 (U+FE0F) は Noto の URL では落とすのが慣例。
+const codepoints = [...emoji]
+  .map((ch) => ch.codePointAt(0)!)
+  .filter((cp) => cp !== 0xfe0f)
+  .map((cp) => cp.toString(16))
+  .join('_');
+
+const src = `https://fonts.gstatic.com/s/e/notoemoji/latest/${codepoints}/512.${format}`;
+---
+<img
+  class:list={['animated-emoji', className]}
+  src={src}
+  alt={alt ?? emoji}
+  width="64"
+  height="64"
+  loading="lazy"
+  decoding="async"
+  style={`--ae-size: ${size}`}
+/>
+
+<style>
+  /* スライド側の `.slide :global(img) { border, max-width, margin, width: auto, height: auto }`
+     は :global で詳細度 (0,1,1) かつ scoping 無しのため、こちらは img.animated-emoji を選択し
+     詳細度を底上げ、加えて壊れて困る箱型プロパティだけ !important で確定させる。 */
+  img.animated-emoji {
+    display: inline-block;
+    width: var(--ae-size, 1em) !important;
+    height: var(--ae-size, 1em) !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border: none !important;
+    vertical-align: -0.15em;
+    object-fit: contain;
+  }
+</style>
