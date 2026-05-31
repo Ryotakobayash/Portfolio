@@ -972,8 +972,8 @@ a:hover {
 
 @media (max-width: 600px) {
   .post-card {
-    flex-direction: column;
-    min-height: auto;
+    flex-direction: column !important;
+    min-height: auto !important;
   }
 
   .post-card-thumbnail-wrapper {
