@@ -6,12 +6,14 @@ import LifeProgress from '../components/LifeProgress';
 import CreativeLifeCountdown from '../components/CreativeLifeCountdown';
 import PostBurndown from '../components/PostBurndown';
 import GitHubActivity from '../components/GitHubActivity';
+import PVTimeline from '../components/PVTimeline';
 import goalsData from '../data/goals.json';
 
-// 全記事の日付を取得（バーンダウン用）
+// 全記事の日付・タイトルを取得（バーンダウン・タイムライン用）
 const posts = await getPublishedPosts();
 const postDates = posts.map((post) => ({
     slug: (post.data.slug || post.id),
+    title: post.data.title,
     date: post.data.date,
 }));
 ---
@@ -68,9 +70,19 @@ const postDates = posts.map((post) => ({
 
     <hr class="divider" />
 
+    <!-- ===== PV Timeline ===== -->
+    <section class="section">
+      <h2 class="section-title"><span>03 · PV Timeline</span></h2>
+      <div class="bento-card">
+          <PVTimeline client:only="react" posts={postDates} />
+      </div>
+    </section>
+
+    <hr class="divider" />
+
     <!-- ===== GitHub Activity ===== -->
     <section class="section">
-      <h2 class="section-title"><span>03 · GitHub Activity</span></h2>
+      <h2 class="section-title"><span>04 · GitHub Activity</span></h2>
       <div class="bento-card">
           <GitHubActivity client:load />
       </div>
@@ -80,7 +92,7 @@ const postDates = posts.map((post) => ({
 
     <!-- Links Section -->
     <section class="section">
-      <h2 class="section-title"><span>04 · Links</span></h2>
+      <h2 class="section-title"><span>05 · Links</span></h2>
       <div class="links">
         <a href="https://github.com/Ryotakobayash" target="_blank" rel="noopener" class="link-item">
           GitHub

@@ -133,6 +133,13 @@ export default function PVTimeline({ posts }: Props) {
         series: [{ type: 'area', name: '月間PV', data: seriesData }],
     };
 
+    // テーマ変更時にチャート更新
+    useEffect(() => {
+        if (chartRef.current?.chart) {
+            chartRef.current.chart.update(options, true, true);
+        }
+    }, [isDark]);
+
     if (isLoading) {
         return (
             <div style={{ height: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

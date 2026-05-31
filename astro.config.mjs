@@ -17,8 +17,8 @@ export default defineConfig({
   output: 'server',
   env: {
     schema: {
-      GA4_PROPERTY_ID: envField.string({ context: 'server', access: 'secret' }),
-      GCP_PROJECT_NUMBER: envField.string({ context: 'server', access: 'secret' }),
+      GA4_PROPERTY_ID: envField.string({ context: 'server', access: 'secret', optional: true }),
+      GCP_PROJECT_NUMBER: envField.string({ context: 'server', access: 'secret', optional: true }),
       GCP_WORKLOAD_IDENTITY_POOL_ID: envField.string({ context: 'server', access: 'secret', optional: true }),
       GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID: envField.string({ context: 'server', access: 'secret', optional: true }),
       GCP_SERVICE_ACCOUNT_EMAIL: envField.string({ context: 'server', access: 'secret', optional: true }),

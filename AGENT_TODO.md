@@ -52,29 +52,6 @@
 
 
 
-### [タスク名: PV Timelineの復活と表示バグ修正]
-
-**背景・目的:**
-
-- 現在 `/api/pv/timeline` と `PVTimeline.tsx` は存在するが、どのページからも使用されておらずPV推移が確認できない。これを復活させ、ダッシュボードとしての信頼性を向上させる。
-
-**要件・仕様:**
-
-- [ ] `/about` ページの適切な位置（例えば `Post Count` の下など）に `PVTimeline` コンポーネントを配置する。
-- [ ] `PVTimeline.tsx` が正しく描画され、GA4 API からのデータを表示できるか検証する（ローカルではダミーデータが動くこと）。
-- [ ] 狭い画面幅で Highcharts のグラフが崩れないようレスポンシブ対応を確認する。
-
-**関連する既存ファイル・技術スタック:**
-
-- 対象ファイル: `src/pages/about.astro`, `src/components/PVTimeline.tsx`, `src/pages/api/pv/timeline.ts`
-- 技術スタック: React, Highcharts
-
-**完了条件 (Acceptance Criteria):**
-
-- [ ] `/about` ページでPVタイムラインのグラフが表示されること
-- [ ] ライト/ダークテーマ切り替え時にグラフのグリッドやテキストの色が連動して変化すること
-
----
 
 ### [タスク名: ブログサムネイルへの四分木（Quadtree）演出導入]
 
@@ -142,6 +119,17 @@
 ---
 
 ## ✅ 完了タスク (Done)
+
+### [タスク名: PV Timelineの復活と表示バグ修正]
+
+**完了日時:** 2026-05-31
+**サマリー:**
+使われていなかったPVタイムライン表示を復活させ、テーマ連動やローカル用のフォールバック、開発環境の動作安定化を行いました。
+- `src/pages/about.astro` に `PVTimeline` コンポーネントを `client:only="react"` で組み込み、「03 · PV Timeline」セクションとして追加（以降のセクションをリナンバリング）。
+- プロットラインに表示される投稿情報にタイトルを渡すため、`postDates` のマッピング処理に `title` を含めるよう修正。
+- `src/components/PVTimeline.tsx` にて、テーマ（`isDark`）変更時に `chart.update(options, true, true)` が走るようにし、ダークモード切り替え時の配色追従バグを修正。
+- `astro.config.mjs` で定義している `GA4_PROPERTY_ID` と `GCP_PROJECT_NUMBER` スキーマを `optional: true` に変更し、ローカル開発環境で環境変数が空の場合でも `EnvInvalidVariables` エラーを出さずにダミーデータで安全に動くよう修正。
+- `pnpm build` およびローカル環境での API/HTML 応答疎通を確認。
 
 ### [タスク名: Astro v6 後続タスク — astro:env / astro/zod / Vercel preview 検証]
 
