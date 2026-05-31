@@ -74,9 +74,6 @@ const allPostsMeta = allPosts.map((p) => ({
           </div>
         )}
         <h1 class="article-title" transition:name={`post-title-${encodeURIComponent(slug).replace(/%/g, '')}`}>{post.data.title}</h1>
-        <div class="article-meta">
-          <span class="article-meta__date" transition:name={`post-date-${encodeURIComponent(slug).replace(/%/g, '')}`}>{post.data.date}</span>
-        </div>
         {post.data.tags && post.data.tags.length > 0 && (
           <div class="article-tags">
             {post.data.tags.map((tag: string) => (
