@@ -18,10 +18,20 @@ export default function ArticlePerformance({ slug, wordCount, readingTime, publi
             .catch(() => setViewCount(null));
     }, [slug]);
 
-    // 公開からの日数を計算
-    const daysSincePublish = Math.max(0, Math.floor((new Date().getTime() - new Date(publishDate).getTime()) / (1000 * 60 * 60 * 24)));
+    // YYYY/MM/DD形式にフォーマット
+    const formattedDate = publishDate.replace(/-/g, '/');
 
     const metrics = [
+        {
+            label: 'Published',
+            value: formattedDate,
+            suffix: ''
+        },
+        {
+            label: 'Reading Time',
+            value: readingTime,
+            suffix: 'min'
+        },
         {
             label: 'Views (30d)',
             value: viewCount !== null ? viewCount.toLocaleString() : '--',
@@ -31,16 +41,6 @@ export default function ArticlePerformance({ slug, wordCount, readingTime, publi
             label: 'Word Count',
             value: wordCount.toLocaleString(),
             suffix: 'chars'
-        },
-        {
-            label: 'Reading Time',
-            value: readingTime,
-            suffix: 'min'
-        },
-        {
-            label: 'Published',
-            value: daysSincePublish,
-            suffix: 'days ago'
         }
     ];
 
@@ -70,9 +70,11 @@ export default function ArticlePerformance({ slug, wordCount, readingTime, publi
                         <span style={{ fontSize: '1.4rem', fontWeight: 900, letterSpacing: '-0.03em', color: 'var(--color-text)', lineHeight: 1 }}>
                             {metric.value}
                         </span>
-                        <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
-                            {metric.suffix}
-                        </span>
+                        {metric.suffix && (
+                            <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
+                                {metric.suffix}
+                            </span>
+                        )}
                     </div>
                 </div>
             ))}
