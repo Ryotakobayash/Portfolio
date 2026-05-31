@@ -8,6 +8,7 @@ tags:
   - React
   - Three.js
 slug: 20260502_Astroで作ったサイトにASCIIの装飾を追加する
+thumbnail: /thumbnails/cyber_digital_grid.png
 ---
 
 ## はじめに
