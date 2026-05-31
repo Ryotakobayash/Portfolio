@@ -402,7 +402,6 @@ const allPostsMeta = allPosts.map((p) => ({
   .prose :global(.expressive-code),
   .prose :global(table),
   .prose :global(blockquote),
-  .prose :global(.twitter-tweet),
   .prose :global(figure:not(.sidenote)),
   .prose :global(hr) {
     max-width: 100%;
@@ -417,14 +416,6 @@ const allPostsMeta = allPosts.map((p) => ({
   }
   .prose :global(.expressive-code .frame) {
     max-width: 100% !important;
-  }
-
-  /* Twitter / X 埋め込みが縮んだり中央寄せでずれたりするのを防ぎ、左端・右端を揃える */
-  .prose :global(iframe.twitter-tweet),
-  .prose :global(.twitter-tweet) {
-    max-width: 100% !important;
-    width: 100% !important;
-    margin-inline: 0 !important;
   }
 
   .prose :global(h2) {
