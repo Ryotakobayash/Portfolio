@@ -225,7 +225,7 @@ export default function QuadtreeThumbnail({
                 width: '100%',
                 aspectRatio: '16 / 9',
                 backgroundColor: 'var(--color-bg-secondary)',
-                border: '1px solid var(--color-border)',
+                border: 'none',
                 overflow: 'hidden',
                 display: 'flex',
                 alignItems: 'center',
