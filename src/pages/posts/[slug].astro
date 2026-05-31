@@ -86,13 +86,15 @@ const allPostsMeta = allPosts.map((p) => ({
         )}
       </header>
 
-      <ArticlePerformance
-        client:load
-        slug={slug}
-        wordCount={charCount}
-        readingTime={readingTime}
-        publishDate={post.data.date}
-      />
+      <div class="article-performance-wrapper">
+        <ArticlePerformance
+          client:load
+          slug={slug}
+          wordCount={charCount}
+          readingTime={readingTime}
+          publishDate={post.data.date}
+        />
+      </div>
 
       <!-- モバイル用TOC -->
       {toc.length > 0 && (
@@ -289,6 +291,7 @@ const allPostsMeta = allPosts.map((p) => ({
 
   .article-header {
     margin-bottom: var(--spacing-xl);
+    max-width: 40em;
   }
 
   .back-link {
@@ -300,8 +303,13 @@ const allPostsMeta = allPosts.map((p) => ({
 
   .article-thumbnail-wrapper {
     margin-bottom: var(--spacing-lg);
-    max-width: 100%;
+    max-width: 40em;
     width: 100%;
+  }
+
+  .article-performance-wrapper {
+    max-width: 40em;
+    margin-bottom: var(--spacing-xl);
   }
 
   .article-title {
@@ -379,6 +387,12 @@ const allPostsMeta = allPosts.map((p) => ({
   /* Prose styles for Markdown content */
   .prose {
     line-height: 1.8;
+  }
+
+  /* 本文内の主要なブロック要素の最大幅を 40em に統一して揃える（sidenoteは除く） */
+  .prose :global(:is(p, li, h2, h3, h4, h5, h6, pre, table, blockquote, .expressive-code, figure, hr):not(.sidenote)) {
+    max-width: 40em;
+    width: 100%;
   }
 
   .prose :global(h2) {
@@ -461,10 +475,9 @@ const allPostsMeta = allPosts.map((p) => ({
     margin-block: 0.75lh;
   }
 
-  .prose :global(:is(p, li):not([class])),
-  .prose :global(dd),
-  .prose :global(small) {
-    max-inline-size: 40em;
+  .prose :global(:is(dd, small)) {
+    max-width: 40em;
+    width: 100%;
   }
 
   .prose :global(ul),
