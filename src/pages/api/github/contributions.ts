@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { GITHUB_TOKEN } from 'astro:env/server';
 
 const GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql';
 const GITHUB_USERNAME = 'Ryotakobayash';
@@ -33,7 +34,7 @@ interface GraphQLResponse {
  * なければREST API（公開イベントベース、概算）にフォールバック。
  */
 export const GET: APIRoute = async () => {
-    const token = import.meta.env.GITHUB_TOKEN;
+    const token = GITHUB_TOKEN;
 
     if (token) {
         return await fetchWithGraphQL(token);

@@ -1,5 +1,12 @@
 import type { APIRoute } from 'astro';
 import { getPublishedPosts } from '../../../utils/posts';
+import {
+    GA4_PROPERTY_ID,
+    GCP_PROJECT_NUMBER,
+    GCP_WORKLOAD_IDENTITY_POOL_ID,
+    GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID,
+    GCP_SERVICE_ACCOUNT_EMAIL,
+} from 'astro:env/server';
 
 export const prerender = false;
 
@@ -8,9 +15,6 @@ export const prerender = false;
  * GA4から30日間のページ別PVを取得し、上位5件を返す
  */
 export const GET: APIRoute = async () => {
-    const GA4_PROPERTY_ID = process.env.GA4_PROPERTY_ID;
-    const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
-
     // 公開済みの記事パス一覧を取得
     const publishedPosts = await getPublishedPosts();
     const validPathPrefixes = publishedPosts.map(post => `/posts/${(post.data.slug || post.id)}`);
@@ -45,9 +49,9 @@ export const GET: APIRoute = async () => {
 
     try {
         const { getVercelOidcToken } = await import('@vercel/oidc');
-        const GCP_POOL_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_ID || 'portfolio-vercel';
-        const GCP_PROVIDER_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID || 'portfolio-vercel';
-        const GCP_SA_EMAIL = process.env.GCP_SERVICE_ACCOUNT_EMAIL || 'vercelportfolio@portfolio-483013.iam.gserviceaccount.com';
+        const GCP_POOL_ID = GCP_WORKLOAD_IDENTITY_POOL_ID || 'portfolio-vercel';
+        const GCP_PROVIDER_ID = GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID || 'portfolio-vercel';
+        const GCP_SA_EMAIL = GCP_SERVICE_ACCOUNT_EMAIL || 'vercelportfolio@portfolio-483013.iam.gserviceaccount.com';
 
         const { ExternalAccountClient } = await import('google-auth-library');
         const authClient = ExternalAccountClient.fromJSON({

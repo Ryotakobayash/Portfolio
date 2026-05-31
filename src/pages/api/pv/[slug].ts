@@ -1,4 +1,11 @@
 import type { APIRoute } from 'astro';
+import {
+    GA4_PROPERTY_ID,
+    GCP_PROJECT_NUMBER,
+    GCP_WORKLOAD_IDENTITY_POOL_ID,
+    GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID,
+    GCP_SERVICE_ACCOUNT_EMAIL,
+} from 'astro:env/server';
 
 export const prerender = false;
 
@@ -10,9 +17,6 @@ export const GET: APIRoute = async ({ params }) => {
     if (!slug) {
         return Response.json({ error: 'Slug is required' }, { status: 400 });
     }
-
-    const GA4_PROPERTY_ID = process.env.GA4_PROPERTY_ID;
-    const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
 
     // 環境変数未設定 or 開発モード → ダミーデータ
     if (!GA4_PROPERTY_ID || !GCP_PROJECT_NUMBER || import.meta.env.DEV) {
@@ -31,9 +35,9 @@ export const GET: APIRoute = async ({ params }) => {
     try {
         const { getVercelOidcToken } = await import('@vercel/oidc');
 
-        const GCP_POOL_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_ID || 'portfolio-vercel';
-        const GCP_PROVIDER_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID || 'portfolio-vercel';
-        const GCP_SA_EMAIL = process.env.GCP_SERVICE_ACCOUNT_EMAIL || 'vercelportfolio@portfolio-483013.iam.gserviceaccount.com';
+        const GCP_POOL_ID = GCP_WORKLOAD_IDENTITY_POOL_ID || 'portfolio-vercel';
+        const GCP_PROVIDER_ID = GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID || 'portfolio-vercel';
+        const GCP_SA_EMAIL = GCP_SERVICE_ACCOUNT_EMAIL || 'vercelportfolio@portfolio-483013.iam.gserviceaccount.com';
 
         const { ExternalAccountClient } = await import('google-auth-library');
         const authClient = ExternalAccountClient.fromJSON({

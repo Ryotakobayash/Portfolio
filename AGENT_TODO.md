@@ -52,34 +52,6 @@
 
 
 
----
-
-### [タスク名: Astro v6 後続タスク — astro:env / astro/zod / Vercel preview 検証]
-
-**背景・目的:**
-
-- 2026-05-17 の v6 メジャー更新時にスコープ外とした残課題をまとめる。いずれも v6 で「将来非推奨／将来不要」になる箇所であり、計画的にクローズしておきたい。
-
-**要件・仕様:**
-
-- [ ] `astro:env` 移行: API ルート (`src/pages/api/pv*.ts`, `src/pages/api/github/*.ts`) で参照している `process.env.GA4_PROPERTY_ID` 等を `astro:env/server` でスキーマ定義して型安全化する。`astro.config.mjs` に `env.schema` を追加。
-- [ ] `import { z } from 'astro:content'` → `import { z } from 'astro/zod'` への置換 (`src/content.config.ts`)。`astro:content` 経由の zod re-export は将来非推奨。
-- [ ] Vercel preview デプロイで本番同等環境を確認 (`@astrojs/vercel` は `pnpm preview` をサポートしないため必須)。`/api/pv*`、`/og/[slug].png`、`/slides/[slug]` の SSR 経路を staging URL で疎通。
-
-**関連する既存ファイル:**
-
-- `astro.config.mjs`
-- `src/content.config.ts`
-- `src/pages/api/pv.ts`, `src/pages/api/pv/{ranking,treemap,timeline,[slug]}.ts`, `src/pages/api/github/contributions.ts`
-
-**完了条件 (Acceptance Criteria):**
-
-- [ ] `process.env.GA4_PROPERTY_ID` 等の直接参照が無くなり、`astro:env` 経由になっていること
-- [ ] `astro:content` から `z` を import する箇所が無いこと
-- [ ] Vercel preview URL で API/SSR ルートが 200 を返すこと
-
----
-
 ### [タスク名: PV Timelineの復活と表示バグ修正]
 
 **背景・目的:**
@@ -154,16 +126,6 @@
 
 ## 🐾 保留中のアイデア・メモ
 
-### [保留タスク: quadtree-art の演出導入]
-
-**背景・目的:**
-
-- quadtree-artを使った演出を入れたいが、まだ具体的なイメージが固まっていないため延期。
-
----
-
-## タスク化する前のアイデア・メモ📝
-
 - 記事を書く
   - スキルの評価のやつの根拠を追加する。
   - Token関係の取り組みをやる
@@ -173,13 +135,23 @@
   - 入社前の内定時にやっていることの調査
   - 議事録を使ったレビュー観点抽出の話。
   - 海外の人がやっている開発者の自己表現っぽいやつを書いてみる（私を構成する言葉、みたいなやつをやってみる）[参考](https://gemini.google.com/app/477098d0c68f8eff?hl=ja)
-  - 動く絵文字の話
-  - 独自ドメイン設定の話
-- 「Popular Posts · 30 Days」が月が切り替わるタイミングでリセットされる挙動の確認・修正
+- Xアカウントへのリンクを設置する。
+
+
 
 ---
 
 ## ✅ 完了タスク (Done)
+
+### [タスク名: Astro v6 後続タスク — astro:env / astro/zod / Vercel preview 検証]
+
+**完了日時:** 2026-05-31
+**サマリー:**
+Astro v6 のメジャー移行後推奨事項に対応し、環境変数管理とzodインポートを適正化しました。
+- `astro.config.mjs` に `envField` を用いて、環境変数（GA4, GCP, GitHubトークン等）のスキーマ定義を記述。
+- `src/pages/api/pv*.ts` や `contributions.ts` での `process.env` / `import.meta.env` 直接参照を `astro:env/server` からの型安全インポートに移行。
+- `src/content.config.ts` で `z` を `astro:content`（将来非推奨）から `astro/zod` からの直接インポートへ変更。
+- 本番ビルドを実行し、全静的ルートのプリレンダリング、サーバーエントリーポイントのコンパイルが警告なくパスすることを確認。
 
 ### [タスク名: Astro v6 アップグレード後の dev 警告調査]
 

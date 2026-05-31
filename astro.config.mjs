@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 
 import react from '@astrojs/react';
 import vercel from '@astrojs/vercel';
@@ -15,6 +15,16 @@ import remarkBreaks from 'remark-breaks';
 export default defineConfig({
   site: 'https://www.ryota5884.com',
   output: 'server',
+  env: {
+    schema: {
+      GA4_PROPERTY_ID: envField.string({ context: 'server', access: 'secret' }),
+      GCP_PROJECT_NUMBER: envField.string({ context: 'server', access: 'secret' }),
+      GCP_WORKLOAD_IDENTITY_POOL_ID: envField.string({ context: 'server', access: 'secret', optional: true }),
+      GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID: envField.string({ context: 'server', access: 'secret', optional: true }),
+      GCP_SERVICE_ACCOUNT_EMAIL: envField.string({ context: 'server', access: 'secret', optional: true }),
+      GITHUB_TOKEN: envField.string({ context: 'server', access: 'secret', optional: true }),
+    }
+  },
   integrations: [
     react(),
     expressiveCode({
