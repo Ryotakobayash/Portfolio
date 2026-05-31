@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import Fuse from 'fuse.js';
+import QuadtreeThumbnail from './QuadtreeThumbnail';
 
 interface PostMeta {
     slug: string;
@@ -7,6 +8,7 @@ interface PostMeta {
     date: string;
     excerpt?: string;
     tags: string[];
+    thumbnail?: string;
 }
 
 interface PostSearchProps {
@@ -227,8 +229,8 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                     <a
                         key={post.slug}
                         href={`/posts/${post.slug}`}
+                        className="post-card"
                         style={{
-                            display: 'block', padding: 'var(--spacing-lg)',
                             backgroundColor: 'var(--color-bg-card)',
                             border: '1px solid var(--color-border)',
                             textDecoration: 'none', color: 'inherit',
@@ -238,38 +240,50 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                         onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
                     >
-                        <div className="text-muted" style={{ fontSize: '0.65rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)', viewTransitionName: `post-date-${encodeURIComponent(post.slug).replace(/%/g, '')}` } as React.CSSProperties}>
-                            {post.date}
-                        </div>
-                        <h2 className="font-bold" style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '-0.01em', viewTransitionName: `post-title-${encodeURIComponent(post.slug).replace(/%/g, '')}` } as React.CSSProperties}>
-                            {post.title}
-                        </h2>
-                        {post.excerpt && (
-                            <p className="text-secondary mb-md" style={{
-                                fontSize: '0.875rem',
-                                display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                            }}>
-                                {post.excerpt}
-                            </p>
-                        )}
-                        {post.tags.length > 0 && (
-                            <div className="flex flex-wrap" style={{ gap: 'var(--spacing-xs)' }}>
-                                {post.tags.map((tag) => (
-                                    <span
-                                        key={tag}
-                                        className="text-primary font-semibold"
-                                        style={{
-                                            display: 'inline-flex', alignItems: 'center',
-                                            padding: '1px 6px', fontSize: '0.6rem',
-                                            border: '1px solid var(--color-primary)',
-                                            letterSpacing: '0.05em', textTransform: 'uppercase',
-                                        }}
-                                    >
-                                        {tag}
-                                    </span>
-                                ))}
+                        {post.thumbnail && (
+                            <div className="post-card-thumbnail-wrapper">
+                                <QuadtreeThumbnail
+                                    src={post.thumbnail}
+                                    alt={post.title}
+                                    animateOnLoad={false}
+                                    viewTransitionName={`post-thumbnail-${encodeURIComponent(post.slug).replace(/%/g, '')}`}
+                                />
                             </div>
                         )}
+                        <div className="post-card-content">
+                            <div className="text-muted" style={{ fontSize: '0.65rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)', viewTransitionName: `post-date-${encodeURIComponent(post.slug).replace(/%/g, '')}` } as React.CSSProperties}>
+                                {post.date}
+                            </div>
+                            <h2 className="font-bold" style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '-0.01em', viewTransitionName: `post-title-${encodeURIComponent(post.slug).replace(/%/g, '')}` } as React.CSSProperties}>
+                                {post.title}
+                            </h2>
+                            {post.excerpt && (
+                                <p className="text-secondary mb-md" style={{
+                                    fontSize: '0.875rem',
+                                    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                                }}>
+                                    {post.excerpt}
+                                </p>
+                            )}
+                            {post.tags.length > 0 && (
+                                <div className="flex flex-wrap" style={{ gap: 'var(--spacing-xs)' }}>
+                                    {post.tags.map((tag) => (
+                                        <span
+                                            key={tag}
+                                            className="text-primary font-semibold"
+                                            style={{
+                                                display: 'inline-flex', alignItems: 'center',
+                                                padding: '1px 6px', fontSize: '0.6rem',
+                                                border: '1px solid var(--color-primary)',
+                                                letterSpacing: '0.05em', textTransform: 'uppercase',
+                                            }}
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </a>
                 ))}
             </div>
