@@ -230,21 +230,6 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                         key={post.slug}
                         href={`/posts/${post.slug}`}
                         className="post-card"
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: '0',
-                            padding: '0',
-                            backgroundColor: 'var(--color-bg-card)',
-                            border: '1px solid var(--color-border)',
-                            textDecoration: 'none',
-                            color: 'inherit',
-                            transition: 'border-color var(--transition-fast)',
-                            minHeight: '125px',
-                            viewTransitionName: `post-card-${encodeURIComponent(post.slug).replace(/%/g, '')}`
-                        } as React.CSSProperties}
-                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
                     >
                         {post.thumbnail && (
                             <div className="post-card-thumbnail-wrapper">
@@ -252,15 +237,14 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                                     src={post.thumbnail}
                                     alt={post.title}
                                     animateOnLoad={false}
-                                    viewTransitionName={`post-thumbnail-${encodeURIComponent(post.slug).replace(/%/g, '')}`}
                                 />
                             </div>
                         )}
                         <div className="post-card-content">
-                            <div className="text-muted" style={{ fontSize: '0.65rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)', viewTransitionName: `post-date-${encodeURIComponent(post.slug).replace(/%/g, '')}` } as React.CSSProperties}>
+                            <div className="text-muted" style={{ fontSize: '0.65rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)' }}>
                                 {post.date}
                             </div>
-                            <h2 className="font-bold" style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '-0.01em', viewTransitionName: `post-title-${encodeURIComponent(post.slug).replace(/%/g, '')}` } as React.CSSProperties}>
+                            <h2 className="font-bold" style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-sm)', letterSpacing: '-0.01em' }}>
                                 {post.title}
                             </h2>
                             {post.excerpt && (

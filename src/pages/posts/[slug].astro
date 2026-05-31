@@ -59,7 +59,7 @@ const allPostsMeta = allPosts.map((p) => ({
 >
   <div class="article-layout">
     <!-- メインコンテンツ -->
-    <article class="article" transition:name={`post-card-${encodeURIComponent(slug).replace(/%/g, '')}`}>
+    <article class="article">
       <header class="article-header">
         <a href="/posts" class="back-link">← Posts</a>
         {post.data.thumbnail && (
@@ -69,11 +69,10 @@ const allPostsMeta = allPosts.map((p) => ({
               src={post.data.thumbnail}
               alt={post.data.title}
               animateOnLoad={true}
-              viewTransitionName={`post-thumbnail-${encodeURIComponent(slug).replace(/%/g, '')}`}
             />
           </div>
         )}
-        <h1 class="article-title" transition:name={`post-title-${encodeURIComponent(slug).replace(/%/g, '')}`}>{post.data.title}</h1>
+        <h1 class="article-title">{post.data.title}</h1>
         {post.data.tags && post.data.tags.length > 0 && (
           <div class="article-tags">
             {post.data.tags.map((tag: string) => (
