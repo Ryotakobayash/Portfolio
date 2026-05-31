@@ -933,27 +933,57 @@ a:hover {
 .post-card {
   display: flex;
   flex-direction: row;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg);
+  gap: 0;
+  padding: 0;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--transition-fast);
+  min-height: 125px; /* 16:9比率時の最小の高さ */
+}
+
+.post-card:hover {
+  border-color: var(--color-primary);
 }
 
 .post-card-thumbnail-wrapper {
   width: 220px;
   flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  border-right: 1px solid var(--color-border);
+  aspect-ratio: 16 / 9; /* 16:9比率に固定 */
+}
+
+.post-card-thumbnail-wrapper > * {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .post-card-content {
   flex: 1;
   min-width: 0; /* Prevents overflow when text truncates */
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 @media (max-width: 600px) {
   .post-card {
     flex-direction: column;
+    min-height: auto;
   }
 
   .post-card-thumbnail-wrapper {
     width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-card-content {
+    padding: var(--spacing-md);
   }
 }
 
