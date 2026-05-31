@@ -13,6 +13,7 @@ const sortedPosts = posts
     date: post.data.date,
     excerpt: post.data.excerpt || '',
     tags: post.data.tags || [],
+    thumbnail: post.data.thumbnail || '',
   }))
   .sort((a, b) => (a.date < b.date ? 1 : -1));
 
