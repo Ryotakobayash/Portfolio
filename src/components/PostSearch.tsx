@@ -231,8 +231,20 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                         href={`/posts/${post.slug}`}
                         className="post-card"
                         style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: '0',
+                            padding: '0',
+                            backgroundColor: 'var(--color-bg-card)',
+                            border: '1px solid var(--color-border)',
+                            textDecoration: 'none',
+                            color: 'inherit',
+                            transition: 'border-color var(--transition-fast)',
+                            minHeight: '125px',
                             viewTransitionName: `post-card-${encodeURIComponent(post.slug).replace(/%/g, '')}`
                         } as React.CSSProperties}
+                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
                     >
                         {post.thumbnail && (
                             <div className="post-card-thumbnail-wrapper">
