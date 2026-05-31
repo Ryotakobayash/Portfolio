@@ -51,9 +51,9 @@ export default function PVTimeline({ posts }: Props) {
     const colors = {
         text: isDark ? '#8A8A7A' : '#6B6B5A',
         grid: isDark ? '#2C2C2C' : '#E0D8CC',
-        line: '#5C7F71',
-        fillStart: isDark ? 'rgba(92, 127, 113, 0.35)' : 'rgba(92, 127, 113, 0.2)',
-        fillEnd: 'rgba(92, 127, 113, 0)',
+        line: isDark ? '#7aa090' : '#466557', // プロジェクトのプライマリカラーに統一
+        fillStart: isDark ? 'rgba(122, 160, 144, 0.25)' : 'rgba(70, 101, 87, 0.15)',
+        fillEnd: isDark ? 'rgba(122, 160, 144, 0)' : 'rgba(70, 101, 87, 0)',
         markerLine: isDark ? 'rgba(245, 237, 220, 0.2)' : 'rgba(24, 24, 24, 0.15)',
         markerText: isDark ? '#6B6B5A' : '#8A8A7A',
     };
@@ -130,7 +130,7 @@ export default function PVTimeline({ posts }: Props) {
                 lineColor: colors.line,
             },
         },
-        series: [{ type: 'area', name: '月間PV', data: seriesData }],
+        series: [{ type: 'area', name: '月間PV', data: seriesData, color: colors.line }],
     };
 
     // テーマ変更時にチャート更新
