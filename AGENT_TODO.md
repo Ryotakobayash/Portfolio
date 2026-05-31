@@ -83,24 +83,6 @@
 
 ---
 
-### [タスク名: JSON Feed (feed.json) の作成とフィード of 整備]
-
-**背景・目的:**
-
-- すでに RSS フィード (`/rss.xml`) は実装されているが、モダンなフィードフォーマットである JSON Feed にも対応し、より広範な購読に対応させる。
-
-**要件・仕様:**
-- [ ] `/feed.json` エンドポイントを `src/pages/feed.json.ts` に作成し、Astro Content Collections の公開済み記事データを JSON Feed 1.1 仕様に則って出力する。
-- [ ] `BaseLayout.astro` の `<head>` に JSON Feed の `<link rel="alternate" type="application/feed+json" ...>` を追加する。
-
-**関連する既存ファイル・技術スタック:**
-- 対象ファイル: `src/layouts/BaseLayout.astro`
-- 新規ファイル: `src/pages/feed.json.ts`
-
-**完了条件 (Acceptance Criteria):**
-- [ ] `/feed.json` にアクセスした際、妥当な形式の JSON Feed データが出力されること
-
----
 
 ## 🐾 保留中のアイデア・メモ
 
@@ -120,6 +102,15 @@
 ---
 
 ## ✅ 完了タスク (Done)
+
+### [タスク名: JSON Feed (feed.json) の作成とフィードの整備]
+
+**完了日時:** 2026-05-31
+**サマリー:**
+モダンなフィードフォーマットである JSON Feed 1.1 に対応するため、エンドポイントの新設とレイアウトへの購読リンク埋め込みを行いました。
+- `src/pages/feed.json.ts` を新規作成し、Astro Content Collections から取得した公開済み記事データを JSON Feed 1.1 形式（`application/feed+json`）で静的出力（`prerender = true`）するように実装しました。
+- `src/layouts/BaseLayout.astro` の `<head>` 内に JSON Feed 購読リンク `<link rel="alternate" type="application/feed+json" ...>` を追加しました。
+- `pnpm build` にてビルドおよび静的生成テストを行い、ローカルで API 応答と HTML ソースの動作を確認しました。
 
 ### [タスク名: PV Timelineの復活と表示バグ修正]
 
