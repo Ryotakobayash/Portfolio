@@ -4,7 +4,7 @@ import { useEffect } from 'react';
  * 画像クリックで拡大表示するコンポーネント
  * 記事ページでマウント時に全imgタグにズーム機能を追加
  */
-export function ImageZoom() {
+export default function ImageZoom() {
     useEffect(() => {
         const images = document.querySelectorAll('.prose img');
 
@@ -88,5 +88,3 @@ export function ImageZoom() {
 
     return null;
 }
-
-export default ImageZoom;

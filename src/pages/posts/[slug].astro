@@ -116,7 +116,7 @@ const allPostsMeta = allPosts.map((p) => ({
       </footer>
 
       <!-- クライアントサイド機能 -->
-      <ImageZoom client:load />
+      <ImageZoom client:only="react" />
     </article>
 
     <!-- サイドバーTOC（デスクトップ） -->

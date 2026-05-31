@@ -44,17 +44,153 @@
 
 ---
 
-## タスク化する前のアイデア
-
--
-
 ## 🚧 進行中タスク (In Progress)
+
+---
+
+## 🚀 未着手タスク (Backlog)
+
+
+
+---
+
+### [タスク名: Astro v6 後続タスク — astro:env / astro/zod / Vercel preview 検証]
+
+**背景・目的:**
+
+- 2026-05-17 の v6 メジャー更新時にスコープ外とした残課題をまとめる。いずれも v6 で「将来非推奨／将来不要」になる箇所であり、計画的にクローズしておきたい。
+
+**要件・仕様:**
+
+- [ ] `astro:env` 移行: API ルート (`src/pages/api/pv*.ts`, `src/pages/api/github/*.ts`) で参照している `process.env.GA4_PROPERTY_ID` 等を `astro:env/server` でスキーマ定義して型安全化する。`astro.config.mjs` に `env.schema` を追加。
+- [ ] `import { z } from 'astro:content'` → `import { z } from 'astro/zod'` への置換 (`src/content.config.ts`)。`astro:content` 経由の zod re-export は将来非推奨。
+- [ ] Vercel preview デプロイで本番同等環境を確認 (`@astrojs/vercel` は `pnpm preview` をサポートしないため必須)。`/api/pv*`、`/og/[slug].png`、`/slides/[slug]` の SSR 経路を staging URL で疎通。
+
+**関連する既存ファイル:**
+
+- `astro.config.mjs`
+- `src/content.config.ts`
+- `src/pages/api/pv.ts`, `src/pages/api/pv/{ranking,treemap,timeline,[slug]}.ts`, `src/pages/api/github/contributions.ts`
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] `process.env.GA4_PROPERTY_ID` 等の直接参照が無くなり、`astro:env` 経由になっていること
+- [ ] `astro:content` から `z` を import する箇所が無いこと
+- [ ] Vercel preview URL で API/SSR ルートが 200 を返すこと
+
+---
+
+### [タスク名: PV Timelineの復活と表示バグ修正]
+
+**背景・目的:**
+
+- 現在 `/api/pv/timeline` と `PVTimeline.tsx` は存在するが、どのページからも使用されておらずPV推移が確認できない。これを復活させ、ダッシュボードとしての信頼性を向上させる。
+
+**要件・仕様:**
+
+- [ ] `/about` ページの適切な位置（例えば `Post Count` の下など）に `PVTimeline` コンポーネントを配置する。
+- [ ] `PVTimeline.tsx` が正しく描画され、GA4 API からのデータを表示できるか検証する（ローカルではダミーデータが動くこと）。
+- [ ] 狭い画面幅で Highcharts のグラフが崩れないようレスポンシブ対応を確認する。
+
+**関連する既存ファイル・技術スタック:**
+
+- 対象ファイル: `src/pages/about.astro`, `src/components/PVTimeline.tsx`, `src/pages/api/pv/timeline.ts`
+- 技術スタック: React, Highcharts
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] `/about` ページでPVタイムラインのグラフが表示されること
+- [ ] ライト/ダークテーマ切り替え時にグラフのグリッドやテキストの色が連動して変化すること
+
+---
+
+### [タスク名: ブログサムネイルへの四分木（Quadtree）演出導入]
+
+**背景・目的:**
+- ブログ記事にサムネイル画像を登録できるようにし、ページ読み込み時に画像が四分木（Quadtree）アルゴリズムによってデジタル的・モザイク状から滑らかに展開していくビジュアル演出を実装し、サイトの世界観（レトロSF・テクノロジー）を強化する。
+
+**要件・仕様:**
+- [ ] **スキーマの拡張:** `src/content.config.ts` の `posts` コレクションのスキーマに `thumbnail: z.string().optional()`（サムネイル画像パス）を追加する。
+- [ ] **Reactコンポーネント `QuadtreeThumbnail.tsx` の開発:**
+  - `<canvas>` を用いて指定された画像を読み込み、ピクセルデータを解析する。
+  - 画像の色の変化度（コントラストや標準偏差）に基づいて領域を4分割する四分木（Quadtree）の分割計算を実装する。
+  - 描画時に、粗い分割（少数の大きな矩形）から細かい分割（多数の小さな矩形）へと段階的にセルを分割し、平均色で塗りつぶしていくアニメーションを実装する。
+  - アニメーション完了後、滑らかに本物の画像へフェードインさせて表示を切り替える。
+  - SSR（Astro）環境や画像プリロード時の挙動を安定させる。
+- [ ] **ページへの組み込み:** 
+  - トップページの最新記事、ブログ一覧ページ (`src/pages/posts/index.astro`)、および記事詳細ページ (`src/pages/posts/[slug].astro`) のアイキャッチ部分にサムネイル表示枠を設け、このコンポーネントを適用する。
+  - サムネイル用のアセット（適当なデモ画像）を用意して動作確認する。
+
+**関連する既存ファイル・技術スタック:**
+- 対象ファイル: `src/content.config.ts`, `src/pages/posts/index.astro`, `src/pages/posts/[slug].astro`
+- 新規ファイル: `src/components/QuadtreeThumbnail.tsx`
+- 技術スタック: React, HTML5 Canvas, Astro Content Collections
+
+**完了条件 (Acceptance Criteria):**
+- [ ] 記事にサムネイル画像を設定でき、一覧や詳細ページで表示されること。
+- [ ] ページ読み込み時に、画像が四角形のモザイク状から徐々に細分化されて最終的な画像へとクリアに遷移する演出がスムーズ（カクつきがなく60fpsに近い滑らかさ）に動作すること。
+- [ ] ライト/ダークテーマ切り替えやレスポンシブな画像サイズ変更時にもレイアウトが崩れないこと。
+
+---
+
+### [タスク名: JSON Feed (feed.json) の作成とフィード of 整備]
+
+**背景・目的:**
+
+- すでに RSS フィード (`/rss.xml`) は実装されているが、モダンなフィードフォーマットである JSON Feed にも対応し、より広範な購読に対応させる。
+
+**要件・仕様:**
+- [ ] `/feed.json` エンドポイントを `src/pages/feed.json.ts` に作成し、Astro Content Collections の公開済み記事データを JSON Feed 1.1 仕様に則って出力する。
+- [ ] `BaseLayout.astro` の `<head>` に JSON Feed の `<link rel="alternate" type="application/feed+json" ...>` を追加する。
+
+**関連する既存ファイル・技術スタック:**
+- 対象ファイル: `src/layouts/BaseLayout.astro`
+- 新規ファイル: `src/pages/feed.json.ts`
+
+**完了条件 (Acceptance Criteria):**
+- [ ] `/feed.json` にアクセスした際、妥当な形式の JSON Feed データが出力されること
+
+---
+
+## 🐾 保留中のアイデア・メモ
+
+### [保留タスク: quadtree-art の演出導入]
+
+**背景・目的:**
+
+- quadtree-artを使った演出を入れたいが、まだ具体的なイメージが固まっていないため延期。
+
+---
+
+## タスク化する前のアイデア・メモ📝
+
+- 記事を書く
+  - スキルの評価のやつの根拠を追加する。
+  - Token関係の取り組みをやる
+  - Adobeの論文をがっつり読んで記事を書いてみる
+  - 年末recapの続きを書く。
+  - Xのブックマークを整理する
+  - 入社前の内定時にやっていることの調査
+  - 議事録を使ったレビュー観点抽出の話。
+  - 海外の人がやっている開発者の自己表現っぽいやつを書いてみる（私を構成する言葉、みたいなやつをやってみる）[参考](https://gemini.google.com/app/477098d0c68f8eff?hl=ja)
+  - 動く絵文字の話
+  - 独自ドメイン設定の話
+- 「Popular Posts · 30 Days」が月が切り替わるタイミングでリセットされる挙動の確認・修正
 
 ---
 
 ## ✅ 完了タスク (Done)
 
-### [タスク名: talks / slides / talks.json の一本化と公開フラグのフェイルセーフ化]
+### [タスク名: Astro v6 アップグレード後の dev 警告調査]
+
+**完了日時:** 2026-05-31
+**サマリー:**
+Astro v6 / React 19 アップグレード後にブログ記事詳細ページで発生していた `Invalid hook call` 警告を解消しました。
+- 原因: SSRでHTMLを出力しない（常に `null` を返しクライアントでのみ `useEffect` を評価する）`ImageZoom` コンポーネントが `client:load` として読み込まれていたため。
+- 対策: `ImageZoom` を `client:only="react"` に変更してSSRでの評価をスキップするように修正。
+- また、重複モジュール解決の競合を防ぐため、`ImageZoom.tsx` のエクスポート定義を `export default function` のみに統一しました。
+
+### [タスク名: talks / slides / talks.json の一本化と公開フラグ of フェイルセーフ化]
 
 **完了日時:** 2026-05-16
 **サマリー:**
@@ -139,8 +275,6 @@
 - `global.css` にてアニメーションの競合を防ぐためのスタイル調整。
 - 非対応ブラウザ向けのフォールバック処理を実装。
 
-## ✅ 完了タスク (Done)
-
 ### [タスク名: /talks ページへの登壇追加手順のドキュメント化]
 
 **完了日時:** 2026-05-11
@@ -185,194 +319,6 @@
 - 使用書体（Typography）のサンプル、カラーパレットのスウォッチ、技術スタック（Tech Stack）の一覧を整理して表示。
 - CSS Variables と連携し、動的にテーマカラーやフォントを反映する実装としました。
 
-## 🚀 未着手タスク (Backlog)
-
-### ✅ [タスク名: モバイル（375px）ヘッダーナビゲーションの修正] — 完了
-
-**背景・目的:**
-
-- 375px 幅で表示したときに、ロゴ（`RK / PORTFOLIO`）・ナビリンク（Posts / About / Talks）・テーマトグル（LIGHT/DARK）が横一列に並びきらず破綻している。
-- hamburger menu は使わない方針。インライン表示のまま収める。
-
-**要件・仕様:**
-
-- [ ] `375px` 以下のブレークポイントで `.logo` のフォントサイズと `letter-spacing` を縮小する（`font-size: 0.65rem` 程度、`letter-spacing` を詰める）
-- [ ] 同ブレークポイントで `.nav-link` のフォントサイズ・`gap` をさらに縮小する
-- [ ] テーマトグルボタンも必要に応じて縮小する
-- [ ] 全要素が1行に収まり、かつ視認性を損なわないこと
-
-**関連する既存ファイル:**
-
-- `src/styles/global.css`（`.header`, `.logo`, `.nav-links`, `.nav-link`, `.theme-toggle`）
-- `src/layouts/BaseLayout.astro`
-
-**完了条件 (Acceptance Criteria):**
-
-- [ ] 375px 幅のブラウザで全ナビ要素が1行に収まること
-- [ ] hamburger menu を使っていないこと
-
----
-
-### ✅ [タスク名: MDX + Astroコンポーネントベースのスライドシステム構築] — 完了
-
-**背景・目的:**
-
-- Talks ページに掲載するスライドを、Marp HTML の iframe 埋め込みではなく、Astro ネイティブな方法で作成・表示したい。
-- MDX でスライドを記述し、独自の Astro コンポーネントでレンダリングすることで、サイトのデザインシステム（CSS 変数・フォント）と完全に統合されたスライドビューアを実現する。
-- View Transitions API を活用したスライド遷移アニメーションで、技術的な面白さをもたせる。
-
-**要件・仕様:**
-
-- [ ] `src/content/slides/` にコンテンツコレクションを追加（スキーマ: `title`, `date`, `event`, `description`）
-- [ ] スライドコンポーネント群を `src/components/slides/` に作成
-  - `Slide.astro` — 1枚のスライドを囲むコンテナ
-  - `SlideTitle.astro` — タイトルスライド用レイアウト
-  - `TwoColumn.astro` — 2カラムレイアウト
-  - `CodeSlide.astro` — コードブロックを中心に据えたスライド
-- [ ] `src/pages/slides/[slug].astro` にスライドビューアページを作成
-  - Reactアイランド（`client:load`）でスライドインデックス状態を管理
-  - `←` `→` キーボードナビゲーション
-  - `?slide=N` のURLパラメータでディープリンク対応
-  - View Transitions API（`document.startViewTransition`）でスライド切り替えアニメーション
-- [ ] `/talks` ページの Past Talks カードに、スライドが存在する場合は `/slides/[slug]` へのリンクを追加
-- [ ] サンプルスライドデッキを1つ `src/content/slides/` に作成して動作確認
-
-**関連する既存ファイル・技術スタック:**
-
-- `src/pages/talks.astro`、`src/data/talks.json`
-- `src/content/config.ts`（コレクション追加）
-- View Transitions API（既にダークモード切替で使用実績あり）
-- MDX: `@astrojs/mdx` が導入済みか要確認
-
-**完了条件 (Acceptance Criteria):**
-
-- [ ] MDX でスライドを記述し、`/slides/[slug]` でブラウザ表示できること
-- [ ] キーボード（`←` `→`）でスライドを切り替えられること
-- [ ] スライド切り替え時に View Transitions アニメーションが動作すること
-- [ ] `/talks` ページからスライドビューアへ遷移できること
-- [ ] サイトのダーク/ライトテーマが反映されること
-
----
-
-### [タスク名: 気に入った写真の表示ページ /photos の作成]
-
-**背景・目的:**
-
-- お気に入りの写真を展示するギャラリーページを作成したい。
-- 単に画像を並べるだけでなく、Quadtree（四分木）アルゴリズムを用いた画像解析や、技術的な装飾を施したユニークな展示方法を検討する。
-
-**要件・仕様:**
-
-- [ ] `src/pages/photos.astro` を作成
-- [ ] 画像の動的な読み込みと、グリッド/Quadtreeベースのレイアウト実装
-- [ ] 画像ホバー時のメタデータ表示
-
-**完了条件 (Acceptance Criteria):**
-
-- [ ] `/photos` で画像が美しく、かつ技術的な演出を伴って表示されること
-
----
-
-### [保留タスク: quadtree-art の演出導入]
-
-1
-**背景・目的:**
-
-- quadtree-artを使った演出を入れたいが、まだ具体的なイメージが固まっていないため延期。
-
----
-
-### [タスク名: Astro v6 アップグレード後の dev 警告調査]
-
-**背景・目的:**
-
-- 2026-05-17 の Astro 5 → 6 メジャー更新後、`pnpm dev` で `/posts/[slug]` を SSR するときに React の "Invalid hook call" 警告が dev コンソールに出るようになった。
-- 200 レスポンスは返り、本番ビルドも成功、HTML 出力にエラーマーカーも含まれないため、機能影響はなし。dev のノイズ削減と将来の React 19 / @astrojs/react 5 アップデート時のリスク低減のために原因を特定したい。
-
-**要件・仕様:**
-
-- [ ] 警告が `/posts/[slug]` の SSR 経路で発生していることを再現
-- [ ] 5 つの `client:load` コンポーネント (`ImageZoom`, `StickyToc`, `ArticlePerformance`, `ShareButtons`, `RelatedPosts`) を 1 つずつ外して切り分け、原因コンポーネントを特定
-- [ ] React 19 + @astrojs/react v5 で名前付き + デフォルト export を併用している箇所 (`StickyToc.tsx`, `ImageZoom.tsx`) の SSR 挙動を確認
-- [ ] `node_modules/.pnpm` 内に React が二重に入っていないか `pnpm why react` で再確認
-
-**関連する既存ファイル:**
-
-- `src/pages/posts/[slug].astro`
-- `src/components/{ImageZoom,StickyToc,ArticlePerformance,ShareButtons,RelatedPosts}.tsx`
-
-**完了条件 (Acceptance Criteria):**
-
-- [ ] `pnpm dev` で `/posts/[slug]` を表示しても "Invalid hook call" 警告が出ないこと
-- [ ] 既存の挙動 (TOC ハイライト、PV 表示、シェアボタン等) が維持されていること
-
----
-
-### [タスク名: Astro v6 後続タスク — astro:env / astro/zod / Vercel preview 検証]
-
-**背景・目的:**
-
-- 2026-05-17 の v6 メジャー更新時にスコープ外とした残課題をまとめる。いずれも v6 で「将来非推奨／将来不要」になる箇所であり、計画的にクローズしておきたい。
-
-**要件・仕様:**
-
-- [ ] `astro:env` 移行: API ルート (`src/pages/api/pv*.ts`, `src/pages/api/github/*.ts`) で参照している `process.env.GA4_PROPERTY_ID` 等を `astro:env/server` でスキーマ定義して型安全化する。`astro.config.mjs` に `env.schema` を追加。
-- [ ] `import { z } from 'astro:content'` → `import { z } from 'astro/zod'` への置換 (`src/content.config.ts`)。`astro:content` 経由の zod re-export は将来非推奨。
-- [ ] Vercel preview デプロイで本番同等環境を確認 (`@astrojs/vercel` は `pnpm preview` をサポートしないため必須)。`/api/pv*`、`/og/[slug].png`、`/slides/[slug]` の SSR 経路を staging URL で疎通。
-
-**関連する既存ファイル:**
-
-- `astro.config.mjs`
-- `src/content.config.ts`
-- `src/pages/api/pv.ts`, `src/pages/api/pv/{ranking,treemap,timeline,[slug]}.ts`, `src/pages/api/github/contributions.ts`
-
-**完了条件 (Acceptance Criteria):**
-
-- [ ] `process.env.GA4_PROPERTY_ID` 等の直接参照が無くなり、`astro:env` 経由になっていること
-- [ ] `astro:content` から `z` を import する箇所が無いこと
-- [ ] Vercel preview URL で API/SSR ルートが 200 を返すこと
-
-## タスクにしたいこと（メモ）
-
-### 改善系タスク
-
-- 各ポストの目次の近くに、記事間リンクグラフ（Obsidian 的な参照関係の可視化）を追加する。
-
-### 新規要素の追加タスク
-
-- 気に入った写真の表示ページ`/photos`を追加する。Quadtree等で画像処理する機能を付ける
-- おすすめのものを追加していく`/favo`ページを追加する。
-- RSS / JSON Feed の整備
-
-## タスク化する前のメモ📝
-
-- 記事を書く
-  - スキルの評価のやつの根拠を追加する。
-  - Token関係の取り組みをやる
-  - Adobeの論文をがっつり読んで記事を書いてみる
-  - 年末recapの続きを書く。
-  - Xのブックマークを整理する
-  - 入社前の内定時にやっていることの調査
-  - 議事録を使ったレビュー観点抽出の話。
-  - 海外の人がやっている開発者の自己表現っぽいやつを書いてみる（私を構成する言葉、みたいなやつをやってみる）[参考](https://gemini.google.com/app/477098d0c68f8eff?hl=ja)
-  - 動く絵文字の話
-  - 独自ドメイン設定の話
-- marpで出力したスライドを配置するページを作成する。
-- 自分が気に入った写真を表示するページを作成する。
-- 「Popular Posts · 30 Days」が月が切り替わるタイミングで、リセットされるようになっているので、直近1ヶ月のを集計するようにする。
-- 「PV Timeline」のグラフが表示されないようになっているので直す。
-- 過去に作ったスライド(marp製)の出力結果であるhtmlをスライドを配置するページに表示する。
-
----
-
----
-
-## 🚧 進行中タスク (In Progress)
-
----
-
-## ✅ 完了タスク (Done)
-
 ### [Phase 3: Content Experience — ブログ・記事体験の強化]
 
 **完了日時:** 2026-05-11
@@ -406,8 +352,6 @@
 - `Article Map — Word Count`の面積が文字数を表していることを明示する。 (凡例とTooltipに追加)
 - `Popular Posts · 30 Days` を直近30日の集計に変更する。 (GA4のAPIが既に `30daysAgo` を使用したローリング集計であることを確認)
 
-## ✅ 完了タスク (Done)
-
 ### [タスク名: aboutとdashboardページの合成]
 
 **完了日時:** 2026-05-10
@@ -418,7 +362,7 @@
 - トップページ (`index.astro`) にあった `/me` へのリンクを `/about` へ変更しました。
 - 統合後の表示順は、Hero情報、Time Remaining、Post Count、GitHub Activity、Links としました。
 
-### [タスク名: ダッシュボード全体像を示すTreemapの改善]
+### [タスク名: ダッシュボード全体像を示すTreemap of 改善]
 
 **完了日時:** 2026-05-03
 **サマリー:**
