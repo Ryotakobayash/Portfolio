@@ -236,7 +236,7 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                                 <QuadtreeThumbnail
                                     src={post.thumbnail}
                                     alt={post.title}
-                                    animateOnLoad={false}
+                                    animateOnLoad={true}
                                 />
                             </div>
                         )}

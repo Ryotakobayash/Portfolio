@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { getPublishedPosts } from '../../utils/posts';
 import PostSearch from '../../components/PostSearch';
+import ArticleNetworkGraph from '../../components/ArticleNetworkGraph';
 
 const posts = await getPublishedPosts();
 const sortedPosts = posts
@@ -41,6 +42,16 @@ const allTags = Array.from(tagCount.entries())
     </div>
   </div>
 
+  <details class="graph-details">
+    <summary class="graph-summary">
+      <span class="summary-icon">◈</span>
+      <span class="summary-text">Explore Article Network Graph</span>
+    </summary>
+    <div class="graph-wrapper">
+      <ArticleNetworkGraph client:only="react" posts={sortedPosts} />
+    </div>
+  </details>
+
   <PostSearch client:load posts={sortedPosts} allTags={allTags} />
 </BaseLayout>
 
@@ -74,5 +85,54 @@ const allTags = Array.from(tagCount.entries())
 
   .stat-separator {
     color: var(--color-border);
+  }
+
+  /* Accordion for Network Graph */
+  .graph-details {
+    margin-bottom: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-card);
+  }
+
+  .graph-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    color: var(--color-text-secondary);
+    user-select: none;
+    list-style: none; /* デフォルトの矢印を非表示 */
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .graph-summary::-webkit-details-marker {
+    display: none; /* Safari向け矢印非表示 */
+  }
+
+  .graph-summary:hover {
+    color: var(--color-primary);
+    background-color: var(--color-bg-secondary);
+  }
+
+  .summary-icon {
+    font-size: 0.85rem;
+    color: var(--color-primary);
+    transition: transform var(--transition-fast);
+  }
+
+  .graph-details[open] .summary-icon {
+    transform: rotate(45deg);
+  }
+
+  .graph-wrapper {
+    border-top: 1px solid var(--color-border);
+    padding: var(--spacing-sm);
+    background-color: var(--color-bg-card);
   }
 </style>
