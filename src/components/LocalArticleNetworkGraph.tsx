@@ -1,14 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import networkgraph from 'highcharts/modules/networkgraph';
-
-// クライアントサイドでのみ Highcharts の networkgraph モジュールを初期化する
-if (typeof window !== 'undefined' && typeof Highcharts === 'object') {
-    if (!Highcharts.Series.types.networkgraph) {
-        networkgraph(Highcharts);
-    }
-}
 
 interface PostMeta {
     slug: string;
@@ -37,6 +29,22 @@ export default function LocalArticleNetworkGraph({
 }: LocalArticleNetworkGraphProps) {
     const chartRef = useRef<HighchartsReact.RefObject>(null);
     const [isDark, setIsDark] = useState(false);
+    const [graphReady, setGraphReady] = useState(false);
+
+    // Highcharts networkgraph モジュールをクライアント側で動的にロード
+    useEffect(() => {
+        import('highcharts/modules/networkgraph')
+            .then((networkMod) => {
+                const initNetwork = (networkMod as any).default || networkMod;
+                if (typeof initNetwork === 'function') {
+                    initNetwork(Highcharts);
+                }
+                setGraphReady(true);
+            })
+            .catch(() => {
+                setGraphReady(true);
+            });
+    }, []);
 
     // ダークモードの検知と監視
     useEffect(() => {
@@ -232,12 +240,34 @@ export default function LocalArticleNetworkGraph({
         },
     };
 
-    // テーマ切り替え時の更新
-    useEffect(() => {
-        if (chartRef.current?.chart) {
-            chartRef.current.chart.update(options, true, true);
-        }
-    }, [isDark]);
+    if (!graphReady) {
+        return (
+            <div
+                className="local-article-graph"
+                style={{
+                    border: '1px solid var(--color-border)',
+                    backgroundColor: 'var(--color-bg-card)',
+                    padding: 'var(--spacing-md)',
+                    height: '300px',
+                    boxSizing: 'border-box',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <div
+                    style={{
+                        color: 'var(--color-text-muted)',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '0.55rem',
+                        letterSpacing: '0.12em',
+                    }}
+                >
+                    LOADING GRAPH MODULE...
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div

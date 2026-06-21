@@ -71,7 +71,16 @@ export default defineConfig({
     // across chunks. Without this, AsciiRenderer (drei) can't see the Canvas
     // context from fiber and throws "R3F: Hooks can only be used within Canvas".
     optimizeDeps: {
-      include: ['@react-three/fiber', '@react-three/drei', 'three'],
+      include: [
+        '@react-three/fiber',
+        '@react-three/drei',
+        'three',
+        'highcharts',
+        'highcharts-react-official',
+        'highcharts/modules/networkgraph',
+        'highcharts/modules/heatmap',
+        'highcharts/modules/treemap'
+      ],
     },
   },
 });
