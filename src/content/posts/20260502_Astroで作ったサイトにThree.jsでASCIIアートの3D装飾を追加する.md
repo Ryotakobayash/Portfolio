@@ -1,7 +1,7 @@
 ---
 title: Astroで作ったサイトにThree.jsでASCIIアートの3D装飾を追加する
 date: '2026-05-02'
-excerpt: >-
+excerpt:
   Astroベースのポートフォリオサイトに、Three.jsを使ったASCIIアートの3D装飾を導入しました。はじめに結論となる実装手順、後半で技術選定の理由やその他の選択肢についてまとめます。
 tags:
   - Astro
