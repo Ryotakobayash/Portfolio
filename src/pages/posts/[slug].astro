@@ -9,6 +9,7 @@ import ShareButtons from '../../components/ShareButtons';
 import RelatedPosts from '../../components/RelatedPosts';
 import CustomImage from '../../components/CustomImage.astro';
 import QuadtreeThumbnail from '../../components/QuadtreeThumbnail';
+import LocalArticleNetworkGraph from '../../components/LocalArticleNetworkGraph';
 
 export const prerender = true;
 
@@ -117,6 +118,17 @@ const allPostsMeta = allPosts.map((p) => ({
           title={post.data.title}
           url={`https://dashboard-portfolio.vercel.app/posts/${slug}`}
         />
+        <!-- モバイル用インタラクティブグラフ -->
+        <div class="mobile-graph-container">
+          <h2 class="mobile-section-title">インタラクティブグラフ</h2>
+          <LocalArticleNetworkGraph
+            client:only="react"
+            currentSlug={slug}
+            currentTitle={post.data.title}
+            currentTags={post.data.tags || []}
+            allPosts={allPostsMeta}
+          />
+        </div>
         <RelatedPosts
           client:load
           currentSlug={slug}
@@ -129,12 +141,25 @@ const allPostsMeta = allPosts.map((p) => ({
       <ImageZoom client:only="react" />
     </article>
 
-    <!-- サイドバーTOC（デスクトップ） -->
-    {toc.length > 0 && (
-      <aside class="sidebar">
-        <StickyToc client:load toc={toc} />
-      </aside>
-    )}
+    <!-- サイドバー（デスクトップ） -->
+    <aside class="sidebar">
+      <div class="sidebar-graph-wrapper">
+        <h2 class="sidebar-section-title">インタラクティブグラフ</h2>
+        <LocalArticleNetworkGraph
+          client:only="react"
+          currentSlug={slug}
+          currentTitle={post.data.title}
+          currentTags={post.data.tags || []}
+          allPosts={allPostsMeta}
+        />
+      </div>
+      {toc.length > 0 && (
+        <div class="sidebar-toc-wrapper">
+          <h2 class="sidebar-section-title">このページの内容</h2>
+          <StickyToc client:load toc={toc} />
+        </div>
+      )}
+    </aside>
   </div>
 </BaseLayout>
 
@@ -282,6 +307,46 @@ const allPostsMeta = allPosts.map((p) => ({
   @media (min-width: 1024px) {
     .sidebar {
       display: block;
+    }
+  }
+
+  /* サイドバーのセクションタイトル */
+  .sidebar-section-title {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-xs);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .sidebar-graph-wrapper {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  /* モバイル・レスポンシブグラフ制御 */
+  .mobile-graph-container {
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    display: block;
+  }
+
+  .mobile-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-graph-container {
+      display: none; /* デスクトップ表示時はフッター内のグラフを隠す */
     }
   }
 
