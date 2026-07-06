@@ -3,7 +3,14 @@
     "allow": [
       "Bash(pnpm -v)",
       "Bash(pnpm exec *)",
-      "Bash(grep -v \"\\\\.md$\")"
+      "Bash(grep -v \"\\\\.md$\")",
+      "Bash(npx fontpie *)",
+      "Bash(pnpm dlx *)",
+      "Bash(pnpm build *)",
+      "Bash(git commit -m ' *)",
+      "Bash(curl -s http://localhost:4321/)",
+      "Bash(node measure.mjs)",
+      "Bash(pnpm add *)"
     ]
   }
 }
