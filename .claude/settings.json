@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm -v)"
+      "Bash(pnpm -v)",
+      "Bash(pnpm exec *)",
+      "Bash(grep -v \"\\\\.md$\")"
     ]
   }
 }
