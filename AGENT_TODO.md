@@ -47,6 +47,66 @@
 
 ## 🚧 進行中タスク (In Progress)
 
+### [タスク名: フォント刷新 — Noto Sans JP 廃止・Outfit セルフホスト・和欧混植調整]
+
+**背景・目的:**
+
+- Vercel Speed Insights の RES が 88(CLS 0.23 / LCP 2.08s)。フォント由来の CLS(swap リフロー)と render-blocking な Google Fonts CSS が一因。
+- Webフォント勉強会の知見に基づき、和文はシステムフォント化(Noto Sans JP は Windows 10/11 に 2025-04 から標準搭載)、欧文のみ軽量にセルフホストする方針。
+- 決定済み事項(ユーザー確認済み): 和文は Noto 優先スタック / 本文ウェイトは 300 → 400 に変更。
+
+**要件・仕様:**
+
+- [x] A-1. `src/layouts/BaseLayout.astro` から Google Fonts 関連 3 行(preconnect ×2 + stylesheet link)を削除
+- [x] A-1. `src/styles/global.css` の `--font-sans` を以下に変更:
+      `"Outfit", "Outfit Fallback", "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "Yu Gothic", sans-serif`
+- [x] A-1. body の `font-weight: 300` を `400` に変更(global.css 内の他の 300 指定も確認し、本文系は 400 に揃える)
+- [x] A-2. Outfit variable font(wght 軸、latin サブセット)の woff2 を `public/fonts/outfit-latin-variable.woff2` として配置(`@fontsource-variable/outfit` を devDependency として入れて node_modules からコピーするのが確実)
+- [x] A-2. global.css に `@font-face`(`font-family: "Outfit"; font-weight: 100 900; font-display: swap; src: url(...) format("woff2-variations")`)を定義
+- [x] A-2. BaseLayout の `<head>` に `<link rel="preload" as="font" type="font/woff2" crossorigin>` を追加
+- [x] A-3. `npx fontpie` 等で Outfit のフォールバックメトリクスを算出し、`@font-face { font-family: "Outfit Fallback"; src: local("Arial"); }` に `size-adjust` / `ascent-override` / `descent-override` / `line-gap-override` を設定
+- [x] A-4. 見出し(h1〜h3 相当、`.article-title`、KPI 値、セクションラベル類)に `font-feature-settings: "palt"` を追加。本文(`.prose` の段落)には掛けない
+- [x] 検証: `pnpm build` が通ること。dev サーバーで見出し・本文・混植箇所(和文中の英数字)の見た目を確認
+
+**関連する既存ファイル・技術スタック:**
+
+- `src/layouts/BaseLayout.astro`(35-37 行目が Google Fonts)
+- `src/styles/global.css`(92 行目 `--font-sans`、133-134 行目 body)
+- 実使用ウェイト集計: 400 / 500 / 600 / 700 / 900(100 は未使用、300 は body のみ)。variable font 化で全カバー
+
+**完了条件 (Acceptance Criteria):**
+
+- [x] 外部オリジン(fonts.googleapis.com / fonts.gstatic.com)へのリクエストが 0 になること
+- [x] フォントロード前後でレイアウトシフトが目視でほぼ発生しないこと
+- [x] 和文がヒラギノ(macOS)で表示され、欧文が Outfit のままであること
+
+### [タスク名: CLS 改善 — client:only 要素の高さ予約とサムネイル SSR 化]
+
+**背景・目的:**
+
+- CLS 0.23 の主因は、`client:only="react"` 要素が SSR 時に何も出力せず、ハイドレーション後に挿入されてコンテンツを押し下げること。特に記事ページ先頭のサムネイルとトップページの Treemap。
+
+**要件・仕様:**
+
+- [ ] B-1. `src/pages/posts/[slug].astro`: サムネイルを SSR で `<img>`(`fetchpriority="high"`, `decoding="async"`)として静的出力し、`QuadtreeThumbnail`(client:only)はその上に absolute 重ねの演出に変更。`.article-thumbnail-wrapper` に `aspect-ratio` を予約(QuadtreeThumbnail 現行のキャンバスサイズ決定ロジックを調査し、現在の表示サイズと同じ箱を予約すること。既存記事のサムネイル画像の実寸を確認して決める)
+- [ ] B-2. トップページ(`src/pages/index.astro`)の Treemap カードに、チャート 380px + 凡例・注記分を含めた `min-height` を CSS で予約
+- [ ] B-2. 記事ページのサイドバー `.sidebar-graph-wrapper`(LocalArticleNetworkGraph, client:only)にも同様に高さ予約
+- [ ] B-3. `src/components/PopularPosts.tsx` のスケルトンを実リスト高に合わせる(実測: 1 行 約55px × 5 + Source 行。スケルトン行の height とギャップを実物と一致させる)
+- [ ] 検証: `pnpm build` → `pnpm preview` で Lighthouse を実行し、トップページと記事ページの CLS が改善していることを確認
+
+**関連する既存ファイル・技術スタック:**
+
+- `src/pages/posts/[slug].astro`(66-75 行目サムネイル、364-368 行目 wrapper CSS)
+- `src/components/QuadtreeThumbnail.tsx`(アニメ完了後に実画像を表示する `showRealImage` state が既にある — SSR img との統合に利用できる)
+- `src/pages/index.astro`(109-112 行目 Treemap カード)、`src/components/ArticleTreemap.tsx`(chart height 380px + 凡例)
+- `src/components/PopularPosts.tsx`(21-29 行目スケルトン)
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] 記事ページ初回ロードでサムネイル出現による本文の押し下げが発生しないこと
+- [ ] トップページで Treemap ロード前後にセクションが動かないこと
+- [ ] Lighthouse(デスクトップ)で CLS < 0.1 になること
+
 ---
 
 ## 🚀 未着手タスク (Backlog)

@@ -3,8 +3,27 @@
    Inspired by 1960s Space Race × Swiss Typography
    =================================================== */
 
-/* Google Fonts */
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100;300;400;600;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap");
+/* Outfit (欧文) — セルフホスト variable font。和文は Noto Sans JP 等のシステムフォントに委譲する */
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/outfit-latin-variable.woff2") format("woff2-variations");
+}
+
+/* フォントロード完了までのレイアウトシフトを抑えるためのメトリクス調整フォールバック
+   (算出: `pnpm dlx fontpie public/fonts/outfit-latin-variable.woff2 --name "Outfit Fallback"`) */
+@font-face {
+  font-family: "Outfit Fallback";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Arial");
+  ascent-override: 100.84%;
+  descent-override: 26.22%;
+  line-gap-override: 0%;
+  size-adjust: 99.17%;
+}
 
 /* ===== CSS Variables (Dark — default) ===== */
 :root,
@@ -89,7 +108,7 @@
   --transition-normal: 220ms ease;
 
   /* Typography */
-  --font-sans: "Outfit", "Noto Sans JP", -apple-system, sans-serif;
+  --font-sans: "Outfit", "Outfit Fallback", "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "Yu Gothic", sans-serif;
   --font-mono: "Courier New", Courier, monospace;
 
   /* Typography Scale */
@@ -131,7 +150,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  font-weight: 300;
+  font-weight: 400;
   background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.7;
@@ -162,6 +181,7 @@ body {
 
 :where(h1, h2, h3, h4, h5, h6) {
   text-wrap: pretty;
+  font-feature-settings: "palt";
 }
 
 a {
@@ -376,6 +396,7 @@ a:hover {
   text-transform: uppercase;
   color: var(--color-text-muted);
   margin-bottom: var(--spacing-md);
+  font-feature-settings: "palt";
 }
 
 /* ===== KPI Card ===== */
@@ -438,6 +459,7 @@ a:hover {
   letter-spacing: -0.02em;
   color: var(--color-text);
   line-height: 1.2;
+  font-feature-settings: "palt";
 }
 
 .kpi-card__suffix {
@@ -457,6 +479,7 @@ a:hover {
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+  font-feature-settings: "palt";
 }
 
 .layer-divider::after {

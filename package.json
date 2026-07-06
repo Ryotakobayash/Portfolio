@@ -52,14 +52,26 @@
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
+    "@fontsource-variable/outfit": "^5.2.8",
     "@types/three": "^0.184.0",
     "remark-breaks": "^4.0.0"
   },
   "pnpm": {
     "supportedArchitectures": {
-      "os": ["current", "linux"],
-      "cpu": ["current", "x64", "arm64"],
-      "libc": ["current", "glibc", "musl"]
+      "os": [
+        "current",
+        "linux"
+      ],
+      "cpu": [
+        "current",
+        "x64",
+        "arm64"
+      ],
+      "libc": [
+        "current",
+        "glibc",
+        "musl"
+      ]
     }
   }
 }

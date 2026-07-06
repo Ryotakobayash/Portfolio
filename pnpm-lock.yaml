@@ -126,6 +126,9 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
     devDependencies:
+      '@fontsource-variable/outfit':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@types/three':
         specifier: ^0.184.0
         version: 0.184.0
@@ -531,6 +534,9 @@ packages:
 
   '@expressive-code/plugin-text-markers@0.42.0':
     resolution: {integrity: sha512-l59lUx8fq1v5g6SpmbDjiU0+7IdfbiWnAyRmtTVSpfhyq+nZMN4UcmYyu2b9Mynhzt7Gr+O+cXyEPDNb2AVWVQ==, tarball: https://registry.npmjs.org/@expressive-code/plugin-text-markers/-/plugin-text-markers-0.42.0.tgz}
+
+  '@fontsource-variable/outfit@5.2.8':
+    resolution: {integrity: sha512-4oUDCZx/Tcz6HZP423w/niqEH31Gks5IsqHV2ZZz1qKHaVIZdj2f0/S1IK2n8jl6Xo0o3N+3RjNHlV9R73ozQA==}
 
   '@google-analytics/data@5.2.1':
     resolution: {integrity: sha512-JZdRY4OGPx0RnAdsFu0k/mD5x7mVXATKccSi5bB5ncbgaBbfLOz2cCjNna6dHxwDchYYZv1Zm/sISZHKtCclgw==}
@@ -3701,6 +3707,8 @@ snapshots:
   '@expressive-code/plugin-text-markers@0.42.0':
     dependencies:
       '@expressive-code/core': 0.42.0
+
+  '@fontsource-variable/outfit@5.2.8': {}
 
   '@google-analytics/data@5.2.1':
     dependencies:
