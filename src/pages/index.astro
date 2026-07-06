@@ -108,7 +108,9 @@ const treemapPosts = await Promise.all(
 
     <div class="bento-card bento-card--wide treemap-card">
         <div class="bento-card__title">Article Map — Word Count</div>
-        <ArticleTreemap client:only="react" posts={treemapPosts} />
+        <div class="treemap-chart-wrapper">
+            <ArticleTreemap client:only="react" posts={treemapPosts} />
+        </div>
     </div>
 
     <!-- ===== Proof ===== -->
@@ -308,6 +310,12 @@ const treemapPosts = await Promise.all(
     /* Treemap card */
     .treemap-card {
         width: 100%;
+    }
+
+    /* client:only な ArticleTreemap がハイドレーションされるまでの間、
+       チャート(380px) + 凡例 + Source 行の高さをあらかじめ確保して CLS を防ぐ */
+    .treemap-chart-wrapper {
+        min-height: 468px;
     }
 
     /* Card footer */

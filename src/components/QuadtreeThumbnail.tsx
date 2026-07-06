@@ -5,6 +5,13 @@ interface QuadtreeThumbnailProps {
     alt?: string;
     viewTransitionName?: string;
     animateOnLoad?: boolean;
+    /**
+     * true の場合、この要素はサムネイル本体ではなく SSR 済み <img> の上に被せる
+     * 演出専用のオーバーレイとして振る舞う。
+     * - 自前の実画像 <img> とローディングプレースホルダーを描画しない（SSR img と二重表示になるため）
+     * - ルート要素は絶対配置で親（SSR img と同じ箱）いっぱいに広がる
+     */
+    ssrImageOverlay?: boolean;
 }
 
 interface QuadNode {
@@ -23,6 +30,7 @@ export default function QuadtreeThumbnail({
     alt = '',
     viewTransitionName,
     animateOnLoad = true,
+    ssrImageOverlay = false,
 }: QuadtreeThumbnailProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -220,18 +228,30 @@ export default function QuadtreeThumbnail({
     return (
         <div
             ref={containerRef}
-            style={{
-                position: 'relative',
-                width: '100%',
-                aspectRatio: '16 / 9',
-                backgroundColor: 'var(--color-bg-secondary)',
-                border: 'none',
-                overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                viewTransitionName: viewTransitionName,
-            } as React.CSSProperties}
+            style={
+                ssrImageOverlay
+                    ? {
+                        position: 'absolute',
+                        inset: 0,
+                        width: '100%',
+                        height: '100%',
+                        overflow: 'hidden',
+                        pointerEvents: 'none',
+                        viewTransitionName: viewTransitionName,
+                    } as React.CSSProperties
+                    : {
+                        position: 'relative',
+                        width: '100%',
+                        aspectRatio: '16 / 9',
+                        backgroundColor: 'var(--color-bg-secondary)',
+                        border: 'none',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        viewTransitionName: viewTransitionName,
+                    } as React.CSSProperties
+            }
         >
             {/* 四分木アニメーション用の Canvas */}
             {animateOnLoad && !showRealImage && (
@@ -251,8 +271,9 @@ export default function QuadtreeThumbnail({
                 />
             )}
 
-            {/* 実画像 (ロード完了後 & アニメーション完了後にフェードイン) */}
-            {src && (
+            {/* 実画像 (ロード完了後 & アニメーション完了後にフェードイン)
+                ssrImageOverlay 時は SSR 済み <img> が既に下に表示されているため描画しない */}
+            {!ssrImageOverlay && src && (
                 <img
                     src={src}
                     alt={alt}
@@ -271,8 +292,8 @@ export default function QuadtreeThumbnail({
                 />
             )}
 
-            {/* プレースホルダー（画像ロード前） */}
-            {!imageLoaded && (
+            {/* プレースホルダー（画像ロード前）— ssrImageOverlay 時は SSR img が既に見えているため不要 */}
+            {!ssrImageOverlay && !imageLoaded && (
                 <div
                     style={{
                         color: 'var(--color-text-muted)',

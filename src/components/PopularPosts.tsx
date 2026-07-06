@@ -19,11 +19,24 @@ export function PopularPosts() {
     }, []);
 
     if (isLoading) {
+        // 実リスト（1行 padding 10px×2 + 内容行で約55px × 5行 + margin-top 12px の Source 行）と
+        // 高さを一致させ、ロード完了時のレイアウトシフトを防ぐ
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="skeleton" style={{ height: '36px' }} />
+                    <div
+                        key={i}
+                        className="skeleton"
+                        style={{
+                            height: '55px',
+                            borderBottom: i < 5 ? '1px solid var(--color-border)' : 'none',
+                        }}
+                    />
                 ))}
+                <div
+                    className="skeleton"
+                    style={{ height: '10px', width: '140px', marginTop: '12px', marginLeft: 'auto' }}
+                />
             </div>
         );
     }

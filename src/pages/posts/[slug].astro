@@ -65,11 +65,19 @@ const allPostsMeta = allPosts.map((p) => ({
         <a href="/posts" class="back-link">← Posts</a>
         {post.data.thumbnail && (
           <div class="article-thumbnail-wrapper">
+            <img
+              src={post.data.thumbnail}
+              alt={post.data.title}
+              class="article-thumbnail-img"
+              fetchpriority="high"
+              decoding="async"
+            />
             <QuadtreeThumbnail
               client:only="react"
               src={post.data.thumbnail}
               alt={post.data.title}
               animateOnLoad={true}
+              ssrImageOverlay={true}
             />
           </div>
         )}
@@ -326,6 +334,9 @@ const allPostsMeta = allPosts.map((p) => ({
 
   .sidebar-graph-wrapper {
     margin-bottom: var(--spacing-xl);
+    /* client:only な LocalArticleNetworkGraph がハイドレーションされるまでの間、
+       タイトル + グラフ本体の高さをあらかじめ確保して CLS を防ぐ */
+    min-height: 348px;
   }
 
   /* モバイル・レスポンシブグラフ制御 */
@@ -333,6 +344,8 @@ const allPostsMeta = allPosts.map((p) => ({
     margin-top: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
     display: block;
+    /* デスクトップ同様、client:only なグラフのハイドレーション待ちによる CLS を防ぐ */
+    min-height: 348px;
   }
 
   .mobile-section-title {
@@ -364,9 +377,22 @@ const allPostsMeta = allPosts.map((p) => ({
   }
 
   .article-thumbnail-wrapper {
+    position: relative;
     margin-bottom: var(--spacing-lg);
     max-width: 100%;
     width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: var(--color-bg-secondary);
+  }
+
+  .article-thumbnail-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   .article-performance-wrapper {
