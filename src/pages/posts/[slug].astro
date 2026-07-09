@@ -124,7 +124,7 @@ const allPostsMeta = allPosts.map((p) => ({
         <ShareButtons
           client:load
           title={post.data.title}
-          url={`https://dashboard-portfolio.vercel.app/posts/${slug}`}
+          url={new URL(`/posts/${slug}`, Astro.site).href}
         />
         <!-- モバイル用インタラクティブグラフ -->
         <div class="mobile-graph-container">
