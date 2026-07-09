@@ -1,0 +1,77 @@
+---
+/**
+ * OrbitalBackground
+ * Abstract concentric orbit rings inspired by 1960s space illustration.
+ * Rendered as a fixed SVG layer behind all content.
+ */
+---
+
+<svg
+    aria-hidden="true"
+    class="orbital-bg"
+    viewBox="0 0 800 800"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Planet body (static) -->
+    <circle cx="400" cy="400" r="80" stroke="currentColor" stroke-width="1.5"></circle>
+
+    <!-- Saturn-like ring (ellipse, tilted, static) -->
+    <ellipse cx="400" cy="400" rx="160" ry="40" stroke="currentColor" stroke-width="1" stroke-dasharray="4 6"></ellipse>
+
+    <!-- Group 1: Inner orbits (rotates clockwise) -->
+    <g class="orbital-bg__inner">
+        <circle cx="400" cy="400" r="160" stroke="currentColor" stroke-width="0.75"></circle>
+        <circle cx="560" cy="400" r="6" fill="currentColor"></circle>
+
+        <circle cx="400" cy="400" r="240" stroke="currentColor" stroke-width="0.5"></circle>
+        <circle cx="400" cy="160" r="4" fill="currentColor"></circle>
+    </g>
+
+    <!-- Group 2: Outer orbits (rotates counter-clockwise) -->
+    <g class="orbital-bg__outer">
+        <circle cx="400" cy="400" r="320" stroke="currentColor" stroke-width="0.5" stroke-dasharray="3 8"></circle>
+        <circle cx="80" cy="400" r="3" fill="currentColor" opacity="0.6"></circle>
+
+        <circle cx="400" cy="400" r="380" stroke="currentColor" stroke-width="0.35"></circle>
+    </g>
+
+    <!-- Crosshair tick marks (compass-rose style, static) -->
+    <line x1="400" y1="16" x2="400" y2="36" stroke="currentColor" stroke-width="1"></line>
+    <line x1="400" y1="764" x2="400" y2="784" stroke="currentColor" stroke-width="1"></line>
+    <line x1="16" y1="400" x2="36" y2="400" stroke="currentColor" stroke-width="1"></line>
+    <line x1="764" y1="400" x2="784" y2="400" stroke="currentColor" stroke-width="1"></line>
+</svg>
+
+<style>
+    .orbital-bg {
+        position: fixed;
+        top: 50%;
+        right: -10vw;
+        transform: translateY(-50%);
+        width: 70vw;
+        max-width: 800px;
+        height: auto;
+        pointer-events: none;
+        z-index: -1;
+        animation: pulse-slow 16s ease-in-out infinite;
+    }
+
+    .orbital-bg__inner {
+        transform-origin: 400px 400px;
+        animation: spin-slow 120s linear infinite;
+    }
+
+    .orbital-bg__outer {
+        transform-origin: 400px 400px;
+        animation: spin-slow-reverse 180s linear infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .orbital-bg,
+        .orbital-bg__inner,
+        .orbital-bg__outer {
+            animation: none;
+        }
+    }
+</style>

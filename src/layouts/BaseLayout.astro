@@ -1,8 +1,8 @@
 ---
 import { ClientRouter, fade } from 'astro:transitions';
 import '../styles/global.css';
-import CRTOverlay from '../components/CRTOverlay';
-import AmbientGlow from '../components/AmbientGlow';
+import CRTOverlay from '../components/CRTOverlay.astro';
+import AmbientGlow from '../components/AmbientGlow.astro';
 
 interface Props {
   title?: string;
@@ -76,11 +76,11 @@ const isActive = (path: string) => {
   <body>
     <!-- Deep background glow -->
     <div transition:persist="ambient-glow">
-      <AmbientGlow client:only="react" />
+      <AmbientGlow />
     </div>
 
     <div transition:persist="crt-overlay">
-      <CRTOverlay client:only="react" />
+      <CRTOverlay />
     </div>
 
 

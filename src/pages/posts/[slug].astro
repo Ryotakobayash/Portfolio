@@ -6,7 +6,7 @@ import StickyToc from '../../components/StickyToc';
 import ImageZoom from '../../components/ImageZoom';
 import ArticlePerformance from '../../components/ArticlePerformance';
 import ShareButtons from '../../components/ShareButtons';
-import RelatedPosts from '../../components/RelatedPosts';
+import RelatedPosts from '../../components/RelatedPosts.astro';
 import CustomImage from '../../components/CustomImage.astro';
 import QuadtreeThumbnail from '../../components/QuadtreeThumbnail';
 import LocalArticleNetworkGraph from '../../components/LocalArticleNetworkGraph';
@@ -138,7 +138,6 @@ const allPostsMeta = allPosts.map((p) => ({
           />
         </div>
         <RelatedPosts
-          client:load
           currentSlug={slug}
           currentTags={post.data.tags || []}
           allPosts={allPostsMeta}

@@ -1,0 +1,60 @@
+---
+/**
+ * AmbientGlow
+ * Adds large color orbs to the deep background
+ * to create a rich, warm "ambient glow" effect behind all content.
+ * 巨大 blur() はコンポジット費用が高いため、事前計算相当の radial-gradient で描く。
+ */
+---
+
+<div aria-hidden="true" class="ambient-glow">
+    <div class="ambient-glow__orb ambient-glow__orb--primary"></div>
+    <div class="ambient-glow__orb ambient-glow__orb--accent"></div>
+</div>
+
+<style>
+    .ambient-glow {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: -1; /* Deepest background layer */
+    }
+
+    .ambient-glow__orb {
+        position: absolute;
+        border-radius: 50%;
+    }
+
+    /* Primary color glow (Top Left) */
+    .ambient-glow__orb--primary {
+        top: -15%;
+        left: -10%;
+        width: 60vw;
+        height: 60vw;
+        min-width: 500px;
+        min-height: 500px;
+        background: radial-gradient(circle, var(--color-primary) 0%, transparent 65%);
+        opacity: 0.12;
+        animation: drift 20s ease-in-out infinite alternate;
+    }
+
+    /* Accent color glow (Bottom Right) */
+    .ambient-glow__orb--accent {
+        bottom: -20%;
+        right: -10%;
+        width: 70vw;
+        height: 70vw;
+        min-width: 600px;
+        min-height: 600px;
+        background: radial-gradient(circle, var(--color-accent-3) 0%, transparent 65%);
+        opacity: 0.08;
+        animation: drift-reverse 25s ease-in-out infinite alternate;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ambient-glow__orb {
+            animation: none;
+        }
+    }
+</style>

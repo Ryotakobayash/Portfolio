@@ -1,0 +1,62 @@
+---
+/**
+ * CRTOverlay — retro CRT scanline effect
+ *
+ * A fixed full-screen overlay that adds:
+ * 1. Subtle horizontal scanlines (repeating linear-gradient)
+ * 2. Vignette darkening at edges
+ * 3. A very faint noise texture via SVG filter
+ *
+ * pointer-events: none means it never blocks interaction.
+ */
+---
+
+<div aria-hidden="true" class="crt-scanlines"></div>
+<div aria-hidden="true" class="crt-vignette"></div>
+<div aria-hidden="true" class="crt-grain"></div>
+
+<style>
+    .crt-scanlines,
+    .crt-vignette,
+    .crt-grain {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .crt-scanlines {
+        z-index: 9000;
+        background: repeating-linear-gradient(
+            to bottom,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.04) 2px,
+            rgba(0, 0, 0, 0.04) 3px
+        );
+        mix-blend-mode: multiply;
+    }
+
+    .crt-vignette {
+        z-index: 9001;
+        animation: crt-pulse 8s ease-in-out infinite;
+        background: radial-gradient(
+            ellipse at center,
+            transparent 60%,
+            rgba(0, 0, 0, 0.18) 100%
+        );
+    }
+
+    /* Film Grain (Noise) */
+    .crt-grain {
+        z-index: 9002; /* Top-most visual layer */
+        opacity: 0.15;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .crt-vignette {
+            animation: none;
+        }
+    }
+</style>

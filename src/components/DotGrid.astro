@@ -1,0 +1,58 @@
+---
+/**
+ * DotGrid — punch-card style dot grid decoration
+ *
+ * Renders an SVG grid of tiny squares to evoke
+ * 1960s punch-card / technical drawing aesthetics.
+ * Uses currentColor so it inherits the parent text color.
+ */
+interface Props {
+    /** Number of columns in the dot grid */
+    cols?: number;
+    /** Number of rows in the dot grid */
+    rows?: number;
+    /** Size of each dot in px */
+    dotSize?: number;
+    /** Gap between dots in px */
+    gap?: number;
+    /** Opacity 0-1 */
+    opacity?: number;
+    /** Extra inline styles for the wrapper */
+    style?: string;
+    /** Extra className for the wrapper */
+    class?: string;
+}
+
+const {
+    cols = 24,
+    rows = 6,
+    dotSize = 2,
+    gap = 8,
+    opacity = 0.18,
+    style,
+    class: className,
+} = Astro.props;
+
+const width = cols * (dotSize + gap) - gap;
+const height = rows * (dotSize + gap) - gap;
+
+const dots = Array.from({ length: rows }, (_, row) =>
+    Array.from({ length: cols }, (_, col) => ({
+        x: col * (dotSize + gap),
+        y: row * (dotSize + gap),
+    }))
+).flat();
+---
+
+<svg
+    aria-hidden="true"
+    width={width}
+    height={height}
+    viewBox={`0 0 ${width} ${height}`}
+    class={className}
+    style={`display:block;opacity:${opacity};${style ?? ''}`}
+>
+    {dots.map((dot) => (
+        <rect x={dot.x} y={dot.y} width={dotSize} height={dotSize} fill="currentColor"></rect>
+    ))}
+</svg>
