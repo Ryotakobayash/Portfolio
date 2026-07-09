@@ -88,11 +88,11 @@
 
 **要件・仕様:**
 
-- [ ] B-1. `src/pages/posts/[slug].astro`: サムネイルを SSR で `<img>`(`fetchpriority="high"`, `decoding="async"`)として静的出力し、`QuadtreeThumbnail`(client:only)はその上に absolute 重ねの演出に変更。`.article-thumbnail-wrapper` に `aspect-ratio` を予約(QuadtreeThumbnail 現行のキャンバスサイズ決定ロジックを調査し、現在の表示サイズと同じ箱を予約すること。既存記事のサムネイル画像の実寸を確認して決める)
-- [ ] B-2. トップページ(`src/pages/index.astro`)の Treemap カードに、チャート 380px + 凡例・注記分を含めた `min-height` を CSS で予約
-- [ ] B-2. 記事ページのサイドバー `.sidebar-graph-wrapper`(LocalArticleNetworkGraph, client:only)にも同様に高さ予約
-- [ ] B-3. `src/components/PopularPosts.tsx` のスケルトンを実リスト高に合わせる(実測: 1 行 約55px × 5 + Source 行。スケルトン行の height とギャップを実物と一致させる)
-- [ ] 検証: `pnpm build` → `pnpm preview` で Lighthouse を実行し、トップページと記事ページの CLS が改善していることを確認
+- [x] B-1. `src/pages/posts/[slug].astro`: サムネイルを SSR で `<img>`(`fetchpriority="high"`, `decoding="async"`)として静的出力し、`QuadtreeThumbnail`(client:only)はその上に absolute 重ねの演出に変更。`.article-thumbnail-wrapper` に `aspect-ratio` を予約(QuadtreeThumbnail 現行のキャンバスサイズ決定ロジックを調査し、現在の表示サイズと同じ箱を予約すること。既存記事のサムネイル画像の実寸を確認して決める)
+- [x] B-2. トップページ(`src/pages/index.astro`)の Treemap カードに、チャート 380px + 凡例・注記分を含めた `min-height` を CSS で予約
+- [x] B-2. 記事ページのサイドバー `.sidebar-graph-wrapper`(LocalArticleNetworkGraph, client:only)にも同様に高さ予約
+- [x] B-3. `src/components/PopularPosts.tsx` のスケルトンを実リスト高に合わせる(実測: 1 行 約55px × 5 + Source 行。スケルトン行の height とギャップを実物と一致させる)
+- [ ] 検証: `pnpm build` は通過(コミット c790297)。Lighthouse 計測は未実施 — デプロイ後に Speed Insights の CLS/RES を 1〜2 週間観察して判定する
 
 **関連する既存ファイル・技術スタック:**
 
@@ -111,7 +111,244 @@
 
 ## 🚀 未着手タスク (Backlog)
 
-* 特になし (新規アイデアを募集中)
+以下は 2026-07-09 のリポジトリ全体監査(セキュリティ / パフォーマンス / 冗長性)で洗い出した改善タスク。番号順が推奨着手順(掃除 → API層 → 配信設定 → フロント最適化 → 仕上げ)。
+
+### [Issue 1: 紛れ込んだ作業ファイル・陳腐化ファイルの削除]
+
+**背景・目的:**
+
+- サイト本体と無関係な作業ファイルが git 追跡されており、リポジトリの見通しとビルド対象(tsconfig の include)を汚している。特に `public/rss.xml` は `src/pages/rss.xml.ts` と同一パスを奪い合う旧静的ファイル(旧タイトル・旧 Vercel ドメイン)で実害あり。
+
+**要件・仕様:**
+
+- [ ] `public/rss.xml`(旧静的 RSS)を削除
+- [ ] `src/新卒の目から見たサイボウズのデザイン組織_公開用_新テーマ.md` / 同 `.html`(Marp 原稿と書き出し)を削除
+- [ ] `src/.marp-themes/`(CSS 5ファイル)を削除
+- [ ] `src/scripts/rename_posts.js` / `update_slug_logic.js`(一度きりのマイグレーションスクリプト。後者は存在しない `me.astro` を参照し既に壊れている)を削除
+- [ ] `src/content/posts/20260228_Test_Post_2026.md` とテスト画像ディレクトリ `20260228_test-post-2026/` を削除
+- [ ] `.obsidian/` を .gitignore に追加し `git rm -r --cached` で追跡解除
+- [ ] `docs/talks-management.md`(存在しない talks.json 前提で陳腐化)と `docs/plan-view-transitions-and-ux.md`(実装完了済みの計画書)を削除
+- [ ] `README.md` を Astro starter ボイラープレートから実態(サイト概要・技術スタック・開発コマンド)に書き換え
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] `pnpm build` が通り、`/rss.xml` が rss.xml.ts 由来の内容(現ドメイン)で生成されること
+
+### [Issue 2: デッドコンポーネント9件 + api/pv.ts の削除]
+
+**背景・目的:**
+
+- 旧 `/me` ダッシュボード統合(2026-05-10)の残骸が約950行残っている。全て import 参照ゼロを grep で確認済み。
+
+**要件・仕様:**
+
+- [ ] 以下を削除: `ActivityHealth.tsx` / `CumulativeStats.tsx` / `DashboardHeader.tsx` / `PostCalendar.tsx` / `PVChart.tsx` / `PVProgress.tsx` / `SkillRadar.tsx` / `ViewCount.tsx` / `slides/TreemapDemo.astro`
+- [ ] 消費者が PVChart / PVProgress のみだった `src/pages/api/pv.ts` も連鎖削除
+- [ ] 注記: SkillRadar は「ロマン枠で救出」の提案もあったが、今回のスコープでは削除する(git 履歴から復元可能)
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] `pnpm build` が通ること。全ページの表示に変化がないこと
+
+### [Issue 3: 未使用依存パッケージの削除]
+
+**背景・目的:**
+
+- package.json の dependencies に import 参照ゼロのパッケージが15個ある(unified 系の残骸、expressive-code 移行前のハイライタ、セルフホスト移行済みフォント等)。
+
+**要件・仕様:**
+
+- [ ] 削除: `remark` / `remark-parse` / `remark-rehype` / `rehype-stringify` / `unified` / `unist-util-visit` / `remark-gfm`(Astro が GFM 内蔵)
+- [ ] 削除: `rehype-pretty-code` / `shiki`(astro-expressive-code に一本化済み)
+- [ ] 削除: `astro-embed` / `gray-matter`(Issue 1 のスクリプト削除で参照ゼロ化)
+- [ ] 削除: `@vercel/analytics` / `@vercel/speed-insights`(BaseLayout は `/_vercel/...` script タグ直読みでパッケージ不要)
+- [ ] 削除: `sharp`(astro@6 が直接依存に持つ)、`@fontsource-variable/outfit`(woff2 セルフホスト済み)
+- [ ] `@types/react` / `@types/react-dom` を devDependencies へ、`remark-breaks` を dependencies へ区分修正
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] `pnpm install` 後に `pnpm build` が通り、記事ページのコードハイライト・脚注・GFM 表が壊れていないこと
+
+### [Issue 4: ShareButtons の共有 URL が旧ドメインのままのバグ修正]
+
+**背景・目的:**
+
+- `src/pages/posts/[slug].astro:127` が ShareButtons に `https://dashboard-portfolio.vercel.app/...` をハードコードして渡しており、共有リンクが現ドメイン(www.ryota5884.com)でなく旧ドメインになる。
+
+**要件・仕様:**
+
+- [ ] `Astro.site`(astro.config.mjs の site 設定)由来で URL を組み立てるよう修正
+- [ ] 他ファイルにも旧ドメイン(`dashboard-portfolio.vercel.app` / `portfolio-eight-rust-11.vercel.app`)のハードコードがないか grep して一掃
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] 記事ページの X / Bluesky / LinkedIn 共有リンクが `https://www.ryota5884.com/posts/...` を指すこと
+
+### [Issue 5: テーマ検出ロジックの useTheme 統合]
+
+**背景・目的:**
+
+- `useTheme` フックと同一の「data-theme を MutationObserver で監視」コードが `PVTimeline.tsx` / `PostBurndown.tsx` / `LocalArticleNetworkGraph.tsx` に逐語コピーされている。
+
+**要件・仕様:**
+
+- [ ] 上記3コンポーネントの自前実装を `src/hooks/useTheme.ts` の import に置換
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] テーマ切替時に3チャートの配色が追従すること(現挙動の維持)
+
+### [Issue 6: PV 系 API の改善 — キャッシュ・エラー非公開化・ハードコード除去]
+
+**背景・目的:**
+
+- PV 系5エンドポイントに Cache-Control がなく、1 PV ごとに STS トークン交換 + GA4 runReport が走る(表示遅延・クォータ消費・連打での可用性攻撃が可能)。catch 節は `error.message` を生で返し GCP 構成情報が漏れ得る。SA メールのフォールバック値もコミットされている。
+
+**要件・仕様:**
+
+- [ ] `api/pv/[slug].ts` / `ranking.ts` / `timeline.ts` / `treemap.ts` に `Cache-Control: public, s-maxage=3600, stale-while-revalidate=86400` を付与(エラーレスポンスにはキャッシュを付けない)
+- [ ] `api/github/contributions.ts` の `private, max-age=300` を `public, s-maxage=300, stale-while-revalidate=3600` に変更
+- [ ] 全エンドポイントの catch 節から `error.message` のクライアント返却を除去(サーバー側 console.error のみ残す)
+- [ ] SA メールのハードコードフォールバック(`vercelportfolio@portfolio-483013...`)を削除し、環境変数未設定時はダミーデータ分岐へ
+- [ ] `og/[slug].png.ts` のフォント取得で、抽出 URL が `https://fonts.gstatic.com/` で始まることの検証を追加
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] ローカル(環境変数なし)でダミーデータ分岐が引き続き動くこと
+- [ ] 正常レスポンスに Cache-Control ヘッダーが付くこと
+
+### [Issue 7: vercel.json — セキュリティヘッダー追加と冗長設定の削除]
+
+**背景・目的:**
+
+- セキュリティヘッダーが一切なくクリックジャッキング可能。一方で既存の `framework` / `buildCommand` / `installCommand` は Vercel 自動検出のデフォルトと同値で冗長。
+
+**要件・仕様:**
+
+- [ ] 冗長なデフォルト同値設定を削除し、`headers` セクションを追加: `X-Frame-Options: DENY` / `X-Content-Type-Options: nosniff` / `Referrer-Policy: strict-origin-when-cross-origin` / `Strict-Transport-Security: max-age=63072000; includeSubDomains`
+- [ ] CSP は Astro のインラインスクリプトがあるため今回は見送り(将来 Report-Only で段階導入)
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] デプロイ後、全レスポンスに上記ヘッダーが付くこと(ローカルでは vercel.json の JSON 妥当性確認まで)
+
+### [Issue 8: トップページの /api/pv/treemap 二重フェッチ解消]
+
+**背景・目的:**
+
+- `index.astro:165` のインラインスクリプトと `ArticleTreemap` 内の `useFetchPV` が同一 API を2回叩いている。しかも ArticleTreemap は取得した pvMap を描画に使わず、GA4 応答を待ってスケルトンを出すだけ(Treemap 表示が無意味に数秒遅延)。
+
+**要件・仕様:**
+
+- [ ] `ArticleTreemap.tsx` から `useFetchPV` / `isLoading` 依存を除去し、posts データ(文字数ベース)だけで即描画
+- [ ] これで `useFetchPV.ts` の消費者がゼロになるため、フックごと削除
+- [ ] Total PV 表示はインラインスクリプト側の1回のフェッチに集約されていることを確認
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] トップページで `/api/pv/treemap` へのリクエストが1回になること
+- [ ] Treemap が API 応答を待たずに描画されること
+
+### [Issue 9: 静的 React コンポーネント5件の .astro 化 + reduced-motion 実装]
+
+**背景・目的:**
+
+- `AmbientGlow` / `CRTOverlay` / `OrbitalBackground` / `DotGrid` / `RelatedPosts` は hooks もイベントもない静的 JSX なのに hydration されており、BaseLayout の `client:only` のせいで React ランタイム(gzip 57KB)が全ページ必須になっている。`client:only` は SSR されないので背景演出の出現も遅い。CRTOverlay はコメントに「prefers-reduced-motion 尊重」とあるが未実装。
+
+**要件・仕様:**
+
+- [ ] 5コンポーネントを `.astro`(静的 HTML + CSS)に変換。RelatedPosts のホバーは CSS `:hover` へ
+- [ ] BaseLayout の `transition:persist` との整合を確認(View Transitions で背景が再生成されないこと)
+- [ ] `@media (prefers-reduced-motion: reduce)` で CRTOverlay / AmbientGlow / OrbitalBackground のアニメーション停止を実装
+- [ ] AmbientGlow の `filter: blur(120px/150px)` を事前計算の `radial-gradient` に置換(コンポジット費用削減)
+- [ ] RelatedPosts に渡していた全記事メタのシリアライズが HTML から消えることを確認
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] タグ一覧などの静的ページで React ランタイムがロードされないこと(ビルド後の HTML で確認)
+- [ ] 背景演出が JS なしで初回描画から表示されること
+
+### [Issue 10: 記事ページの LocalArticleNetworkGraph 二重ハイドレーション解消]
+
+**背景・目的:**
+
+- モバイル用とサイドバー用の2箇所が両方 `client:only` でハイドレートされ、片方は常に display:none なのに Highcharts の力学シミュレーションが2インスタンス走る。
+
+**要件・仕様:**
+
+- [ ] `posts/[slug].astro` の2箇所を `client:media="(max-width: 1023px)"` / `client:media="(min-width: 1024px)"` に変更(ブレークポイントは既存 CSS と一致させる)
+- [ ] 可能なら `client:visible` も併用(first view 外のため)。client:media と併用不可の場合は media を優先
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] デスクトップ/モバイル各表示でグラフが従来通り動作し、ハイドレーションが片方だけになること
+
+### [Issue 11: トップページ three.js 一式(約420KB gz)の遅延ロードと省エネ化]
+
+**背景・目的:**
+
+- 背景装飾の AsciiBackground のために three + R3F + drei チャンク(gzip 237KB)と saturn.obj(gzip 183KB)が無条件ロードされ、常時 60fps フル解像度の rAF が回る。
+
+**要件・仕様:**
+
+- [ ] AsciiBackground のマウントを `requestIdleCallback`(フォールバック setTimeout)後に遅延
+- [ ] `<Canvas dpr={[1, 1.5]}>` で解像度上限を設定
+- [ ] `document.visibilityState` 非表示時と `prefers-reduced-motion` 時に描画停止(`frameloop="never"` 切替 or アンマウント)
+- [ ] 同構成の `slides/SlideAsciiCanvas.tsx` にも同じ設定を適用
+- [ ] (任意・効果大)saturn.obj(823KB テキスト)のメッシュ削減 or glTF 化。ツールが必要なら見送って別タスク化してよい
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] トップページの初期ロードで three チャンクがアイドル後ロードになること
+- [ ] タブ非表示中に CPU/GPU 使用が下がること
+
+### [Issue 12: 1.0MB PNG サムネイルの最適化]
+
+**背景・目的:**
+
+- `public/thumbnails/cyber_digital_grid.png`(1024×1024 / 1.0MB)が記事2本の LCP 画像として `fetchpriority="high"` で配信されている。
+
+**要件・仕様:**
+
+- [ ] WebP(品質80程度、50〜100KB 目標)に変換し、参照箇所(posts frontmatter / [slug].astro / PostSearch 経由)を更新
+- [ ] `public/thumbnails/` の他の画像もサイズを確認し、200KB 超があれば同様に変換
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] 該当記事の LCP 画像が 100KB 前後になり、表示品質が目視で劣化していないこと
+
+### [Issue 13: StickyToc の IntersectionObserver 化と QuadtreeThumbnail の rAF クリーンアップ]
+
+**背景・目的:**
+
+- StickyToc が scroll イベントごとに全見出しの getElementById + offsetTop 読み取りを無スロットリングで実行。QuadtreeThumbnail は rAF のクリーンアップ関数が useEffect から呼ばれず、View Transitions 遷移時に取り残される。
+
+**要件・仕様:**
+
+- [ ] `StickyToc.tsx` のスクロールリスナーを IntersectionObserver に置換
+- [ ] `QuadtreeThumbnail.tsx` の rAF ID を ref に保持し、useEffect クリーンアップで cancelAnimationFrame
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] 記事スクロール中の現在見出しハイライトが従来通り動作すること
+
+### [Issue 14: 検索コンポーネントのハイドレーション優先度と CSS の掃除]
+
+**背景・目的:**
+
+- fuse.js 込みの検索 UI が `client:load` で最優先ハイドレートされているが、ユーザー入力まで不要。global.css(1,012行)に未使用クラス8個・未使用変数十数個が残っている。
+
+**要件・仕様:**
+
+- [ ] `posts/index.astro` / `talks.astro` の検索を `client:idle` に変更
+- [ ] global.css の未使用クラス削除: `.flex-col` `.gap-lg` `.layer-divider` `.mt-auto` `.text-2xl` `.text-accent` `.text-lg` `.text-xl`
+- [ ] 未使用変数削除: `--p-step--2`〜`--p-step-6` の未使用段、`--color-accent-light` `--radius-sm` `--radius-xl` `--shadow-md` `--shadow-lg` `--s-space-gutter-sm`(`--tc-padding` `--tc-border-color` は Twitter ウィジェットが読む可能性があるため残す)
+- [ ] `.twitter-tweet` の二重定義(856行 / 869行)を統合
+- [ ] 注意: Issue 9 の .astro 化で使用状況が変わっている可能性があるため、削除前に再 grep すること
+
+**完了条件 (Acceptance Criteria):**
+
+- [ ] `pnpm build` が通り、一覧ページの検索・タグフィルタが従来通り動作すること
 
 ---
 
