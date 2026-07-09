@@ -156,7 +156,7 @@ const allTags = Array.from(tagCount.entries())
     )}
 
     <div class="section-divider"><span class="section-divider__label">Archive</span></div>
-    <TalkSearch client:load talks={archive} allTags={allTags} />
+    <TalkSearch client:idle talks={archive} allTags={allTags} />
   </div>
 </BaseLayout>
 

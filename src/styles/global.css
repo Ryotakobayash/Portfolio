@@ -43,7 +43,6 @@
   --color-primary-light: rgba(122, 160, 144, 0.12);
   --color-accent: #cc4444; /* WCAG AA: 4.5+ */
   /* 暗い赤 */
-  --color-accent-light: rgba(160, 48, 48, 0.12);
   --color-accent-2: #c99040;
   /* 暗い黄 */
   --color-accent-3: #d17855; /* WCAG AA: 4.5+ */
@@ -51,8 +50,6 @@
 
   /* Shadows — subtle, no glow */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
 /* ===== Light Theme ===== */
@@ -68,13 +65,10 @@
   --color-primary: #466557; /* WCAG AA: 4.5+ */
   --color-primary-light: rgba(92, 127, 113, 0.1);
   --color-accent: #802520;
-  --color-accent-light: rgba(128, 37, 32, 0.1);
   --color-accent-2: #996b24; /* WCAG AA: 4.5+ */
   --color-accent-3: #995530; /* WCAG AA: 4.5+ */
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
 /* ===== Shared Tokens ===== */
@@ -89,15 +83,12 @@
 
   /* Spacing (Rhythm) */
   --s-space-gutter-xs: 0.75lh;
-  --s-space-gutter-sm: 1lh;
   --s-space-gap-sm: 1rlh;
   --s-space-gap-md: 1.5rlh;
 
   /* Border radius — 0: straight edges everywhere */
-  --radius-sm: 0px;
   --radius-md: 0px;
   --radius-lg: 0px;
-  --radius-xl: 0px;
 
   /* Container */
   --container-max-width: 1200px;
@@ -114,15 +105,8 @@
   /* Typography Scale */
   --p-text-base: clamp(1em, 16px + 0.05svi, 1.125em);
   --p-text-ratio: 1.125;
-  --p-step--2: calc(var(--p-text-base) * pow(var(--p-text-ratio), -2));
-  --p-step--1: calc(var(--p-text-base) * pow(var(--p-text-ratio), -1));
-  --p-step-0: var(--p-text-base);
   --p-step-1: calc(var(--p-text-base) * pow(var(--p-text-ratio), 1));
   --p-step-2: calc(var(--p-text-base) * pow(var(--p-text-ratio), 2));
-  --p-step-3: calc(var(--p-text-base) * pow(var(--p-text-ratio), 3));
-  --p-step-4: calc(var(--p-text-base) * pow(var(--p-text-ratio), 4));
-  --p-step-5: calc(var(--p-text-base) * pow(var(--p-text-ratio), 5));
-  --p-step-6: calc(var(--p-text-base) * pow(var(--p-text-ratio), 6));
 }
 
 @media (width >= 60em) {
@@ -468,26 +452,6 @@ a:hover {
   color: var(--color-text-muted);
 }
 
-/* ===== Layer Divider (Section label) ===== */
-.layer-divider {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  margin: var(--spacing-2xl) 0 var(--spacing-lg);
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  font-feature-settings: "palt";
-}
-
-.layer-divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--color-border);
-}
 
 /* ===== Badge ===== */
 .badge {
@@ -740,10 +704,6 @@ a:hover {
   color: var(--color-primary);
 }
 
-.text-accent {
-  color: var(--color-accent);
-}
-
 .text-muted {
   color: var(--color-text-muted);
 }
@@ -754,18 +714,6 @@ a:hover {
 
 .text-sm {
   font-size: 0.875rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-}
-
-.text-xl {
-  font-size: 1.25rem;
-}
-
-.text-2xl {
-  font-size: 1.5rem;
 }
 
 .font-bold {
@@ -784,10 +732,6 @@ a:hover {
   flex-wrap: wrap;
 }
 
-.flex-col {
-  flex-direction: column;
-}
-
 .items-center {
   align-items: center;
 }
@@ -802,14 +746,6 @@ a:hover {
 
 .gap-md {
   gap: var(--spacing-md);
-}
-
-.gap-lg {
-  gap: var(--spacing-lg);
-}
-
-.mt-auto {
-  margin-top: auto;
 }
 
 .mb-md {
@@ -863,10 +799,7 @@ a:hover {
   position: relative;
   --tc-padding: 0;
   --tc-border-color: transparent;
-}
-
-/* ライトモード用（デフォルト / data-theme="light" と競合しないため変数で問題なし） */
-.twitter-tweet {
+  /* ライトモード用の色（デフォルト。ダークは下の data-theme で上書き） */
   background-color: #ede5ce;
   color: #4a3f30;
   border: 1px solid #c8baa0;

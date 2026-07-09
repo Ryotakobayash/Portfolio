@@ -41,7 +41,7 @@ const allTags = Array.from(tagCount.entries())
     </div>
   </div>
 
-  <PostSearch client:load posts={sortedPosts} allTags={allTags} />
+  <PostSearch client:idle posts={sortedPosts} allTags={allTags} />
 </BaseLayout>
 
 <style>
