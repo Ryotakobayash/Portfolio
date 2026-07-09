@@ -14,7 +14,8 @@ async function fetchFont(text: string): Promise<ArrayBuffer> {
     const css = await (await fetch(API)).text();
     const resource = css.match(/src: url\((.+)\) format\('(opentype|truetype)'\)/);
 
-    if (!resource) {
+    // 抽出URLが Google Fonts の配信ドメインであることを検証(CSSパース結果を無検証でfetchしない)
+    if (!resource || !resource[1].startsWith('https://fonts.gstatic.com/')) {
         throw new Error('Failed to fetch font');
     }
 

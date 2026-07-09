@@ -116,7 +116,7 @@ async function fetchWithGraphQL(token: string): Promise<Response> {
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Cache-Control': 'private, max-age=300',
+                    'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
                 },
             }
         );
@@ -200,7 +200,7 @@ async function fetchWithRestAPI(): Promise<Response> {
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Cache-Control': 'private, max-age=300',
+                    'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
                 },
             }
         );

@@ -2,11 +2,10 @@ import type { APIRoute } from 'astro';
 import { getPublishedPosts } from '../../../utils/posts';
 import {
     GA4_PROPERTY_ID,
-    GCP_PROJECT_NUMBER,
-    GCP_WORKLOAD_IDENTITY_POOL_ID,
-    GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID,
-    GCP_SERVICE_ACCOUNT_EMAIL,
-} from 'astro:env/server';
+    GA4_CACHE_CONTROL,
+    isGA4Configured,
+    createAnalyticsClient,
+} from '../../../utils/ga4';
 
 export const prerender = false;
 
@@ -17,7 +16,7 @@ export const prerender = false;
  */
 export const GET: APIRoute = async () => {
     // 開発環境 or 環境変数未設定 → ダミーデータ
-    if (!GA4_PROPERTY_ID || !GCP_PROJECT_NUMBER || import.meta.env.DEV) {
+    if (!isGA4Configured()) {
         return Response.json({
             pvMap: {
                 '20240526_blog-refactoring-2024': 245,
@@ -37,29 +36,7 @@ export const GET: APIRoute = async () => {
     }
 
     try {
-        const { getVercelOidcToken } = await import('@vercel/oidc');
-        const GCP_POOL_ID = GCP_WORKLOAD_IDENTITY_POOL_ID || 'portfolio-vercel';
-        const GCP_PROVIDER_ID = GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID || 'portfolio-vercel';
-        const GCP_SA_EMAIL = GCP_SERVICE_ACCOUNT_EMAIL || 'vercelportfolio@portfolio-483013.iam.gserviceaccount.com';
-
-        const { ExternalAccountClient } = await import('google-auth-library');
-        const authClient = ExternalAccountClient.fromJSON({
-            type: 'external_account',
-            audience: `//iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${GCP_POOL_ID}/providers/${GCP_PROVIDER_ID}`,
-            subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
-            token_url: 'https://sts.googleapis.com/v1/token',
-            service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SA_EMAIL}:generateAccessToken`,
-            subject_token_supplier: {
-                getSubjectToken: () => getVercelOidcToken(),
-            },
-        });
-
-        if (authClient) {
-            authClient.scopes = ['https://www.googleapis.com/auth/analytics.readonly'];
-        }
-
-        const { BetaAnalyticsDataClient } = await import('@google-analytics/data');
-        const analytics = new BetaAnalyticsDataClient({ authClient: authClient as any });
+        const analytics = await createAnalyticsClient();
 
         // 全期間の /posts/* のPVを取得
         const [response] = await analytics.runReport({
@@ -101,14 +78,16 @@ export const GET: APIRoute = async () => {
             }
         }
 
-        return Response.json({ pvMap, totalPV, source: 'ga4' });
+        return Response.json(
+            { pvMap, totalPV, source: 'ga4' },
+            { headers: { 'Cache-Control': GA4_CACHE_CONTROL } },
+        );
     } catch (error) {
         console.error('GA4 treemap API Error:', error);
         return Response.json({
             pvMap: {},
             totalPV: 0,
             source: 'fallback',
-            error: error instanceof Error ? error.message : 'Unknown error',
         });
     }
 };
