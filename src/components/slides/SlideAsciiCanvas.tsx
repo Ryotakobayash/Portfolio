@@ -3,6 +3,7 @@ import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { AsciiRenderer } from '@react-three/drei';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { useDecorativeFrameloop } from '../../hooks/useDecorativeFrameloop';
 
 interface ModelProps {
   modelUrl: string;
@@ -43,6 +44,7 @@ export default function SlideAsciiCanvas({
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const frameloop = useDecorativeFrameloop();
 
   // Mount the Canvas as soon as the wrapper has real dimensions.
   // ResizeObserver fires earlier in the paint cycle than IntersectionObserver,
@@ -84,6 +86,8 @@ export default function SlideAsciiCanvas({
         <Canvas
           camera={{ position: [0, 0, 5], fov: 50 }}
           style={{ width: '100%', height: '100%' }}
+          dpr={[1, 1.5]}
+          frameloop={frameloop}
         >
           <ambientLight intensity={0.5} />
           <directionalLight position={[10, 10, 10]} intensity={1.5} />
