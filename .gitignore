@@ -26,6 +26,9 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# obsidian editor state
+.obsidian/
+
 # vscode local settings (e.g. MCP server configs)
 .vscode/mcp.json
 
