@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { useTheme } from '../hooks/useTheme';
-import { useFetchPV } from '../hooks/useFetchPV';
 import { buildGenreData, getUsedTags, getTagColor } from '../utils/treemapUtils';
 import type { PostData } from '../utils/treemapUtils';
 
@@ -15,7 +14,6 @@ interface Props {
 export default function ArticleTreemap({ posts }: Props) {
     const chartRef = useRef<HighchartsReact.RefObject>(null);
     const isDark = useTheme();
-    const { pvMap, totalPV, isLoading } = useFetchPV();
     const [treemapReady, setTreemapReady] = useState(false);
 
     // 合計文字数の計算
@@ -119,7 +117,7 @@ export default function ArticleTreemap({ posts }: Props) {
                 }
             }
         };
-    }, [treemapData, pvMap, isDark]);
+    }, [treemapData, isDark]);
 
     // テーマ変更時・データ変更時にチャート更新
     useEffect(() => {
@@ -128,7 +126,7 @@ export default function ArticleTreemap({ posts }: Props) {
         }
     }, [isDark, treemapData, options]);
 
-    if (isLoading || !treemapReady) {
+    if (!treemapReady) {
         return (
             <div className="pt-md">
                 <div className="skeleton" style={{ height: '380px', borderRadius: 'var(--radius-md)' }} />
@@ -166,7 +164,7 @@ export default function ArticleTreemap({ posts }: Props) {
                 marginTop: '12px', fontSize: '0.6rem', color: 'var(--color-text-muted)',
                 fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
             }}>
-                Source: Local Files & GA4 API
+                Source: Local Files
             </div>
         </div>
     );
