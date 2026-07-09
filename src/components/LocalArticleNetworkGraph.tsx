@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
+import { HighchartsReact, type HighchartsReactRefObject } from '../utils/highchartsReact';
 import { useTheme } from '../hooks/useTheme';
 
 interface PostMeta {
@@ -28,7 +28,7 @@ export default function LocalArticleNetworkGraph({
     currentTags,
     allPosts,
 }: LocalArticleNetworkGraphProps) {
-    const chartRef = useRef<HighchartsReact.RefObject>(null);
+    const chartRef = useRef<HighchartsReactRefObject>(null);
     const isDark = useTheme();
     const [graphReady, setGraphReady] = useState(false);
 

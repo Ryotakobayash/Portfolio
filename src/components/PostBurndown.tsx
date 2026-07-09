@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
+import { HighchartsReact, type HighchartsReactRefObject } from '../utils/highchartsReact';
 import { useTheme } from '../hooks/useTheme';
 
 interface PostDate {
@@ -19,7 +19,7 @@ interface Props {
  * 年間の投稿目標(理想線) vs 実績(実績線) を Highcharts で描画
  */
 export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
-    const chartRef = useRef<HighchartsReact.RefObject>(null);
+    const chartRef = useRef<HighchartsReactRefObject>(null);
     const isDark = useTheme();
 
     // 対象年の記事をフィルタし、月別累積を計算

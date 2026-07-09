@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
+import { HighchartsReact, type HighchartsReactRefObject } from '../utils/highchartsReact';
 import { useTheme } from '../hooks/useTheme';
 import { buildGenreData, getUsedTags, getTagColor } from '../utils/treemapUtils';
 import type { PostData } from '../utils/treemapUtils';
@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function ArticleTreemap({ posts }: Props) {
-    const chartRef = useRef<HighchartsReact.RefObject>(null);
+    const chartRef = useRef<HighchartsReactRefObject>(null);
     const isDark = useTheme();
     const [treemapReady, setTreemapReady] = useState(false);
 

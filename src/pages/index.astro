@@ -45,7 +45,7 @@ const treemapPosts = await Promise.all(
 
 <BaseLayout>
     <!-- ASCII 3D Background -->
-    <AsciiBackground client:only="react" />
+    <AsciiBackground client:load />
 
     <!-- Orbital background decoration -->
     <OrbitalBackground />
@@ -109,7 +109,7 @@ const treemapPosts = await Promise.all(
     <div class="bento-card bento-card--wide treemap-card">
         <div class="bento-card__title">Article Map — Word Count</div>
         <div class="treemap-chart-wrapper">
-            <ArticleTreemap client:only="react" posts={treemapPosts} />
+            <ArticleTreemap client:load posts={treemapPosts} />
         </div>
     </div>
 
@@ -312,7 +312,7 @@ const treemapPosts = await Promise.all(
         width: 100%;
     }
 
-    /* client:only な ArticleTreemap がハイドレーションされるまでの間、
+    /* ArticleTreemap がハイドレーションされるまでの間、
        チャート(380px) + 凡例 + Source 行の高さをあらかじめ確保して CLS を防ぐ */
     .treemap-chart-wrapper {
         min-height: 468px;

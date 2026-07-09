@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
+import { HighchartsReact, type HighchartsReactRefObject } from '../utils/highchartsReact';
 import { useTheme } from '../hooks/useTheme';
 
 interface MonthlyPV {
@@ -21,7 +21,7 @@ interface Props {
  * 過去6ヶ月のPVタイムラインと投稿イベントマーカーを表示するコンポーネント
  */
 export default function PVTimeline({ posts }: Props) {
-    const chartRef = useRef<HighchartsReact.RefObject>(null);
+    const chartRef = useRef<HighchartsReactRefObject>(null);
     const isDark = useTheme();
     const [pvData, setPvData] = useState<MonthlyPV[]>([]);
     const [isLoading, setIsLoading] = useState(true);

@@ -60,7 +60,7 @@ const postDates = posts.map((post) => ({
       <h2 class="section-title"><span>02 · Post Count {goalsData.posts.period}</span></h2>
       <div class="bento-card">
           <PostBurndown
-              client:only="react"
+              client:load
               posts={postDates}
               yearlyTarget={goalsData.posts.yearlyTarget}
               period={goalsData.posts.period}
@@ -74,7 +74,7 @@ const postDates = posts.map((post) => ({
     <section class="section">
       <h2 class="section-title"><span>03 · PV Timeline</span></h2>
       <div class="bento-card">
-          <PVTimeline client:only="react" posts={postDates} />
+          <PVTimeline client:load posts={postDates} />
       </div>
     </section>
 

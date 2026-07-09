@@ -3,7 +3,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { getPublishedPosts } from '../../utils/posts';
 import StickyToc from '../../components/StickyToc';
-import ImageZoom from '../../components/ImageZoom';
 import ArticlePerformance from '../../components/ArticlePerformance';
 import ShareButtons from '../../components/ShareButtons';
 import RelatedPosts from '../../components/RelatedPosts.astro';
@@ -73,7 +72,7 @@ const allPostsMeta = allPosts.map((p) => ({
               decoding="async"
             />
             <QuadtreeThumbnail
-              client:only="react"
+              client:load
               src={post.data.thumbnail}
               alt={post.data.title}
               animateOnLoad={true}
@@ -144,9 +143,80 @@ const allPostsMeta = allPosts.map((p) => ({
         />
       </footer>
 
-      <!-- クライアントサイド機能 -->
-      <ImageZoom client:only="react" />
     </article>
+
+    <!-- 画像クリックで拡大表示(Reactを使わない素のスクリプト。
+         client:only island を置くと dev の View Transitions が遷移先を
+         隠し iframe でフルロードして遅くなるため island 化しない) -->
+    <script>
+      function enableImageZoom() {
+        const images = document.querySelectorAll<HTMLImageElement>('.prose img');
+
+        images.forEach((img) => {
+          if (img.dataset.zoomEnabled) return;
+          img.dataset.zoomEnabled = 'true';
+
+          img.style.cursor = 'zoom-in';
+          img.style.transition = 'transform 150ms ease';
+
+          img.addEventListener('click', () => {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+              position: fixed;
+              inset: 0;
+              background-color: rgba(0, 0, 0, 0.9);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              z-index: 1000;
+              cursor: zoom-out;
+              padding: 20px;
+            `;
+
+            const zoomedImg = document.createElement('img');
+            zoomedImg.src = img.src;
+            zoomedImg.alt = img.alt;
+            zoomedImg.style.cssText = `
+              max-width: 90vw;
+              max-height: 90vh;
+              object-fit: contain;
+              border-radius: 8px;
+              animation: zoomIn 200ms ease;
+            `;
+
+            if (!document.getElementById('zoom-styles')) {
+              const style = document.createElement('style');
+              style.id = 'zoom-styles';
+              style.textContent = `
+                @keyframes zoomIn {
+                  from { transform: scale(0.9); opacity: 0; }
+                  to { transform: scale(1); opacity: 1; }
+                }
+              `;
+              document.head.appendChild(style);
+            }
+
+            overlay.appendChild(zoomedImg);
+            document.body.appendChild(overlay);
+            document.body.style.overflow = 'hidden';
+
+            const close = () => {
+              overlay.remove();
+              document.body.style.overflow = '';
+              document.removeEventListener('keydown', handleKeyDown);
+            };
+            overlay.addEventListener('click', close);
+            const handleKeyDown = (e: KeyboardEvent) => {
+              if (e.key === 'Escape') close();
+            };
+            document.addEventListener('keydown', handleKeyDown);
+          });
+        });
+      }
+
+      // 初回ロードと View Transitions 遷移後の両方で発火する
+      document.addEventListener('astro:page-load', enableImageZoom);
+    </script>
 
     <!-- サイドバー（デスクトップ） -->
     <aside class="sidebar">
@@ -333,7 +403,7 @@ const allPostsMeta = allPosts.map((p) => ({
 
   .sidebar-graph-wrapper {
     margin-bottom: var(--spacing-xl);
-    /* client:only な LocalArticleNetworkGraph がハイドレーションされるまでの間、
+    /* LocalArticleNetworkGraph がハイドレーションされるまでの間、
        タイトル + グラフ本体の高さをあらかじめ確保して CLS を防ぐ */
     min-height: 348px;
   }
@@ -343,7 +413,7 @@ const allPostsMeta = allPosts.map((p) => ({
     margin-top: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
     display: block;
-    /* デスクトップ同様、client:only なグラフのハイドレーション待ちによる CLS を防ぐ */
+    /* デスクトップ同様、グラフのハイドレーション待ちによる CLS を防ぐ */
     min-height: 348px;
   }
 
