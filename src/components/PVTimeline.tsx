@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { useTheme } from '../hooks/useTheme';
 
 interface MonthlyPV {
     month: string; // "YYYYMM"
@@ -21,21 +22,10 @@ interface Props {
  */
 export default function PVTimeline({ posts }: Props) {
     const chartRef = useRef<HighchartsReact.RefObject>(null);
-    const [isDark, setIsDark] = useState(false);
+    const isDark = useTheme();
     const [pvData, setPvData] = useState<MonthlyPV[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [source, setSource] = useState('');
-
-    useEffect(() => {
-        const checkTheme = () => {
-            const theme = document.documentElement.getAttribute('data-theme');
-            setIsDark(theme === 'dark');
-        };
-        checkTheme();
-        const observer = new MutationObserver(checkTheme);
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-        return () => observer.disconnect();
-    }, []);
 
     useEffect(() => {
         fetch('/api/pv/timeline')

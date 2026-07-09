@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { useTheme } from '../hooks/useTheme';
 
 interface PostMeta {
     slug: string;
@@ -28,7 +29,7 @@ export default function LocalArticleNetworkGraph({
     allPosts,
 }: LocalArticleNetworkGraphProps) {
     const chartRef = useRef<HighchartsReact.RefObject>(null);
-    const [isDark, setIsDark] = useState(false);
+    const isDark = useTheme();
     const [graphReady, setGraphReady] = useState(false);
 
     // Highcharts networkgraph モジュールをクライアント側で動的にロード
@@ -44,23 +45,6 @@ export default function LocalArticleNetworkGraph({
             .catch(() => {
                 setGraphReady(true);
             });
-    }, []);
-
-    // ダークモードの検知と監視
-    useEffect(() => {
-        const checkTheme = () => {
-            const theme = document.documentElement.getAttribute('data-theme');
-            setIsDark(theme === 'dark');
-        };
-        checkTheme();
-
-        const observer = new MutationObserver(checkTheme);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['data-theme'],
-        });
-
-        return () => observer.disconnect();
     }, []);
 
     // グラフ用データ（ノードとエッジ）の構築

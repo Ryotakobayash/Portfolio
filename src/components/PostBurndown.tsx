@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { useTheme } from '../hooks/useTheme';
 
 interface PostDate {
     slug: string;
@@ -19,22 +20,7 @@ interface Props {
  */
 export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
     const chartRef = useRef<HighchartsReact.RefObject>(null);
-    const [isDark, setIsDark] = useState(false);
-
-    // ダークモード検知
-    useEffect(() => {
-        const checkTheme = () => {
-            const theme = document.documentElement.getAttribute('data-theme');
-            setIsDark(theme === 'dark');
-        };
-        checkTheme();
-        const observer = new MutationObserver(checkTheme);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['data-theme'],
-        });
-        return () => observer.disconnect();
-    }, []);
+    const isDark = useTheme();
 
     // 対象年の記事をフィルタし、月別累積を計算
     const { idealLine, actualLine, currentTotal, isOnTrack } = useMemo(() => {
