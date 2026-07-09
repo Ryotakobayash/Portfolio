@@ -130,7 +130,7 @@ const allPostsMeta = allPosts.map((p) => ({
         <div class="mobile-graph-container">
           <h2 class="mobile-section-title">インタラクティブグラフ</h2>
           <LocalArticleNetworkGraph
-            client:only="react"
+            client:media="(max-width: 1023px)"
             currentSlug={slug}
             currentTitle={post.data.title}
             currentTags={post.data.tags || []}
@@ -153,7 +153,7 @@ const allPostsMeta = allPosts.map((p) => ({
       <div class="sidebar-graph-wrapper">
         <h2 class="sidebar-section-title">インタラクティブグラフ</h2>
         <LocalArticleNetworkGraph
-          client:only="react"
+          client:media="(min-width: 1024px)"
           currentSlug={slug}
           currentTitle={post.data.title}
           currentTags={post.data.tags || []}
