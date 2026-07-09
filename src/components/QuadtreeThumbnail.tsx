@@ -46,10 +46,11 @@ export default function QuadtreeThumbnail({
         }
 
         const img = new Image();
+        let cancelAnimation: (() => void) | undefined;
         img.src = src;
         img.onload = () => {
             setImageLoaded(true);
-            runQuadtreeAnimation(img);
+            cancelAnimation = runQuadtreeAnimation(img);
         };
         img.onerror = () => {
             // エラー時はアニメーションをスキップして実画像を表示する設定にする
@@ -58,9 +59,10 @@ export default function QuadtreeThumbnail({
         };
 
         return () => {
-            // クリーンアップ処理
+            // クリーンアップ処理(View Transitions での離脱時に rAF を取り残さない)
             img.onload = null;
             img.onerror = null;
+            cancelAnimation?.();
         };
     }, [src, animateOnLoad]);
 

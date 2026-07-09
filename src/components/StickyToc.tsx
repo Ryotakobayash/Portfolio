@@ -18,33 +18,34 @@ export function StickyToc({ toc }: StickyTocProps) {
     const [activeId, setActiveId] = useState<string>('');
 
     useEffect(() => {
-        const handleScroll = () => {
-            const headings = toc.map(({ id }) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
-            if (headings.length === 0) return;
+        const headings = toc.map(({ id }) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+        if (headings.length === 0) return;
 
-            // Header offset for scroll calculation
-            const scrollPosition = window.scrollY + window.innerHeight / 3;
-
-            // Find the last heading that we've scrolled past
+        // 「ビューポート上部1/3のラインを越えた最後の見出し」をアクティブにする
+        const computeActive = () => {
+            const line = window.innerHeight / 3;
             let currentActiveId = '';
             for (const heading of headings) {
-                if (heading.offsetTop <= scrollPosition) {
+                if (heading.getBoundingClientRect().top <= line) {
                     currentActiveId = heading.id;
                 } else {
                     break;
                 }
             }
-
             if (currentActiveId) {
                 setActiveId(currentActiveId);
             }
         };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        // Initial check
-        handleScroll();
+        // scroll イベントの毎フレーム実行ではなく、見出しが上部1/3のラインを
+        // 跨いだ瞬間だけ発火させる(rootMargin でビューポート下側2/3を除外)
+        const observer = new IntersectionObserver(computeActive, {
+            rootMargin: '0px 0px -66.6% 0px',
+        });
+        headings.forEach((heading) => observer.observe(heading));
+        computeActive();
 
-        return () => window.removeEventListener('scroll', handleScroll);
+        return () => observer.disconnect();
     }, [toc]);
 
     if (toc.length === 0) return null;
