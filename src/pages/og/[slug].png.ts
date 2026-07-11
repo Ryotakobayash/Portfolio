@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { readFile } from 'node:fs/promises';
 import { getPublishedPosts } from '../../utils/posts';
 import { SITE_NAME_UPPER } from '../../consts';
 import satori from 'satori';
@@ -18,21 +19,17 @@ const C = {
     accent2: '#996b24',
 };
 
-// Google Fontsからフォントを取得するヘルパー
-// TODO(C-3): デザイン確定後、リポジトリ同梱の ttf サブセットに切り替えて実行時 fetch を廃止する
-async function fetchFont(text: string, weight: 400 | 700): Promise<ArrayBuffer> {
-    const API = `https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@${weight}&text=${encodeURIComponent(text)}`;
-
-    const css = await (await fetch(API)).text();
-    const resource = css.match(/src: url\((.+)\) format\('(opentype|truetype)'\)/);
-
-    // 抽出URLが Google Fonts の配信ドメインであることを検証(CSSパース結果を無検証でfetchしない)
-    if (!resource || !resource[1].startsWith('https://fonts.gstatic.com/')) {
-        throw new Error('Failed to fetch font');
-    }
-
-    const res = await fetch(resource[1]);
-    return await res.arrayBuffer();
+// リポジトリ同梱の Noto Sans JP(フル収録)を読み込む。
+// パスは cwd 相対: dev ではプロジェクトルート、Vercel では adapter の
+// includeFiles(astro.config.mjs)により /var/task 配下に同じ相対パスで同梱される。
+// モジュールスコープで1度だけ読み、warm インスタンスでは再利用する。
+let fontsPromise: Promise<[Buffer, Buffer]> | null = null;
+function loadFonts(): Promise<[Buffer, Buffer]> {
+    fontsPromise ??= Promise.all([
+        readFile('src/assets/fonts/NotoSansJP-Regular.otf'),
+        readFile('src/assets/fonts/NotoSansJP-Bold.otf'),
+    ]);
+    return fontsPromise;
 }
 
 // タイトルから決定的に表情を変えるためのハッシュ(djb2)
@@ -166,19 +163,13 @@ export const GET: APIRoute = async ({ params }) => {
     // タイトル長でフォントサイズを段階調整(3行クランプ)
     const titleSize = title.length <= 18 ? 64 : title.length <= 30 ? 56 : 48;
 
-    // OGP画像に含める文字セット(タイトル + メタ + 固定文字)でフォントをサブセット取得
-    const ascii = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`"\' ·';
-    const fontText = title + date + siteName + tags.join('') + ascii;
-
-    let fontRegular: ArrayBuffer;
-    let fontBold: ArrayBuffer;
+    let fontRegular: Buffer;
+    let fontBold: Buffer;
     try {
-        [fontRegular, fontBold] = await Promise.all([
-            fetchFont(fontText, 400),
-            fetchFont(fontText, 700),
-        ]);
+        [fontRegular, fontBold] = await loadFonts();
     } catch (e) {
-        console.error('Font fetch failed:', e);
+        console.error('Font load failed:', e);
+        fontsPromise = null; // 失敗をキャッシュしない
         return new Response('Font load failed', { status: 500 });
     }
 
@@ -209,8 +200,10 @@ export const GET: APIRoute = async ({ params }) => {
                     type: 'div',
                     props: {
                         style: {
+                            // satori は alignItems: baseline 非対応のため flex-end + 単位側の
+                            // paddingBottom でベースラインを合わせる(下の unit 側と対)
                             display: 'flex',
-                            alignItems: 'baseline',
+                            alignItems: 'flex-end',
                             gap: '6px',
                         },
                         children: [
@@ -226,7 +219,7 @@ export const GET: APIRoute = async ({ params }) => {
                                       {
                                           type: 'div',
                                           props: {
-                                              style: { fontSize: '22px', color: C.muted },
+                                              style: { fontSize: '22px', color: C.muted, paddingBottom: '5px' },
                                               children: unit,
                                           },
                                       },

@@ -65,7 +65,13 @@ export default defineConfig({
       ],
     ],
   },
-  adapter: vercel(),
+  adapter: vercel({
+    // OGP画像生成(satori)がfsで読むフォントをserverless functionに同梱する
+    includeFiles: [
+      'src/assets/fonts/NotoSansJP-Regular.otf',
+      'src/assets/fonts/NotoSansJP-Bold.otf',
+    ],
+  }),
   vite: {
     // Pre-bundle r3f + drei + three together so dev mode doesn't split them
     // across chunks. Without this, AsciiRenderer (drei) can't see the Canvas
