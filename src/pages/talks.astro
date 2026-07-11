@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_NAME } from '../consts';
 import TalkSearch, { type TalkMeta } from '../components/TalkSearch';
 import { getAllTalks, talkSlug, hasSlideBody } from '../utils/talks';
 
@@ -97,7 +98,7 @@ const allTags = Array.from(tagCount.entries())
   .map(([tag]) => tag);
 ---
 
-<BaseLayout title="Talks | RK / Portfolio" description="Upcoming and past talks, presentations, and slides">
+<BaseLayout title={`Talks | ${SITE_NAME}`} description="Upcoming and past talks, presentations, and slides">
   <div class="talks-page">
     <header class="talks-header">
       <h1 class="page-title">Talks</h1>

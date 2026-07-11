@@ -3,9 +3,10 @@
 export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_NAME } from '../consts';
 ---
 
-<BaseLayout title="404 — Page Not Found | RK / Portfolio" description="The page you are looking for could not be found.">
+<BaseLayout title={`404 — Page Not Found | ${SITE_NAME}`} description="The page you are looking for could not be found.">
   <div class="not-found">
     <div class="morse">█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░</div>
 

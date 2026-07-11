@@ -3,9 +3,10 @@
 export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_NAME } from '../consts';
 ---
 
-<BaseLayout title="500 — System Failure | RK / Portfolio" description="A server-side error occurred.">
+<BaseLayout title={`500 — System Failure | ${SITE_NAME}`} description="A server-side error occurred.">
   <div class="not-found">
     <div class="morse">█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░</div>
 

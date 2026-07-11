@@ -9,6 +9,7 @@ import RelatedPosts from '../../components/RelatedPosts.astro';
 import CustomImage from '../../components/CustomImage.astro';
 import QuadtreeThumbnail from '../../components/QuadtreeThumbnail';
 import LocalArticleNetworkGraph from '../../components/LocalArticleNetworkGraph';
+import { SITE_NAME } from '../../consts';
 
 export const prerender = true;
 
@@ -54,7 +55,7 @@ const allPostsMeta = allPosts.map((p) => ({
 ---
 
 <BaseLayout
-  title={`${post.data.title} | RK / Portfolio`}
+  title={`${post.data.title} | ${SITE_NAME}`}
   ogImage={`/og/${slug}.png`}
 >
   <div class="article-layout">

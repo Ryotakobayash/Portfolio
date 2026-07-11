@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { SITE_NAME } from '../../../consts';
 import { getPublishedPosts } from '../../../utils/posts';
 import {
     GA4_PROPERTY_ID,
@@ -68,7 +69,10 @@ export const GET: APIRoute = async () => {
 
         for (const row of response.rows || []) {
             let path = row.dimensionValues?.[0]?.value || '';
-            const title = (row.dimensionValues?.[1]?.value || '').replace(' | Dashboard Portfolio', '');
+            // GA4 の pageTitle から <title> のサイト名サフィックスを除去(旧称時代の計測データも含む)
+            const title = (row.dimensionValues?.[1]?.value || '')
+                .replace(` | ${SITE_NAME}`, '')
+                .replace(' | Dashboard Portfolio', '');
             const pv = parseInt(row.metricValues?.[0]?.value || '0', 10);
 
             // Canonicalize path: if it's an old path, map it to the new one

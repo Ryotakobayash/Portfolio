@@ -3,6 +3,7 @@ import { ClientRouter, fade } from 'astro:transitions';
 import '../styles/global.css';
 import CRTOverlay from '../components/CRTOverlay.astro';
 import AmbientGlow from '../components/AmbientGlow.astro';
+import { SITE_NAME, SITE_NAME_UPPER } from '../consts';
 
 interface Props {
   title?: string;
@@ -12,7 +13,7 @@ interface Props {
 
 
 const {
-  title = 'Dashboard Portfolio',
+  title = SITE_NAME,
   description = 'ダッシュボード型ポートフォリオサイト',
 } = Astro.props;
 
@@ -36,8 +37,8 @@ const isActive = (path: string) => {
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title="RK / Portfolio" href="/rss.xml" />
-    <link rel="alternate" type="application/feed+json" title="RK / Portfolio" href="/feed.json" />
+    <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href="/rss.xml" />
+    <link rel="alternate" type="application/feed+json" title={SITE_NAME} href="/feed.json" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     
     <!-- OGP Tags -->
@@ -88,7 +89,7 @@ const isActive = (path: string) => {
     <header class="header">
       <div class="container header-content">
         <a href="/" class="logo" transition:name="site-logo">
-          <span class="logo-full">RK / PORTFOLIO</span>
+          <span class="logo-full">{SITE_NAME_UPPER}</span>
           <span class="logo-short">RK</span>
         </a>
         <nav class="nav-links">

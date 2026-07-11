@@ -4,6 +4,7 @@ export const prerender = true;
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
 import { getPublishedPosts } from '../utils/posts';
+import { SITE_NAME } from '../consts';
 
 /**
  * RSS フィードエンドポイント
@@ -18,7 +19,7 @@ export async function GET(context: APIContext) {
     });
 
     return rss({
-        title: 'RK / Portfolio',
+        title: SITE_NAME,
         description: "Ryota Kobayashi's blog and portfolio",
         site: context.site ?? 'https://www.ryota5884.com',
         items: sortedPosts.map((post) => {

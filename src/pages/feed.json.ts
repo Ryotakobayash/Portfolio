@@ -2,6 +2,7 @@ export const prerender = true;
 
 import type { APIContext } from 'astro';
 import { getPublishedPosts } from '../utils/posts';
+import { SITE_NAME } from '../consts';
 
 /**
  * JSON Feed エンドポイント
@@ -20,7 +21,7 @@ export async function GET(context: APIContext) {
 
     const feed = {
         version: "https://jsonfeed.org/version/1.1",
-        title: "RK / Portfolio",
+        title: SITE_NAME,
         home_page_url: cleanSiteUrl,
         feed_url: `${cleanSiteUrl}/feed.json`,
         description: "Ryota Kobayashi's blog and portfolio",
