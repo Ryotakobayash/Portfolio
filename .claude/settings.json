@@ -10,7 +10,35 @@
       "Bash(git commit -m ' *)",
       "Bash(curl -s http://localhost:4321/)",
       "Bash(node measure.mjs)",
-      "Bash(pnpm add *)"
+      "Bash(pnpm add *)",
+      "Bash(sed -n 180,300p src/pages/posts/[slug].astro)",
+      "Bash(sed -n 500,590p src/pages/slides/[slug].astro && head -80 src/pages/slides/[slug].astro)",
+      "Bash(grep -iE '\\\\.env|\\\\.pem|\\\\.key|service.?account|credentials|\\\\.json$')",
+      "Bash(grep -iE 'http|`|\\\\$')",
+      "Bash(node -e \"const p=require\\('/Users/r002908/Workspace/Portfolio/node_modules/astro/package.json'\\); console.log\\('sharp dep in astro:', p.dependencies.sharp || p.optionalDependencies?.sharp || p.peerDependencies?.sharp || 'none'\\)\")",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(grep -rn \"fetch\\(['\\\\\"\\\\`]/api\" src/components src/hooks)",
+      "Bash(grep -rn \"fetch\\('/api\\\\|fetch\\(\\\\\"/api\\\\|fetch\\(\\\\`/api\" /Users/r002908/Workspace/Portfolio/src --include=\"*.tsx\" --include=\"*.astro\" --include=\"*.ts\")",
+      "Bash(xargs ls -lh)",
+      "Bash(gzip -c /Users/r002908/Workspace/Portfolio/public/models/saturn.obj)",
+      "Bash(gzip -c /Users/r002908/Workspace/Portfolio/dist/client/_astro/OBJLoader.BdNSSOh7.js)",
+      "Bash(gzip -c /Users/r002908/Workspace/Portfolio/dist/client/_astro/highcharts-react.min.CW0pY6_i.js)",
+      "Bash(gzip -c /Users/r002908/Workspace/Portfolio/dist/client/_astro/client.BsAUWm5x.js)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/r002908/Workspace/Portfolio/public/thumbnails/cyber_digital_grid.png /Users/r002908/Workspace/Portfolio/public/thumbnails/20260615_193009953.jpg)",
+      "Bash(git check-ignore *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'docs: リポジトリ監査で洗い出した改善タスク14件をBacklogに追加 *)",
+      "Bash(git rm *)",
+      "Bash(git commit -q -m 'chore: 作業ファイル・陳腐化ドキュメント・テスト記事を削除しREADMEを実態に更新 *)",
+      "Bash(git reset *)",
+      "Bash(git restore *)",
+      "Bash(git commit -q -m 'chore: 旧/meダッシュボードの残骸コンポーネント9件とapi/pv.tsを削除 *)",
+      "Bash(pnpm install *)",
+      "Bash(git commit -q -m 'chore: 未使用依存15個を削除し@types/*をdevDependenciesへ整理 *)"
+    ],
+    "additionalDirectories": [
+      "/Users/r002908/Workspace/Portfolio/src/pages/posts",
+      "/Users/r002908/Workspace/Portfolio/src/pages/slides"
     ]
   }
 }
