@@ -161,32 +161,6 @@
 - (任意・効果大) `public/models/saturn.obj`(823KB テキストOBJ)のメッシュ削減 or glTF/Draco 化。2026-07-09 監査 Issue 11 の残り項目。実施すればトップページの転送量をさらに gzip 約180KB 削減できる
 - (任意) CSP の段階導入。まず `Content-Security-Policy-Report-Only` で違反レポートを観察してから本適用する(2026-07-09 監査 Issue 7 で見送った分)
 
-### [タスク名: noteアカウントの投稿を自動取得して表示する]
-
-**背景・目的:**
-
-- 会社メンバーとして公開するブログ記事は note(アカウント: `tender_hyssop572`)にまとめている。以前 note 記事を表示する仕組み(`ExternalPosts.tsx` + `src/data/external-posts.json`)を作ったが、これは手動でJSONに追記する静的リストであり、自動取得の仕組みがない。そのため最近 note に投稿した記事がサイトに反映されていない。
-- note の投稿を自動的に取得し、新しく投稿するたびに手動更新なしでサイトに反映されるようにしたい。
-
-　**要件・仕様:**
-
-- [ ] note の RSS フィード(`https://note.com/tender_hyssop572/rss`)を取得し、記事一覧(タイトル・URL・投稿日)をパースする
-- [ ] `src/pages/api/github/contributions.ts` 等を参考に、`src/pages/api/note/` 配下に取得用の API Route を新設する(RSSのXMLパースが必要、外部ライブラリ追加が要る場合は事前に確認する)
-- [ ] `ExternalPosts.tsx` を、静的JSON参照から API 経由の動的取得(または ビルド時取得)に切り替える。zenn記事など、note以外の既存の静的エントリの扱いも検討する(残すか、同様に自動化するか)
-- [ ] 取得失敗時(APIレート制限・ネットワークエラー等)のフォールバック(既存の静的データ表示 or 空表示)を用意する
-- [ ] `/about` の投稿数カウントにも新しく取得したnote記事が反映されるか確認する
-
-**関連する既存ファイル・技術スタック:**
-
-- 対象ファイル: `src/components/ExternalPosts.tsx`, `src/data/external-posts.json`, `src/pages/api/github/contributions.ts`(参考実装), `src/pages/about.astro`
-- データ取得は `src/pages/api/` 配下の API Routes で行う方針(プロジェクトルール)
-
-**完了条件 (Acceptance Criteria):**
-
-- [ ] noteに新規投稿した記事が、サイト側で手動更新せずに表示されること
-- [ ] 既存の /about や記事一覧まわりの表示が壊れていないこと
-- [ ] エラーが出ないこと(取得失敗時もページがクラッシュしないこと)
-
 ---
 
 ## 🐾 保留中のアイデア・メモ
@@ -204,6 +178,18 @@
 ---
 
 ## ✅ 完了タスク (Done)
+
+### [タスク名: noteアカウントの投稿を自動取得して表示する]
+
+**完了日時:** 2026-07-18
+**サマリー:**
+note(`tender_hyssop572`)の RSS を自動取得し、手動更新なしで最新記事がサイトに反映されるようにした。
+
+- `src/utils/note.ts` を新設。note RSS(`/rss`)を fetch し、RSS 2.0 の `<item>` を軽量な正規表現でパース(タイトル・URL・投稿日)。外部ライブラリ追加はなし。5秒タイムアウトで SSR が固まらないよう保険。
+- `src/pages/api/note/posts.ts`(API Route, `prerender = false`)を新設。live note 記事と静的 `external-posts.json`(zenn や RSS 範囲外の過去記事)を URL で dedup してマージ。live 記事が静的エントリを実投稿日で上書きするため、既存の placeholder 日付(2022〜2025-01-01)が実日付に是正される。RSS 取得失敗時は静的データのみ返し(`source: static-fallback`)、ページはクラッシュしない。CDN キャッシュ `s-maxage=3600` + SWR。
+- `ExternalPosts.tsx` を静的 JSON 初期表示(SSR)+ `client:visible` で `/api/note/posts` から差し替える方式に変更。初期値に静的 JSON を使うことで CLS を回避、fetch 失敗時は静的表示のままフォールバック。index.astro 側に `client:visible` を付与。
+- 検証: `pnpm build` 通過。dev で API が `source: note-rss` / 全11件(note 10 + zenn 1)を返し、新着3件が自動追加・zenn 保持・dedup 動作を確認。
+- 補足: `/about` の Post Count(`PostBurndown`)は内部記事のみが対象という既存設計で、外部記事は元々カウント対象外(今回の変更で壊れていないことを確認)。
 
 ### [タスク名: OGP画像をサイトの世界観に刷新(satori の進化)]
 

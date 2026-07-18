@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import externalData from '../data/external-posts.json';
 
 type ServiceType = 'zenn' | 'note';
@@ -17,8 +18,30 @@ const SERVICE_CONFIG: Record<ServiceType, { color: string; label: string }> = {
 // Dates that are "past article" placeholders
 const PAST_DATES = new Set(['2022-01-01', '2023-01-01', '2024-01-01', '2025-01-01']);
 
+// 静的 JSON を初期値に使う（SSR で即描画 → CLS を避ける）。
+// マウント後に /api/note/posts から note の最新記事を取得して差し替える。
+const STATIC_POSTS = externalData.posts as ExternalPost[];
+
 export default function ExternalPosts() {
-    const posts = externalData.posts as ExternalPost[];
+    const [posts, setPosts] = useState<ExternalPost[]>(STATIC_POSTS);
+
+    useEffect(() => {
+        let alive = true;
+        fetch('/api/note/posts')
+            .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+            .then((data: { posts?: ExternalPost[] }) => {
+                if (alive && Array.isArray(data.posts) && data.posts.length > 0) {
+                    setPosts(data.posts);
+                }
+            })
+            .catch(() => {
+                // 取得失敗時は静的データのまま（フォールバック）
+            });
+        return () => {
+            alive = false;
+        };
+    }, []);
+
     if (!posts || posts.length === 0) return null;
 
     return (
