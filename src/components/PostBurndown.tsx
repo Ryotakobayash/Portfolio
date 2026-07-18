@@ -14,18 +14,47 @@ interface Props {
     period: string; // "2026"
 }
 
+interface ExternalPost {
+    url: string;
+    date: string;
+}
+
 /**
  * 投稿バーンダウンチャート コンポーネント
- * 年間の投稿目標(理想線) vs 実績(実績線) を Highcharts で描画
+ * 年間の投稿目標(理想線) vs 実績(実績線) を Highcharts で描画。
+ * 内部記事(Markdown)に加え、note の投稿を /api/note/posts から取得して合算する。
  */
 export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
     const chartRef = useRef<HighchartsReactRefObject>(null);
     const isDark = useTheme();
 
+    // note などの外部投稿(マウント後に取得して合算)
+    const [externalPosts, setExternalPosts] = useState<PostDate[]>([]);
+    const [hasExternal, setHasExternal] = useState(false);
+
+    useEffect(() => {
+        let alive = true;
+        fetch('/api/note/posts')
+            .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+            .then((data: { posts?: ExternalPost[] }) => {
+                if (alive && Array.isArray(data.posts) && data.posts.length > 0) {
+                    setExternalPosts(data.posts.map((p) => ({ slug: p.url, date: p.date })));
+                    setHasExternal(true);
+                }
+            })
+            .catch(() => {
+                // 取得失敗時は内部記事のみで集計(フォールバック)
+            });
+        return () => {
+            alive = false;
+        };
+    }, []);
+
     // 対象年の記事をフィルタし、月別累積を計算
     const { idealLine, actualLine, currentTotal, isOnTrack } = useMemo(() => {
         const year = parseInt(period);
-        const yearPosts = posts.filter((p) => p.date.startsWith(period));
+        const allPosts = [...posts, ...externalPosts];
+        const yearPosts = allPosts.filter((p) => p.date.startsWith(period));
 
         // 月別カウント
         const monthlyCounts = new Array(12).fill(0);
@@ -60,7 +89,7 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
         const onTrack = total >= expectedByNow;
 
         return { idealLine: ideal, actualLine: actual, currentTotal: total, isOnTrack: onTrack };
-    }, [posts, yearlyTarget, period]);
+    }, [posts, externalPosts, yearlyTarget, period]);
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -177,7 +206,7 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
                 marginTop: '4px', fontSize: '0.6rem', color: 'var(--color-text-muted)',
                 fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
             }}>
-                Source: Local Files (Markdown)
+                Source: Local Files (Markdown){hasExternal ? ' + note' : ''}
             </div>
         </div>
     );
