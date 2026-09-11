@@ -1,216 +1,260 @@
 # Agent TODOs
 
-このファイルは、AIエージェント（AIアシスタント）と協業して進める実装タスクを管理するためのドキュメントです。
-エージェントがコードの文脈を素早く把握し、スムーズに実装を進められるように設計されています。
+AIエージェントと人間が協業して開発を進めるためのタスク管理レジストリです。
+本ファイルはAIエージェントによる機械的な走査・パース・更新に最適化（Agent-First）されています。
 
 ---
 
-## 📑 目次
+## 🤖 エージェント実行プロトコル (Agent Protocol)
 
-- [🤖 エージェント向けルール (Agent Guidelines)](#-エージェント向けルール-agent-guidelines)
-- [📋 使い方・タスクテンプレート](#-使い方タスクテンプレート)
-- [🚧 進行中タスク (In Progress)](#-進行中タスク-in-progress)
-  - [CLS 改善 — client:only 要素の高さ予約とサムネイル SSR 化](#cls-改善--clientonly-要素の高さ予約とサムネイル-ssr-化)
-- [🚀 未着手タスク (Backlog)](#-未着手タスク-backlog)
-  - [機能追加・改善タスク](#-機能追加改善タスク)
-    - [note アカウント記事のフォーク](#note-アカウント記事のフォーク)
-    - [saturn.obj のメッシュ削減または glTF/Draco 化](#saturnobj-のメッシュ削減または-gltfdraco-化)
-    - [CSP の段階導入](#csp-の段階導入)
-  - [技術的ロマン・UX 改善タスク](#-技術的ロマンux-改善タスク)
-    - [読了プログレスの Scroll-driven Animations](#読了プログレスの-scroll-driven-animationscss新機能の見せ場)
-    - [CRTOverlay の完成 — 動くグレインと電源 ON 演出](#crtoverlay-の完成--動くグレインと電源on演出)
-    - [ArticleTreemap の PV データ復活（2変数エンコード）](#articletreemap-の使われていない-pv-データを復活させる)
-    - [AsciiBackground の磨き込み — ポインタ追従とモチーフ見直し](#asciibackground-の磨き込み--ポインタ追従と省エネ化)
-    - [SkillRadar の救出と GitHubActivity との統合](#skillradar-の救出と-githubactivity-との統合about-の計器盤化)
-- [💡 アイデア・記事ネタ・思考メモ](#-アイデア記事ネタ思考メモ)
-- [✅ 直近の完了タスク (Recent Done)](#-直近の完了タスク-recent-done)
-  - [フォント刷新 — Noto Sans JP 廃止・Outfit セルフホスト・和欧混植調整 (2026-07-11)](#タスク名-フォント刷新--noto-sans-jp-廃止outfit-セルフホスト和欧混植調整)
-  - [OGP画像をサイトの世界観に刷新(satori の進化) (2026-07-11)](#タスク名-ogp画像をサイトの世界観に刷新satori-の進化)
-  - [リポジトリ全体監査に基づく改善14件 (2026-07-10)](#タスク名-リポジトリ全体監査に基づく改善14件セキュリティパフォーマンス冗長性)
-- [📚 過去の完了タスクアーカイブ](#-過去の完了タスクアーカイブ)
+AIエージェントは以下の手順に厳密に従ってタスクを処理してください。
+
+1. **タスクの特定**:
+   - ユーザーから特定のタスク指定がない場合、下記 [Task Registry](#-task-registry) から優先度（`P0` > `P1` > `P2`）が最も高く、Status が `TODO` のものを選択する。
+2. **着手 (In Progress)**:
+   - 対象タスクのブロックを**他セクションへ移動させない**こと（インプレース更新）。
+   - [Task Registry](#-task-registry) テーブルの当該行の `Status` を `IN_PROGRESS` に更新する。
+   - 詳細ブロック内の `Status:` を `IN_PROGRESS` に更新する。
+3. **実装**:
+   - `Target Files` に指定されたファイルを中心に編集する。
+   - `Acceptance Criteria` の全条件を満たすように実装する。
+4. **検証**:
+   - `Verification Command`（例: `pnpm build`）を実行し、エラーのないことを確認する。
+5. **完了 (Done)**:
+   - [Task Registry](#-task-registry) テーブルの `Status` を `DONE` に更新する。
+   - 詳細ブロック内の `Status:` を `DONE` に更新し、`Completed:` に完了日（YYYY-MM-DD）を追記する。
+   - タスク単位で Git コミットを作成する（コミットメッセージは日本語）。
 
 ---
 
-## 🤖 エージェント向けルール (Agent Guidelines)
+## 📊 Task Registry (全タスク一覧)
 
-- 新しい会話や指示で「タスクを進めて」と言われたら、まずこのファイルの [🚀 未着手タスク (Backlog)](#-未着手タスク-backlog) を確認してください。
-- 作業に着手する際、対象のタスクを [🚧 進行中タスク (In Progress)](#-進行中タスク-in-progress) に移動させてください（複数ステップにまたがる場合は、タスクの進捗状況をチェックリストで管理してください）。
-- 作業が完了したら、対象のタスクを [✅ 直近の完了タスク (Recent Done)](#-直近の完了タスク-recent-done) に移動させ、完了日時と簡単なサマリーを追記してください（数が増えた古いものは [docs/tasks-archive.md](docs/tasks-archive.md) に移送します）。
-- 指示が抽象的であったり、技術的な選択肢が複数ある場合は、作業を進める前にユーザーに確認を取ってください。
-- 作業過程でファイルを変更するたびに、小まめに Git のコミットを行ってください。
-- コード内のコメントおよびエージェントの発言は**日本語**で行ってください。
+AIエージェントはタスク着手時にまずこのテーブルを走査してください。
+
+| ID | Title | Priority | Status | Target Files |
+| :-- | :-- | :-- | :-- | :-- |
+| [`TASK-001`](#task-001) | CLS 改善 — client:only 要素の高さ予約とサムネイル SSR 化 | P0 | `IN_PROGRESS` | `src/pages/posts/[slug].astro`, `src/components/...` |
+| [`TASK-002`](#task-002) | note アカウント記事のフォーク連携 | P1 | `TODO` | `src/pages/about.astro`, `src/pages/api/...` |
+| [`TASK-003`](#task-003) | 読了プログレスの Scroll-driven Animations 実装 | P1 | `TODO` | `src/pages/posts/[slug].astro`, `src/styles/global.css` |
+| [`TASK-004`](#task-004) | saturn.obj のメッシュ削減または glTF/Draco 圧縮 | P2 | `TODO` | `public/models/saturn.obj` |
+| [`TASK-005`](#task-005) | CRTOverlay の完成 — 動くグレインと電源 ON 演出 | P2 | `TODO` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
+| [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（2変数エンコード） | P2 | `TODO` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
+| [`TASK-007`](#task-007) | AsciiBackground の磨き込み — ポインタ追従とモチーフ見直し | P2 | `TODO` | `src/components/AsciiBackground.astro`, `src/components/SlideAsciiCanvas.tsx` |
+| [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `TODO` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
+| [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `TODO` | `vercel.json` |
 
 ---
 
-## 📋 使い方・タスクテンプレート
-
-新しいタスクやアイデアを思いついたら、以下の「タスクテンプレート」をコピーして、[🚀 未着手タスク (Backlog)](#-未着手タスク-backlog) のセクションに追加してください。
-タスクの背景（なぜやりたいか）や完了条件を明確にしておくと、エージェントがより意図に沿った実装を行えます。
+## 📋 Task Template (新規タスク追加用)
 
 ```markdown
-### [タスク名: e.g. OOOコンポーネントの作成]
-
-**背景・目的:**
-- なぜこれを作るのか？ユーザーにどうなってほしいか？
-
-**要件・仕様:**
-- [ ] 具体的な要件1
-- [ ] 具体的な要件2
-
-**関連する既存ファイル・技術スタック:**
-- 対象ファイル: `src/...`
-- 使用するライブラリや独自ルールなど
-
-**完了条件 (Acceptance Criteria):**
-- [ ] 〜の画面でOOOが表示されていること
-- [ ] エラーが出ないこと、など
+### [TASK-XXX] タスク名
+- Status: TODO
+- Priority: P1
+- Target Files: `src/...`
+- Verification Command: `pnpm build`
+- User Context: なぜ作るのか、背景意図など
+- Specifications:
+  - [ ] 具体的仕様1
+  - [ ] 具体的仕様2
+- Acceptance Criteria:
+  - [ ] 検証可能な完了条件1
 ```
 
 ---
 
-## 🚧 進行中タスク (In Progress)
+## 🚀 Active Tasks
 
-### CLS 改善 — client:only 要素の高さ予約とサムネイル SSR 化
-
-**ステータス:** 実装完了・本番環境での観察待ち
-
-**背景・目的:**
-- CLS 0.23 の主因は、`client:only="react"` 要素が SSR 時に何も出力せず、ハイドレーション後に挿入されてコンテンツを押し下げること（記事ページ先頭サムネイルやトップページの Treemap）。
-
-**要件・仕様:**
-- [x] B-1. `src/pages/posts/[slug].astro`: サムネイルを SSR で `<img>`(`fetchpriority="high"`, `decoding="async"`)として静的出力し、`QuadtreeThumbnail`(client:only)はその上に absolute 重ねの演出に変更。`.article-thumbnail-wrapper` に `aspect-ratio` を予約
-- [x] B-2. トップページ(`src/pages/index.astro`)の Treemap カードに、チャート 380px + 凡例・注記分を含めた `min-height` を CSS で予約
-- [x] B-2. 記事ページのサイドバー `.sidebar-graph-wrapper`(LocalArticleNetworkGraph, client:only)にも同様に高さ予約
-- [x] B-3. `src/components/PopularPosts.tsx` のスケルトンを実リスト高に合わせる
-- [ ] 検証: `pnpm build` は通過(コミット c790297)。デプロイ後に Speed Insights の CLS/RES を観察して効果を判定する
-
-**関連する既存ファイル・技術スタック:**
-- `src/pages/posts/[slug].astro`
-- `src/components/QuadtreeThumbnail.tsx`
-- `src/pages/index.astro`
-- `src/components/ArticleTreemap.tsx`
-- `src/components/PopularPosts.tsx`
-
-**完了条件 (Acceptance Criteria):**
-- [x] 記事ページ初回ロードでサムネイル出現による本文の押し下げが発生しないこと
-- [x] トップページで Treemap ロード前後にセクションが動かないこと
-- [ ] Lighthouse(デスクトップ)で CLS < 0.1 になること
+### [TASK-001] CLS 改善 — client:only 要素の高さ予約とサムネイル SSR 化
+- Status: `IN_PROGRESS`
+- Priority: P0
+- Target Files:
+  - `src/pages/posts/[slug].astro`
+  - `src/components/QuadtreeThumbnail.tsx`
+  - `src/pages/index.astro`
+  - `src/components/ArticleTreemap.tsx`
+  - `src/components/PopularPosts.tsx`
+- Verification Command: `pnpm build`
+- User Context: CLS 0.23 の主因である client:only 要素のハイドレーション前後のガタつきをなくし、RES を向上させたい。
+- Specifications:
+  - [x] サムネイルを SSR で `<img>` (`fetchpriority="high"`, `decoding="async"`) として静的出力し、`QuadtreeThumbnail` はその上に absolute 重ねに変更
+  - [x] `.article-thumbnail-wrapper` に `aspect-ratio` を予約
+  - [x] トップページの Treemap カードに CSS で min-height を予約
+  - [x] 記事ページのサイドバー `.sidebar-graph-wrapper` に高さ予約
+  - [x] `PopularPosts.tsx` のスケルトン高さを実リスト高（約55px × 5 + Source行）に一致させる
+  - [ ] 本番デプロイ後の Speed Insights / Lighthouse で数値観察
+- Acceptance Criteria:
+  - [x] 記事ページ初回ロードでサムネイル出現による本文押し下げが発生しないこと
+  - [x] トップページで Treemap ロード前後にセクションが動かないこと
+  - [ ] Lighthouse(デスクトップ)で CLS < 0.1 になること
 
 ---
 
-## 🚀 未着手タスク (Backlog)
-
-### 機能追加・改善タスク
-
-#### note アカウント記事のフォーク
-
-**背景・目的:**
-- 所属している会社のメンバーとして公開するブログは note にまとめるようにしている。これも `/about` の投稿数カウントに含めたい。
-
-**要件・仕様:**
-- フィード URL: `https://note.com/tender_hyssop572/rss`
-- note の RSS から記事データを取得・統合する。
-
-**完了条件 (Acceptance Criteria):**
-- [ ] すでにサイトで表示されている note 投稿と、今回の変更で追加される note が重複しないこと（過去の実装は削除して構わない）。
-
-#### saturn.obj のメッシュ削減または glTF/Draco 化
-
-- 根拠: `public/models/saturn.obj` (823KB テキスト OBJ) がトップページの転送量を圧迫している（2026-07-09 監査 Issue 11 残項目）。
-- 方向性: メッシュ削減 or glTF/Draco 圧縮。実施により gzip 約 180KB 削減可能。
-- コスト: 小 / 優先度: 中
-
-#### CSP の段階導入
-
-- 根拠: セキュリティ強化（2026-07-09 監査 Issue 7）。
-- 方向性: まず `Content-Security-Policy-Report-Only` で違反レポートを観察してから本適用する。
-- コスト: 小 / 優先度: 低
+### [TASK-002] note アカウント記事のフォーク連携
+- Status: `TODO`
+- Priority: P1
+- Target Files:
+  - `src/pages/about.astro`
+  - `src/pages/api/...`
+- Verification Command: `pnpm build`
+- User Context: 会社メンバーとして note に公開しているブログ（`https://note.com/tender_hyssop572/rss`）も `/about` の投稿数カウントおよび一覧に含めたい。
+- Specifications:
+  - [ ] note の RSS (`https://note.com/tender_hyssop572/rss`) から記事一覧を取得
+  - [ ] `/about` の投稿数カウントに note 投稿を加算
+  - [ ] 既存の note 投稿表示と重複しないように調整
+- Acceptance Criteria:
+  - [ ] `/about` で note の記事が正しく集計・表示されること
+  - [ ] 記事データに重複が生じないこと
+  - [ ] ビルドエラーおよび SSR 実行時エラーが発生しないこと
 
 ---
 
-### 技術的ロマン・UX 改善タスク
-
-見た目・UX に与える影響が大きいため、1つずつレビューして進める。
-
-#### 読了プログレスの Scroll-driven Animations(CSS新機能の見せ場)
-
-- コメント: ヘッダー下に読了の進捗が表示されても見ることはできない。モバイルならやる価値はある。PC でやるなら目次と合体させる方が良い。
-- 根拠: サイト全体で `animation-timeline` / `scroll-timeline` の使用ゼロ。記事ページには `StickyToc` と読了時間表示 (`posts/[slug].astro:35`) があり、読書体験への投資意欲は明確。
-- 方向性: ヘッダー下に `animation-timeline: scroll()` 純 CSS の読了バー(JS 0行)。世界観に寄せて単純なバーでなく DotGrid のドットが読了分だけ点灯していく「パンチカードが打鍵されていく」表現にすると独自性が出る。StickyToc の現在セクション強調も `view-timeline` で置換可能。
-- コスト: 小 / ロマン度: 中
-
-#### CRTOverlay の完成 — 動くグレインと電源ON演出
-
-- コメント: 最近のゲーム（ゼンレスゾーンゼロなど）ではアナログ表現が流行っている。その知見を取り入れたい。特定の UI（skill を表示するレーダーチャート背景など）に使う可能性も踏まえて模索したい。
-- 現状メモ (2026-07-11): 監査で `CRTOverlay.astro` に変換済み。vignette の pulse には reduced-motion 対応済み。ただしグレインが静止画である点、scanline がライトテーマでほぼ知覚できない点は未解決。
-- 方向性: グレインを `steps()` で background-position をランダムジャンプさせて本物のノイズ化。初回ロード/テーマ切替時だけ一瞬の水平同期ズレ(白フラッシュ + scanline 太化 0.3s)を入れると既存の円形 View Transition テーマ切替と相性が良い。`@media (prefers-reduced-motion: reduce)` で全アニメ停止を実装。
-- コスト: 小 / ロマン度: 中
-
-#### ArticleTreemap の「使われていない PV データ」を復活させる
-
-- 現状メモ (2026-07-11): 監査で未使用 PV フェッチは削除済み。残るは「PV を2変数目として新規に追加するか」の判断。
-- 方向性: 「面積 = 文字数、色の濃度 = PV」の2変数 treemap に進化させる（tooltip への PV 追記 + 彩度エンコードが穏当）。
-- コスト: 中 / ロマン度: 中
-
-#### AsciiBackground の磨き込み — ポインタ追従と省エネ化
-
-- コメント: 現状 AsciiRender を使った！という位置付けでしかなく、サイトとして意図がない。背景の土星の 3D モデルも自分にゆかりのないモチーフ。見直しを含めてやりたい。
-- 現状メモ (2026-07-11): 省エネ化は監査で完了済み。残るは (a) ポインタ追従などの演出強化、(b) モチーフ（土星）自体の見直し、(c) 404 ページへの流用。
-- 方向性: (a) マウス位置に土星がゆっくり視線を向ける lerp 追従、(c) 404 ページ(`█▓▒░` の signal-flicker 演出)に「信号途絶した衛星」として流用。モチーフ見直しは saturn.obj 軽量化と同時に行う。
-- コスト: 小〜中 / ロマン度: 中
-
-#### SkillRadar の救出と GitHubActivity との統合(about の計器盤化)
-
-- コメント: SkillRadar に表示する情報には根拠が必要。2026年1月に実施した内容を記事にしてからやるのが良い。
-- 現状メモ (2026-07-11): `SkillRadar.tsx` は旧 `/me` 整理で削除済み。復元する場合は `git show a96ce29^:src/components/SkillRadar.tsx` から取得。
-- 方向性: about の Hero 横に配置し、`data/goals.json` に skills データを移す。テーマ追従を `useTheme` に統一し、描画アニメーション（0→値へのスイープ）を追加。「根拠」は各軸ホバーで関連記事タグ数・登壇数を出すと GA/コンテンツデータと接続できる。
-- コスト: 小 / ロマン度: 中
+### [TASK-003] 読了プログレスの Scroll-driven Animations 実装
+- Status: `TODO`
+- Priority: P1
+- Target Files:
+  - `src/pages/posts/[slug].astro`
+  - `src/styles/global.css`
+- Verification Command: `pnpm build`
+- User Context: 記事読了の進捗を視覚化したい。ヘッダー下の単純なバーではなく、世界観に合わせた DotGrid / パンチカード風のドット点灯表現にしたい（モバイル最適、PCでは目次連動も視野）。
+- Specifications:
+  - [ ] 純 CSS の `animation-timeline: scroll()` を使用（JS ゼロ行）
+  - [ ] DotGrid モチーフに合わせたプログレス表示のスタイル構築
+  - [ ] `@media (prefers-reduced-motion: reduce)` でアニメーション停止
+- Acceptance Criteria:
+  - [ ] スクロールに連動して読了進捗が滑らかに変化すること
+  - [ ] JS エラーがなく、CSS のみで動作すること
+  - [ ] reduced-motion 環境で破綻しないこと
 
 ---
 
-## 💡 アイデア・記事ネタ・思考メモ
-
-ブログの執筆ネタ、デザイン検討、個人の思考メモなどは専用ドキュメントに切り出しています。
-タスクとして具体化する前のアイデアは以下を参照・追記してください。
-
-👉 [**docs/ideas.md (アイデア・思考メモ・記事ネタノート)**](docs/ideas.md)
-
----
-
-## ✅ 直近の完了タスク (Recent Done)
-
-### [タスク名: フォント刷新 — Noto Sans JP 廃止・Outfit セルフホスト・和欧混植調整]
-
-**完了日時:** 2026-07-11  
-**サマリー:**  
-Vercel Speed Insights の RES 向上およびフォント由来の CLS 解消を目的に実施。和文をシステムフォント優先にし、欧文のみ軽量にセルフホストした。
-- `src/layouts/BaseLayout.astro` から Google Fonts 関連 3 行を削除し、外部フォントリクエストを 0 に。
-- `src/styles/global.css` の `--font-sans` を Outfit / Noto Sans JP / システムフォント混植スタックに刷新。本文ウェイトを 300 から 400 に統一。
-- Outfit variable font を `public/fonts/outfit-latin-variable.woff2` に配置し、フォールバックメトリクス（Arial）を設定してリフローを抑制。
-- 見出し類に `font-feature-settings: "palt"` を適用。
-
-### [タスク名: OGP画像をサイトの世界観に刷新(satori の進化)]
-
-**完了日時:** 2026-07-11  
-**サマリー:**  
-検討中タスク(技術的ロマン観点)の1件目として実施。旧 cyan×ダークグレーの OGP を、サイトのライトテーマ(クリーム #f5eddc × グリーン #466557 の計器盤)に合わせた「記事のミニダッシュボード」に刷新した(コミット 856be0c / 85c5f61 / c48fb32)。
-- OrbitalBackground モチーフの軌道リング、DotGrid パンチカード、計器風メタを配置。
-- ブログ名を `src/consts.ts` の `SITE_NAME` に集約。
-- Noto Sans JP の JP 版 OTF を同梱し、外部依存のない高速・堅牢な生成を実現。
-
-### [タスク名: リポジトリ全体監査に基づく改善14件(セキュリティ/パフォーマンス/冗長性)]
-
-**完了日時:** 2026-07-10  
-**サマリー:**  
-2026-07-09 の全体監査で洗い出した Issue 1〜14 をすべて実施(コミット 9a2229d〜f028d13)。
-- 旧 `/me` ダッシュボードの残骸コンポーネントや未使用依存15個の削除。
-- GA4 WIF 認証の共通化、PV 系 API の CDN キャッシュ設定、セキュリティヘッダーの導入。
-- 静的コンポーネントの Astro 化、three.js 遅延ロードなどによるパフォーマンス最適化。
+### [TASK-004] saturn.obj のメッシュ削減または glTF/Draco 圧縮
+- Status: `TODO`
+- Priority: P2
+- Target Files:
+  - `public/models/saturn.obj`
+  - `src/components/SlideAsciiCanvas.tsx`
+- Verification Command: `pnpm build`
+- User Context: 823KB のテキスト OBJ がトップページの転送量を圧迫しているため軽量化したい（2026-07-09 監査 Issue 11 残項目）。
+- Specifications:
+  - [ ] OBJ メッシュ削減、または glTF/Draco 圧縮フォーマットへの変換
+  - [ ] 読み込みコンポーネント側のローダー調整
+- Acceptance Criteria:
+  - [ ] 転送サイズが現状より大幅に削減（gzip で約180KB以上削減）されること
+  - [ ] Canvas 上での土星の見た目・描画が破綻しないこと
 
 ---
 
-## 📚 過去の完了タスクアーカイブ
+### [TASK-005] CRTOverlay の完成 — 動くグレインと電源 ON 演出
+- Status: `TODO`
+- Priority: P2
+- Target Files:
+  - `src/components/CRTOverlay.astro`
+  - `src/styles/global.css`
+- Verification Command: `pnpm build`
+- User Context: アナログ計器盤の質感を高めるため、静止画のグレインを本物の動的ノイズにし、電源ON/テーマ切替時の同期演出を入れたい。
+- Specifications:
+  - [ ] CSS `steps()` で background-position をランダムジャンプさせ動的ノイズ化（SVG 再生成不要で軽量）
+  - [ ] 初回ロードおよびテーマ切替時に一瞬の水平同期ズレ演出（白フラッシュ + scanline 太化 0.3s）
+  - [ ] `@media (prefers-reduced-motion: reduce)` で全アニメ停止
+- Acceptance Criteria:
+  - [ ] ライト/ダーク両テーマで過度にならず心地よいレトロ感が得られること
+  - [ ] CPU/GPU 負荷が上がらないこと
+  - [ ] reduced-motion 時に完全に静止すること
 
-2026年3月〜2026年7月までに完了した全タスクの詳細ログ・サマリーは以下のアーカイブファイルに保管されています。
+---
 
-👉 [**docs/tasks-archive.md (完了タスクアーカイブ全履歴)**](docs/tasks-archive.md)
+### [TASK-006] ArticleTreemap の PV データ復活（2変数エンコード）
+- Status: `TODO`
+- Priority: P2
+- Target Files:
+  - `src/components/ArticleTreemap.tsx`
+  - `src/pages/api/pv/treemap.ts`
+- Verification Command: `pnpm build`
+- User Context: 一度外した PV データを、「面積 = 文字数、色の濃度 = PV」の2変数エンコードとして復活させたい。
+- Specifications:
+  - [ ] API 側で文字数と PV データの両方を返すように調整
+  - [ ] Highcharts Treemap の colorAxis / saturation ロジックを実装
+  - [ ] Tooltip に文字数と PV の両方を併記
+- Acceptance Criteria:
+  - [ ] 2変数（文字数×PV）が視覚的に区別できること
+  - [ ] PV API 取得失敗時もフォールバック表示できること
+
+---
+
+### [TASK-007] AsciiBackground の磨き込み — ポインタ追従とモチーフ見直し
+- Status: `TODO`
+- Priority: P2
+- Target Files:
+  - `src/components/AsciiBackground.astro`
+  - `src/components/SlideAsciiCanvas.tsx`
+  - `src/pages/404.astro`
+- Verification Command: `pnpm build`
+- User Context: 背景 3D モデルのポインタ追従と、モチーフ（土星）自体の見直し。404 ページへの流用。
+- Specifications:
+  - [ ] マウス座標に対する lerp 視線追従の実装
+  - [ ] 404 ページ (`█▓▒░` の flicker 演出) への「信号途絶衛星」としての適用
+- Acceptance Criteria:
+  - [ ] マウス操作に滑らかに追従すること（低負荷）
+  - [ ] 404 ページで世界観に沿った演出が表示されること
+
+---
+
+### [TASK-008] SkillRadar の救出と GitHubActivity との統合
+- Status: `TODO`
+- Priority: P2
+- Target Files:
+  - `src/pages/about.astro`
+  - `src/data/goals.json`
+  - `src/components/SkillRadar.tsx` (復元元: `git show a96ce29^:src/components/SkillRadar.tsx`)
+- Verification Command: `pnpm build`
+- User Context: 削除された旧 SkillRadar を about ページの Hero 横に計器盤風に復元・統合したい。各軸に根拠（記事タグ数等）を持たせる。
+- Specifications:
+  - [ ] `SkillRadar.tsx` を復元し、テーマ判定を `useTheme` フックに統一
+  - [ ] `data/goals.json` に skills データを定義
+  - [ ] 各軸ホバーで関連記事数などをツールチップ表示
+- Acceptance Criteria:
+  - [ ] レーダーチャートがテーマ連動して描画されること
+  - [ ] 値の展開アニメーションが正常に動作すること
+
+---
+
+### [TASK-009] CSP (Content-Security-Policy) の段階導入
+- Status: `TODO`
+- Priority: P3
+- Target Files:
+  - `vercel.json`
+- Verification Command: `pnpm build`
+- User Context: セキュリティ強化のため CSP を導入したい。いきなりブロックすると機能破損の恐れがあるためレポートモードから始める。
+- Specifications:
+  - [ ] `vercel.json` の headers に `Content-Security-Policy-Report-Only` を設定
+  - [ ] 必要ディレクティブ（script-src, style-src, font-src, connect-src 等）の精査
+- Acceptance Criteria:
+  - [ ] コンソールに違反レポートが出ない（または予期されたレポートのみが出る）こと
+  - [ ] 既存機能（GA4, Vercel Analytics, Highcharts）に影響が出ないこと
+
+---
+
+## ✅ Recent Done (直近完了タスク)
+
+全完了タスクの完全な履歴ログは [docs/tasks-archive.md](docs/tasks-archive.md) を参照してください。
+
+### [TASK-D01] フォント刷新 — Noto Sans JP 廃止・Outfit セルフホスト・和欧混植調整
+- Status: `DONE`
+- Completed: 2026-07-11
+- Summary: 和文システムフォント化 + Outfit variable font セルフホストにより、Google Fonts 外部リクエストゼロ化・フォント由来の CLS を解消。
+
+### [TASK-D02] OGP 画像をサイトの世界観に刷新 (satori の進化)
+- Status: `DONE`
+- Completed: 2026-07-11
+- Summary: 計器盤フレーム・軌道リング・パンチカードドットを取り入れたミニダッシュボード風 OGP を動的生成化。Noto Sans JP フォント同梱。
+
+### [TASK-D03] リポジトリ全体監査に基づく改善 14 件
+- Status: `DONE`
+- Completed: 2026-07-10
+- Summary: 残骸コード・未使用依存削除、GA4 共通化、セキュリティヘッダー追加、three.js 遅延ロードなど 14 件の品質改善を実施。
+
+---
+
+## 💡 Notes & Ideas
+記事ネタ、日常メモ、思考アイデアは [docs/ideas.md](docs/ideas.md) で管理しています。

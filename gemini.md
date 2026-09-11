@@ -18,6 +18,10 @@
 - すべてのコード内のコメントと、あなた（Agent）の発言は**日本語**で行ってください。
 - 変更を加えるたびに、タスクや機能単位で小まめに Git コミットを作成してください。
 
+# Task Management Rules
+- タスクの確認・進捗管理は `AGENT_TODO.md` の Task Registry およびエージェント実行プロトコルに従ってください。
+- タスク着手時はインプレースで Status を `IN_PROGRESS` に更新し、完了時は `DONE` に更新してください（セクション間移動は行わない）。
+
 # Data Fetching
 - 外部API（GA4, GitHub等）へのアクセスは `src/pages/api/` 配下のAPI Routesで行ってください。
 - フロントエンドでは `fetch` + `useState/useEffect` でデータを取得してください。
