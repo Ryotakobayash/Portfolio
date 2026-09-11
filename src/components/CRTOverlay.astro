@@ -1,62 +1,243 @@
 ---
 /**
- * CRTOverlay — retro CRT scanline effect
+ * CRTOverlay — retro CRT scanline & power-on effect
  *
  * A fixed full-screen overlay that adds:
- * 1. Subtle horizontal scanlines (repeating linear-gradient)
- * 2. Vignette darkening at edges
- * 3. A very faint noise texture via SVG filter
+ * 1. Dynamic film/CRT grain via CSS steps() random shift
+ * 2. Subtle horizontal scanlines with power-on / sync glitch modulation
+ * 3. Vignette darkening at edges
+ * 4. Sync glitch / flash on initial load and theme toggle (0.3s)
  *
  * pointer-events: none means it never blocks interaction.
  */
 ---
 
-<div aria-hidden="true" class="crt-scanlines"></div>
-<div aria-hidden="true" class="crt-vignette"></div>
-<div aria-hidden="true" class="crt-grain"></div>
+<div aria-hidden="true" class="crt-overlay-container" id="crt-overlay">
+  <div class="crt-scanlines"></div>
+  <div class="crt-vignette"></div>
+  <div class="crt-grain"></div>
+  <div class="crt-glitch"></div>
+</div>
 
 <style>
-    .crt-scanlines,
+  .crt-overlay-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9000;
+  }
+
+  .crt-scanlines,
+  .crt-vignette,
+  .crt-grain,
+  .crt-glitch {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* Scanlines Layer */
+  .crt-scanlines {
+    z-index: 1;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, var(--crt-scanline-opacity, 0.04)) 2px,
+      rgba(0, 0, 0, var(--crt-scanline-opacity, 0.04)) 3px
+    );
+    mix-blend-mode: multiply;
+  }
+
+  /* Vignette Darkening */
+  .crt-vignette {
+    z-index: 2;
+    animation: crt-pulse 8s ease-in-out infinite;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 60%,
+      rgba(0, 0, 0, 0.18) 100%
+    );
+  }
+
+  /* Dynamic Film/CRT Grain Layer */
+  .crt-grain {
+    z-index: 3;
+    opacity: var(--crt-grain-opacity, 0.12);
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    /* CSS steps(1) により約13.3fpsのアナログ動的ノイズを実現。補間計算ゼロで超低負荷 */
+    animation: crt-grain-shift 0.75s steps(1) infinite;
+  }
+
+  @keyframes crt-grain-shift {
+    0% { background-position: 0 0; }
+    10% { background-position: -5% -10%; }
+    20% { background-position: 15% -5%; }
+    30% { background-position: -7% 20%; }
+    40% { background-position: 21% 12%; }
+    50% { background-position: -18% 9%; }
+    60% { background-position: 10% -20%; }
+    70% { background-position: 0% 17%; }
+    80% { background-position: -12% -15%; }
+    90% { background-position: 25% 5%; }
+    100% { background-position: 0 0; }
+  }
+
+  /* Power-on / Sync Glitch Flash Layer */
+  .crt-glitch {
+    z-index: 4;
+    opacity: 0;
+    mix-blend-mode: screen;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.08) 60%,
+      transparent 100%
+    );
+  }
+
+  /* ===== Power-on / Sync Glitch Animations ===== */
+  .crt-overlay-container.is-glitching .crt-glitch {
+    animation: crt-flash 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .crt-overlay-container.is-glitching .crt-scanlines {
+    animation: crt-scanline-jitter 0.3s steps(3) forwards;
+  }
+
+  @keyframes crt-flash {
+    0% {
+      opacity: 0.55;
+      transform: scaleY(0.08);
+      filter: brightness(1.8);
+    }
+    25% {
+      opacity: 0.35;
+      transform: scaleY(0.5);
+      filter: brightness(1.4);
+    }
+    60% {
+      opacity: 0.15;
+      transform: scaleY(1);
+      filter: brightness(1.1);
+    }
+    100% {
+      opacity: 0;
+      transform: scaleY(1);
+      filter: brightness(1);
+    }
+  }
+
+  @keyframes crt-scanline-jitter {
+    0% {
+      opacity: 0.16;
+      transform: translateY(2px) skewX(0.3deg);
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 1px,
+        rgba(0, 0, 0, 0.14) 1px,
+        rgba(0, 0, 0, 0.14) 3px
+      );
+    }
+    35% {
+      opacity: 0.12;
+      transform: translateY(-2px) skewX(-0.2deg);
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.10) 2px,
+        rgba(0, 0, 0, 0.10) 4px
+      );
+    }
+    70% {
+      opacity: 0.08;
+      transform: translateY(1px);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* ===== Reduced Motion ===== */
+  @media (prefers-reduced-motion: reduce) {
     .crt-vignette,
-    .crt-grain {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
+    .crt-grain,
+    .crt-scanlines,
+    .crt-glitch {
+      animation: none !important;
+      transform: none !important;
     }
 
-    .crt-scanlines {
-        z-index: 9000;
-        background: repeating-linear-gradient(
-            to bottom,
-            transparent,
-            transparent 2px,
-            rgba(0, 0, 0, 0.04) 2px,
-            rgba(0, 0, 0, 0.04) 3px
-        );
-        mix-blend-mode: multiply;
+    .crt-glitch {
+      display: none !important;
     }
-
-    .crt-vignette {
-        z-index: 9001;
-        animation: crt-pulse 8s ease-in-out infinite;
-        background: radial-gradient(
-            ellipse at center,
-            transparent 60%,
-            rgba(0, 0, 0, 0.18) 100%
-        );
-    }
-
-    /* Film Grain (Noise) */
-    .crt-grain {
-        z-index: 9002; /* Top-most visual layer */
-        opacity: 0.15;
-        mix-blend-mode: overlay;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .crt-vignette {
-            animation: none;
-        }
-    }
+  }
 </style>
+
+<script>
+  function setupCRTGlitch() {
+    const overlay = document.getElementById('crt-overlay');
+    if (!overlay) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    let glitchTimer: number | undefined;
+
+    const triggerGlitch = () => {
+      overlay.classList.remove('is-glitching');
+      // Reflow を強制してアニメーションをリスタート
+      void overlay.offsetWidth;
+      overlay.classList.add('is-glitching');
+
+      if (glitchTimer) clearTimeout(glitchTimer);
+      glitchTimer = window.setTimeout(() => {
+        overlay.classList.remove('is-glitching');
+      }, 300);
+    };
+
+    // 初回ロード時の電源 ON 演出
+    const hasTriggeredOnLoad = (window as unknown as { __crtLoaded?: boolean }).__crtLoaded;
+    if (!hasTriggeredOnLoad) {
+      (window as unknown as { __crtLoaded?: boolean }).__crtLoaded = true;
+      // ロード直後の微細な遅延で自然な電源投入感を出す
+      window.requestAnimationFrame(() => {
+        triggerGlitch();
+      });
+    }
+
+    // テーマ切り替えの監視（MutationObserver）
+    // transition:persist されているため、DOM ツリー生存中に永続監視
+    const targetNode = document.documentElement;
+    let lastTheme = targetNode.getAttribute('data-theme');
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+          const currentTheme = targetNode.getAttribute('data-theme');
+          if (currentTheme !== lastTheme) {
+            lastTheme = currentTheme;
+            triggerGlitch();
+          }
+        }
+      }
+    });
+
+    observer.observe(targetNode, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+  }
+
+  // 初回マウント時および Astro ライフサイクルで初期化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupCRTGlitch);
+  } else {
+    setupCRTGlitch();
+  }
+</script>
