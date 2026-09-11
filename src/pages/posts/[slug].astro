@@ -9,6 +9,7 @@ import RelatedPosts from '../../components/RelatedPosts.astro';
 import CustomImage from '../../components/CustomImage.astro';
 import QuadtreeThumbnail from '../../components/QuadtreeThumbnail';
 import LocalArticleNetworkGraph from '../../components/LocalArticleNetworkGraph';
+import ReadingProgress from '../../components/ReadingProgress.astro';
 import { SITE_NAME } from '../../consts';
 
 export const prerender = true;
@@ -58,6 +59,7 @@ const allPostsMeta = allPosts.map((p) => ({
   title={`${post.data.title} | ${SITE_NAME}`}
   ogImage={`/og/${slug}.png`}
 >
+  <ReadingProgress />
   <div class="article-layout">
     <!-- メインコンテンツ -->
     <article class="article">
