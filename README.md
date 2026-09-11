@@ -38,6 +38,7 @@ src/
 
 ## 運用メモ
 
-- タスク管理と作業ルールは [AGENT_TODO.md](AGENT_TODO.md)
+- タスク管理と作業ルールは [AGENT_TODO.md](AGENT_TODO.md)（完了履歴は [docs/tasks-archive.md](docs/tasks-archive.md)）
+- 記事ネタ・思考メモ・アイデアは [docs/ideas.md](docs/ideas.md)
 - 記事の執筆フローは [docs/article-workflow.md](docs/article-workflow.md)、設計判断の記録は [docs/adr/](docs/adr/)
 - 記事の公開はフロントマターの `draft` / talks は `published`(opt-in)で制御
