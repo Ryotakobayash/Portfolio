@@ -6,10 +6,14 @@ import { getPublishedPosts } from '../utils/posts';
 import ArticleTreemap from '../components/ArticleTreemap';
 import PopularPosts from '../components/PopularPosts';
 import ExternalPosts from '../components/ExternalPosts';
+import { getAllExternalPosts } from '../utils/externalPosts';
 import OrbitalBackground from '../components/OrbitalBackground.astro';
 import AsciiBackground from '../components/AsciiBackground';
 import DotGrid from '../components/DotGrid.astro';
 import careerData from '../data/career.json';
+
+// 外部記事（note RSS + Zenn）を取得
+const externalPosts = await getAllExternalPosts();
 
 
 // 全記事を取得
@@ -152,7 +156,7 @@ const treemapPosts = await Promise.all(
 
         <!-- External articles -->
         <div class="bento-card bento-card--wide">
-            <ExternalPosts />
+            <ExternalPosts posts={externalPosts} />
         </div>
     </div>
 </BaseLayout>

@@ -1,15 +1,11 @@
+import type { ExternalPost } from '../utils/externalPosts';
 import externalData from '../data/external-posts.json';
 
-type ServiceType = 'zenn' | 'note';
-
-interface ExternalPost {
-    service: ServiceType;
-    title: string;
-    url: string;
-    date: string;
+interface Props {
+    posts?: ExternalPost[];
 }
 
-const SERVICE_CONFIG: Record<ServiceType, { color: string; label: string }> = {
+const SERVICE_CONFIG: Record<string, { color: string; label: string }> = {
     zenn: { color: 'var(--color-primary)', label: 'Zenn' },
     note: { color: 'var(--color-accent-2)', label: 'note' },
 };
@@ -17,8 +13,8 @@ const SERVICE_CONFIG: Record<ServiceType, { color: string; label: string }> = {
 // Dates that are "past article" placeholders
 const PAST_DATES = new Set(['2022-01-01', '2023-01-01', '2024-01-01', '2025-01-01']);
 
-export default function ExternalPosts() {
-    const posts = externalData.posts as ExternalPost[];
+export default function ExternalPosts({ posts: propPosts }: Props = {}) {
+    const posts = propPosts ?? (externalData.posts as ExternalPost[]);
     if (!posts || posts.length === 0) return null;
 
     return (

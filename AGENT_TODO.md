@@ -34,7 +34,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | ID | Title | Priority | Status | Target Files |
 | :-- | :-- | :-- | :-- | :-- |
 | [`TASK-001`](#task-001) | CLS 改善 — client:only 要素の高さ予約とサムネイル SSR 化 | P0 | `IN_PROGRESS` | `src/pages/posts/[slug].astro`, `src/components/...` |
-| [`TASK-002`](#task-002) | note アカウント記事のフォーク連携 | P1 | `TODO` | `src/pages/about.astro`, `src/pages/api/...` |
+| [`TASK-002`](#task-002) | note アカウント記事のフォーク連携 | P1 | `DONE` | `src/pages/about.astro`, `src/pages/api/...` |
 | [`TASK-003`](#task-003) | 読了プログレスの Scroll-driven Animations 実装 | P1 | `TODO` | `src/pages/posts/[slug].astro`, `src/styles/global.css` |
 | [`TASK-004`](#task-004) | saturn.obj のメッシュ削減または glTF/Draco 圧縮 | P2 | `TODO` | `public/models/saturn.obj` |
 | [`TASK-005`](#task-005) | CRTOverlay の完成 — 動くグレインと電源 ON 演出 | P2 | `TODO` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
@@ -91,21 +91,25 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-002] note アカウント記事のフォーク連携
-- Status: `TODO`
+- Status: `DONE`
+- Completed: 2026-09-12
 - Priority: P1
 - Target Files:
+  - `src/utils/externalPosts.ts`
   - `src/pages/about.astro`
-  - `src/pages/api/...`
+  - `src/pages/index.astro`
+  - `src/components/ExternalPosts.tsx`
+  - `src/data/external-posts.json`
 - Verification Command: `pnpm build`
 - User Context: 会社メンバーとして note に公開しているブログ（`https://note.com/tender_hyssop572/rss`）も `/about` の投稿数カウントおよび一覧に含めたい。
 - Specifications:
-  - [ ] note の RSS (`https://note.com/tender_hyssop572/rss`) から記事一覧を取得
-  - [ ] `/about` の投稿数カウントに note 投稿を加算
-  - [ ] 既存の note 投稿表示と重複しないように調整
+  - [x] note の RSS (`https://note.com/tender_hyssop572/rss`) から記事一覧を取得
+  - [x] `/about` の投稿数カウントに note 投稿を加算
+  - [x] 既存の note 投稿表示と重複しないように調整
 - Acceptance Criteria:
-  - [ ] `/about` で note の記事が正しく集計・表示されること
-  - [ ] 記事データに重複が生じないこと
-  - [ ] ビルドエラーおよび SSR 実行時エラーが発生しないこと
+  - [x] `/about` で note の記事が正しく集計・表示されること
+  - [x] 記事データに重複が生じないこと
+  - [x] ビルドエラーおよび SSR 実行時エラーが発生しないこと
 
 ---
 
