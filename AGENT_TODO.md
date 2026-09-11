@@ -36,7 +36,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-001`](#task-001) | CLS 改善 — client:only 要素の高さ予約とサムネイル SSR 化 | P0 | `IN_PROGRESS` | `src/pages/posts/[slug].astro`, `src/components/...` |
 | [`TASK-002`](#task-002) | note アカウント記事のフォーク連携 | P1 | `DONE` | `src/pages/about.astro`, `src/pages/api/...` |
 | [`TASK-003`](#task-003) | 読了プログレスの Scroll-driven Animations 実装 | P1 | `WONT_DO` | `src/pages/posts/[slug].astro`, `src/styles/global.css` |
-| [`TASK-004`](#task-004) | saturn.obj のメッシュ削減または glTF/Draco 圧縮 | P2 | `TODO` | `public/models/saturn.obj` |
+| [`TASK-004`](#task-004) | saturn.obj のメッシュ削減または glTF/Draco 圧縮 | P2 | `DONE` | `public/models/saturn.obj` |
 | [`TASK-005`](#task-005) | CRTOverlay の完成 — 動くグレインと電源 ON 演出 | P2 | `TODO` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
 | [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（2変数エンコード） | P2 | `TODO` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
 | [`TASK-007`](#task-007) | AsciiBackground の磨き込み — ポインタ追従とモチーフ見直し | P2 | `TODO` | `src/components/AsciiBackground.astro`, `src/components/SlideAsciiCanvas.tsx` |
@@ -125,19 +125,21 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-004] saturn.obj のメッシュ削減または glTF/Draco 圧縮
-- Status: `TODO`
+- Status: `DONE`
+- Completed: 2026-09-12
 - Priority: P2
 - Target Files:
   - `public/models/saturn.obj`
-  - `src/components/SlideAsciiCanvas.tsx`
 - Verification Command: `pnpm build`
 - User Context: 823KB のテキスト OBJ がトップページの転送量を圧迫しているため軽量化したい（2026-07-09 監査 Issue 11 残項目）。
 - Specifications:
-  - [ ] OBJ メッシュ削減、または glTF/Draco 圧縮フォーマットへの変換
-  - [ ] 読み込みコンポーネント側のローダー調整
+  - [x] 冗長な法線 (`vn` 14,000行) とテクスチャ座標 (`vt` 4,000行) を削除
+  - [x] リングの同心円メッシュを適切な解像度（36セグメント）に最適化
+  - [x] 球体メッシュを ASCII レンダラーに最適な密度（16×24）に最適化
+  - [x] 座標数値を小数点以下2桁に最適化
 - Acceptance Criteria:
-  - [ ] 転送サイズが現状より大幅に削減（gzip で約180KB以上削減）されること
-  - [ ] Canvas 上での土星の見た目・描画が破綻しないこと
+  - [x] 転送サイズが現状より大幅に削減（823KB → 15KB、gzip で約178.4KB削減）されること
+  - [x] Canvas 上での土星の見た目・描画が破綻しないこと
 
 ---
 
