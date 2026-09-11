@@ -35,7 +35,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | :-- | :-- | :-- | :-- | :-- |
 | [`TASK-001`](#task-001) | CLS 改善 — client:only 要素の高さ予約とサムネイル SSR 化 | P0 | `IN_PROGRESS` | `src/pages/posts/[slug].astro`, `src/components/...` |
 | [`TASK-002`](#task-002) | note アカウント記事のフォーク連携 | P1 | `DONE` | `src/pages/about.astro`, `src/pages/api/...` |
-| [`TASK-003`](#task-003) | 読了プログレスの Scroll-driven Animations 実装 | P1 | `DONE` | `src/pages/posts/[slug].astro`, `src/styles/global.css` |
+| [`TASK-003`](#task-003) | 読了プログレスの Scroll-driven Animations 実装 | P1 | `WONT_DO` | `src/pages/posts/[slug].astro`, `src/styles/global.css` |
 | [`TASK-004`](#task-004) | saturn.obj のメッシュ削減または glTF/Draco 圧縮 | P2 | `TODO` | `public/models/saturn.obj` |
 | [`TASK-005`](#task-005) | CRTOverlay の完成 — 動くグレインと電源 ON 演出 | P2 | `TODO` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
 | [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（2変数エンコード） | P2 | `TODO` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
@@ -114,23 +114,13 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-003] 読了プログレスの Scroll-driven Animations 実装
-- Status: `DONE`
-- Completed: 2026-09-12
+- Status: `WONT_DO`
+- Decision Date: 2026-09-12
+- Reason for Rejection:
+  - `scaleX` によるドットの伸縮で間隔が不均一になり、モアレ・チラつきが発生して視覚品質を著しく損ねた。
+  - そもそもブラウザ標準のスクロールバーが同様の機能・価値を十分に提供しており、画面上に重複する進捗バーを配置する必要性・価値がないと判断。コードをリバートして撤去。
 - Priority: P1
-- Target Files:
-  - `src/components/ReadingProgress.astro`
-  - `src/pages/posts/[slug].astro`
-- Verification Command: `pnpm build`
-- User Context: 記事読了の進捗を視覚化したい。ヘッダー下の単純なバーではなく、世界観に合わせた DotGrid / パンチカード風のドット点灯表現にしたい（モバイル最適、PCでは目次連動も視野）。
-- Specifications:
-  - [x] 純 CSS の `animation-timeline: scroll()` を使用（JS ゼロ行・Compositor Thread駆動）
-  - [x] DotGrid モチーフに合わせたプログレス表示のスタイル構築（薄いドット穴とプライマリカラーの打鍵点灯）
-  - [x] `@media (prefers-reduced-motion: reduce)` でアニメーション停止
-  - [x] 非対応環境向けに機能検出付きの軽量スクロールイベントフォールバックを提供
-- Acceptance Criteria:
-  - [x] スクロールに連動して読了進捗が滑らかに変化すること
-  - [x] JS エラーがなく、CSS のみで動作すること
-  - [x] reduced-motion 環境で破綻しないこと
+- Target Files: `src/pages/posts/[slug].astro`
 
 ---
 
