@@ -37,7 +37,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-002`](#task-002) | note アカウント記事のフォーク連携 | P1 | `DONE` | `src/pages/about.astro`, `src/pages/api/...` |
 | [`TASK-003`](#task-003) | 読了プログレスの Scroll-driven Animations 実装 | P1 | `WONT_DO` | `src/pages/posts/[slug].astro`, `src/styles/global.css` |
 | [`TASK-004`](#task-004) | saturn.obj のメッシュ削減または glTF/Draco 圧縮 | P2 | `DONE` | `public/models/saturn.obj` |
-| [`TASK-005`](#task-005) | CRTOverlay の調整 — 走査線のみのクリーンなオーバーレイ | P2 | `DONE` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
+| [`TASK-005`](#task-005) | CRTOverlay の完成 — RGBシャドウマスク（つぶつぶピクセルグリッド） | P2 | `DONE` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
 | [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（2変数エンコード） | P2 | `TODO` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
 | [`TASK-007`](#task-007) | AsciiBackground の磨き込み — ポインタ追従とモチーフ見直し | P2 | `TODO` | `src/components/AsciiBackground.astro`, `src/components/SlideAsciiCanvas.tsx` |
 | [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `TODO` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
@@ -143,7 +143,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 
 ---
 
-### [TASK-005] CRTOverlay の調整 — 走査線のみのクリーンなオーバーレイ
+### [TASK-005] CRTOverlay の完成 — RGBシャドウマスク（つぶつぶピクセルグリッド）
 - Status: `DONE`
 - Completed: 2026-09-13
 - Priority: P2
@@ -151,14 +151,15 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
   - `src/components/CRTOverlay.astro`
   - `src/styles/global.css`
 - Verification Command: `pnpm build`
-- User Context: アナログ計器盤の質感を高めるオーバーレイ。動的ノイズは可読性を著しく損なうため撤去し、繊細な水平走査線のみに絞り込んで可読性とレトロ感を両立。
+- User Context: 単なる横縞ではなく、CRT実機の蛍光体マスク（アパーチャーグリル/シャドウマスク）特有の「RGBサブピクセルのつぶつぶ感」を純CSSで再現。文字可読性を阻害しない微細な直交RGBドットグリッドを実現。
 - Specifications:
-  - [x] 動的ノイズ（SVGグレイン）および白フラッシュ・同期ジッターを完全撤去
-  - [x] 3pxピッチの繊細な水平走査線（`repeating-linear-gradient`）のみにシンプル化
-  - [x] テーマ別の走査線透明度（Dark: `0.05`, Light: `0.03`）で文字可読性を確保
+  - [x] 縦方向: 3pxピッチの微小RGBストライプ（赤 1px / 緑 1px / 青 1px）
+  - [x] 横・縦スリット: 3px×3pxの遮光格子スリット（走査線＋ピクセル境界）
+  - [x] テーマ別のブレンド・不透明度最適化（Dark: screen + multiply, Light: multiply）
 - Acceptance Criteria:
-  - [x] ライト/ダーク両テーマで文字がクリアに読め、上品な走査線質感のみが得られること
-  - [x] アニメーション負荷およびチラつきがゼロであること
+  - [x] 参考画像のような本物のCRTの微小な「つぶつぶ感」が得られること
+  - [x] 文字やカードがクリアに読め、モアレやチラつきが発生しないこと
+  - [x] 画像読み込みゼロ・GPU負荷ゼロの純CSSで動作すること
 
 ---
 

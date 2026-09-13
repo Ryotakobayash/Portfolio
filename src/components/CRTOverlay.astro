@@ -1,27 +1,64 @@
 ---
 /**
- * CRTOverlay — subtle CRT scanline effect
+ * CRTOverlay — RGB Shadow Mask (phosphor dot grid) effect
  *
- * A fixed full-screen overlay that adds subtle horizontal scanlines.
+ * Simulates the physical shadow mask / aperture grille of CRT monitors:
+ * 1. Fine vertical RGB subpixel stripes (Red, Green, Blue phosphors)
+ * 2. Horizontal and vertical grid slits (shadow mask dots)
+ *
  * pointer-events: none ensures it never blocks user interaction.
  */
 ---
 
-<div aria-hidden="true" class="crt-scanlines"></div>
+<div aria-hidden="true" class="crt-shadow-mask"></div>
 
 <style>
-  .crt-scanlines {
+  .crt-shadow-mask {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 9000;
+  }
+
+  /* 縦の RGB 蛍光体サブピクセル (幅 3px: 赤 1px, 緑 1px, 青 1px) */
+  .crt-shadow-mask::before {
+    content: "";
+    position: absolute;
+    inset: 0;
     background: repeating-linear-gradient(
-      to bottom,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, var(--crt-scanline-opacity, 0.04)) 2px,
-      rgba(0, 0, 0, var(--crt-scanline-opacity, 0.04)) 3px
+      to right,
+      rgba(255, 0, 0, var(--crt-rgb-opacity, 0.08)) 0px,
+      rgba(255, 0, 0, var(--crt-rgb-opacity, 0.08)) 1px,
+      rgba(0, 255, 0, var(--crt-rgb-opacity, 0.08)) 1px,
+      rgba(0, 255, 0, var(--crt-rgb-opacity, 0.08)) 2px,
+      rgba(0, 0, 255, var(--crt-rgb-opacity, 0.08)) 2px,
+      rgba(0, 0, 255, var(--crt-rgb-opacity, 0.08)) 3px
     );
+    mix-blend-mode: var(--crt-rgb-blend, screen);
+  }
+
+  /* 3px × 3px の格子状シャドウマスク・ドットスリット */
+  .crt-shadow-mask::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      /* 水平走査スリット (高さ 3px: 2px透明, 1px遮光) */
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, var(--crt-grid-opacity, 0.12)) 2px,
+        rgba(0, 0, 0, var(--crt-grid-opacity, 0.12)) 3px
+      ),
+      /* 垂直ピクセル境界スリット (幅 3px: 2px透明, 1px遮光) */
+      repeating-linear-gradient(
+        to right,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, calc(var(--crt-grid-opacity, 0.12) * 0.7)) 2px,
+        rgba(0, 0, 0, calc(var(--crt-grid-opacity, 0.12) * 0.7)) 3px
+      );
     mix-blend-mode: multiply;
   }
 </style>
