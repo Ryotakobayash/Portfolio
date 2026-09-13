@@ -51,10 +51,11 @@
   /* Shadows — subtle, no glow */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
 
-  /* CRT Shadow Mask (RGB Phosphor Dots) */
-  --crt-rgb-opacity: 0.08;
+  /* CRT Aperture Grille / Slot Mask Tokens */
+  --crt-rgb-opacity: 0.16;
   --crt-rgb-blend: screen;
-  --crt-grid-opacity: 0.12;
+  --crt-scanline-opacity: 0.20;
+  --crt-slot-gap-opacity: 0.16;
 }
 
 /* ===== Light Theme ===== */
@@ -75,10 +76,11 @@
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
 
-  /* CRT Shadow Mask (RGB Phosphor Dots) */
-  --crt-rgb-opacity: 0.04;
+  /* CRT Aperture Grille / Slot Mask Tokens */
+  --crt-rgb-opacity: 0.09;
   --crt-rgb-blend: multiply;
-  --crt-grid-opacity: 0.06;
+  --crt-scanline-opacity: 0.12;
+  --crt-slot-gap-opacity: 0.08;
 }
 
 /* ===== Shared Tokens ===== */

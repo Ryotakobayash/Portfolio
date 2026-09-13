@@ -1,10 +1,10 @@
 ---
 /**
- * CRTOverlay — RGB Shadow Mask (phosphor dot grid) effect
+ * CRTOverlay — Aperture Grille / RGB Slot Mask effect
  *
- * Simulates the physical shadow mask / aperture grille of CRT monitors:
- * 1. Fine vertical RGB subpixel stripes (Red, Green, Blue phosphors)
- * 2. Horizontal and vertical grid slits (shadow mask dots)
+ * Simulates high-end CRT monitors (e.g. Sony Trinitron aperture grille):
+ * 1. Elongated vertical RGB subpixel phosphors (aspect ratio ~1:2.6)
+ * 2. Distinct horizontal scanlines and vertical phosphor gap slits
  *
  * pointer-events: none ensures it never blocks user interaction.
  */
@@ -20,45 +20,41 @@
     z-index: 9000;
   }
 
-  /* 縦の RGB 蛍光体サブピクセル (幅 3px: 赤 1px, 緑 1px, 青 1px) */
+  /* 縦の RGB 蛍光体サブピクセル (幅 6px: 各 1.6px 発光 + 0.4px 境界黒スリット) */
   .crt-shadow-mask::before {
     content: "";
     position: absolute;
     inset: 0;
     background: repeating-linear-gradient(
       to right,
-      rgba(255, 0, 0, var(--crt-rgb-opacity, 0.08)) 0px,
-      rgba(255, 0, 0, var(--crt-rgb-opacity, 0.08)) 1px,
-      rgba(0, 255, 0, var(--crt-rgb-opacity, 0.08)) 1px,
-      rgba(0, 255, 0, var(--crt-rgb-opacity, 0.08)) 2px,
-      rgba(0, 0, 255, var(--crt-rgb-opacity, 0.08)) 2px,
-      rgba(0, 0, 255, var(--crt-rgb-opacity, 0.08)) 3px
+      rgba(255, 30, 30, var(--crt-rgb-opacity, 0.16)) 0px,
+      rgba(255, 30, 30, var(--crt-rgb-opacity, 0.16)) 1.6px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 1.6px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 2.0px,
+      rgba(30, 255, 60, var(--crt-rgb-opacity, 0.16)) 2.0px,
+      rgba(30, 255, 60, var(--crt-rgb-opacity, 0.16)) 3.6px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 3.6px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 4.0px,
+      rgba(40, 100, 255, var(--crt-rgb-opacity, 0.16)) 4.0px,
+      rgba(40, 100, 255, var(--crt-rgb-opacity, 0.16)) 5.6px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 5.6px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 6.0px
     );
     mix-blend-mode: var(--crt-rgb-blend, screen);
   }
 
-  /* 3px × 3px の格子状シャドウマスク・ドットスリット */
+  /* 横の水平走査線スリット (高さ 6px: 4.2px 発光スロット + 1.8px 遮光走査線) */
   .crt-shadow-mask::after {
     content: "";
     position: absolute;
     inset: 0;
-    background:
-      /* 水平走査スリット (高さ 3px: 2px透明, 1px遮光) */
-      repeating-linear-gradient(
-        to bottom,
-        transparent 0px,
-        transparent 2px,
-        rgba(0, 0, 0, var(--crt-grid-opacity, 0.12)) 2px,
-        rgba(0, 0, 0, var(--crt-grid-opacity, 0.12)) 3px
-      ),
-      /* 垂直ピクセル境界スリット (幅 3px: 2px透明, 1px遮光) */
-      repeating-linear-gradient(
-        to right,
-        transparent 0px,
-        transparent 2px,
-        rgba(0, 0, 0, calc(var(--crt-grid-opacity, 0.12) * 0.7)) 2px,
-        rgba(0, 0, 0, calc(var(--crt-grid-opacity, 0.12) * 0.7)) 3px
-      );
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 4.2px,
+      rgba(0, 0, 0, var(--crt-scanline-opacity, 0.20)) 4.2px,
+      rgba(0, 0, 0, var(--crt-scanline-opacity, 0.20)) 6.0px
+    );
     mix-blend-mode: multiply;
   }
 </style>
