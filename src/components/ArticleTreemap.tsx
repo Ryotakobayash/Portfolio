@@ -15,11 +15,37 @@ export default function ArticleTreemap({ posts }: Props) {
     const chartRef = useRef<HighchartsReactRefObject>(null);
     const isDark = useTheme();
     const [treemapReady, setTreemapReady] = useState(false);
+    const [pvMap, setPvMap] = useState<Record<string, number>>({});
+    const [totalPV, setTotalPV] = useState<number>(0);
+    const [source, setSource] = useState<string>('Local Files');
 
     // 合計文字数の計算
     const totalWords = useMemo(() => {
         return posts.reduce((acc, post) => acc + (post.wordCount || 0), 0);
     }, [posts]);
+
+    // PV データを API Route から非同期フェッチ
+    useEffect(() => {
+        let isMounted = true;
+        fetch('/api/pv/treemap')
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then((data) => {
+                if (!isMounted) return;
+                if (data.pvMap) setPvMap(data.pvMap);
+                if (data.totalPV != null) setTotalPV(data.totalPV);
+                if (data.source === 'ga4') setSource('Google Analytics 4');
+                else if (data.source === 'dummy') setSource('Local Files (Estimated PV)');
+            })
+            .catch((err) => {
+                console.warn('Failed to fetch PV data for Treemap:', err);
+            });
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     // Highcharts Treemap / Heatmap モジュールを動的にロード
     useEffect(() => {
@@ -37,10 +63,10 @@ export default function ArticleTreemap({ posts }: Props) {
         });
     }, []);
 
-    // Treemap データ生成（ジャンル→階層構造）
+    // Treemap データ生成（ジャンル→階層構造、PV数に応じた色の濃度変調）
     const treemapData = useMemo(() => {
-        return buildGenreData(posts);
-    }, [posts]);
+        return buildGenreData(posts, pvMap);
+    }, [posts, pvMap]);
 
     // チャートオプション
     const options: Highcharts.Options = useMemo(() => {
@@ -59,11 +85,15 @@ export default function ArticleTreemap({ posts }: Props) {
                 useHTML: true,
                 formatter: function (this: Highcharts.Point): string {
                     const point = this as any;
+                    const pvText = point.pv != null ? `${point.pv.toLocaleString()} PV` : '---';
                     return `
-                        <div style="padding:4px 8px">
-                            <b>${point.name}</b><br/>
-                            <span style="color:${textColor}">Words (Area): ${point.value.toLocaleString()}</span><br/>
-                            <span style="color:${textColor}">${point.primaryTag || ''}</span>
+                        <div style="padding:6px 10px; font-size:12px; line-height:1.5;">
+                            <b style="font-size:13px;">${point.name}</b><br/>
+                            <div style="margin-top:4px; display:flex; flex-direction:column; gap:2px;">
+                                <span style="color:${textColor}">Words (Area): <b>${point.value.toLocaleString()}</b></span>
+                                <span style="color:${textColor}">Views (Color): <b>${pvText}</b></span>
+                                <span style="color:${textColor}; font-size:11px; opacity:0.8;">Category: ${point.primaryTag || ''}</span>
+                            </div>
                         </div>
                     `;
                 },
@@ -151,10 +181,10 @@ export default function ArticleTreemap({ posts }: Props) {
                         {tag}
                     </span>
                 ))}
-                <div style={{ marginLeft: 'auto', display: 'flex', gap: '16px', alignItems: 'center' }}>
-                    <span>※ ブロック面積 = 文字数</span>
+                <div style={{ marginLeft: 'auto', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span>※ ブロック面積 = 文字数 / 色の濃度 = PV数</span>
                     {totalWords > 0 && (
-                        <span>Total: {totalWords.toLocaleString()} Words</span>
+                        <span>Total: {totalWords.toLocaleString()} Words{totalPV > 0 ? ` / ${totalPV.toLocaleString()} PV` : ''}</span>
                     )}
                 </div>
             </div>
@@ -164,7 +194,7 @@ export default function ArticleTreemap({ posts }: Props) {
                 marginTop: '12px', fontSize: '0.6rem', color: 'var(--color-text-muted)',
                 fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
             }}>
-                Source: Local Files
+                Source: {source}
             </div>
         </div>
     );
