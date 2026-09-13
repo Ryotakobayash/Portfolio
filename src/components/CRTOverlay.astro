@@ -20,30 +20,30 @@
     z-index: 9000;
   }
 
-  /* 縦の RGB 蛍光体サブピクセル (幅 6px: 各 1.6px 発光 + 0.4px 境界黒スリット) */
+  /* 縦の RGB 蛍光体サブピクセル (幅 6px: 各 1.75px 発光 + 0.25px 微細スリット) */
   .crt-shadow-mask::before {
     content: "";
     position: absolute;
     inset: 0;
     background: repeating-linear-gradient(
       to right,
-      rgba(255, 30, 30, var(--crt-rgb-opacity, 0.16)) 0px,
-      rgba(255, 30, 30, var(--crt-rgb-opacity, 0.16)) 1.6px,
-      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 1.6px,
-      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 2.0px,
-      rgba(30, 255, 60, var(--crt-rgb-opacity, 0.16)) 2.0px,
-      rgba(30, 255, 60, var(--crt-rgb-opacity, 0.16)) 3.6px,
-      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 3.6px,
-      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 4.0px,
-      rgba(40, 100, 255, var(--crt-rgb-opacity, 0.16)) 4.0px,
-      rgba(40, 100, 255, var(--crt-rgb-opacity, 0.16)) 5.6px,
-      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 5.6px,
-      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.16)) 6.0px
+      rgba(255, 30, 30, var(--crt-rgb-opacity, 0.09)) 0px,
+      rgba(255, 30, 30, var(--crt-rgb-opacity, 0.09)) 1.75px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.06)) 1.75px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.06)) 2.0px,
+      rgba(30, 255, 60, var(--crt-rgb-opacity, 0.09)) 2.0px,
+      rgba(30, 255, 60, var(--crt-rgb-opacity, 0.09)) 3.75px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.06)) 3.75px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.06)) 4.0px,
+      rgba(40, 100, 255, var(--crt-rgb-opacity, 0.09)) 4.0px,
+      rgba(40, 100, 255, var(--crt-rgb-opacity, 0.09)) 5.75px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.06)) 5.75px,
+      rgba(0, 0, 0, var(--crt-slot-gap-opacity, 0.06)) 6.0px
     );
     mix-blend-mode: var(--crt-rgb-blend, screen);
   }
 
-  /* 横の水平走査線スリット (高さ 6px: 4.2px 発光スロット + 1.8px 遮光走査線) */
+  /* 横の水平走査線スリット (高さ 6px: 5.0px 発光スロット + 1.0px 極細遮光走査線) */
   .crt-shadow-mask::after {
     content: "";
     position: absolute;
@@ -51,9 +51,9 @@
     background: repeating-linear-gradient(
       to bottom,
       transparent 0px,
-      transparent 4.2px,
-      rgba(0, 0, 0, var(--crt-scanline-opacity, 0.20)) 4.2px,
-      rgba(0, 0, 0, var(--crt-scanline-opacity, 0.20)) 6.0px
+      transparent 5.0px,
+      rgba(0, 0, 0, var(--crt-scanline-opacity, 0.08)) 5.0px,
+      rgba(0, 0, 0, var(--crt-scanline-opacity, 0.08)) 6.0px
     );
     mix-blend-mode: multiply;
   }

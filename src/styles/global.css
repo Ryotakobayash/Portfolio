@@ -51,11 +51,11 @@
   /* Shadows — subtle, no glow */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
 
-  /* CRT Aperture Grille / Slot Mask Tokens */
-  --crt-rgb-opacity: 0.16;
+  /* CRT Aperture Grille / Slot Mask Tokens (Readability-optimized) */
+  --crt-rgb-opacity: 0.09;
   --crt-rgb-blend: screen;
-  --crt-scanline-opacity: 0.20;
-  --crt-slot-gap-opacity: 0.16;
+  --crt-scanline-opacity: 0.08;
+  --crt-slot-gap-opacity: 0.06;
 }
 
 /* ===== Light Theme ===== */
@@ -76,11 +76,11 @@
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
 
-  /* CRT Aperture Grille / Slot Mask Tokens */
-  --crt-rgb-opacity: 0.09;
+  /* CRT Aperture Grille / Slot Mask Tokens (Readability-optimized) */
+  --crt-rgb-opacity: 0.05;
   --crt-rgb-blend: multiply;
-  --crt-scanline-opacity: 0.12;
-  --crt-slot-gap-opacity: 0.08;
+  --crt-scanline-opacity: 0.05;
+  --crt-slot-gap-opacity: 0.04;
 }
 
 /* ===== Shared Tokens ===== */
