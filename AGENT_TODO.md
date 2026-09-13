@@ -38,7 +38,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-003`](#task-003) | 読了プログレスの Scroll-driven Animations 実装 | P1 | `WONT_DO` | `src/pages/posts/[slug].astro`, `src/styles/global.css` |
 | [`TASK-004`](#task-004) | saturn.obj のメッシュ削減または glTF/Draco 圧縮 | P2 | `DONE` | `public/models/saturn.obj` |
 | [`TASK-005`](#task-005) | CRTOverlay の完成 — RGBシャドウマスク（つぶつぶピクセルグリッド） | P2 | `DONE` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
-| [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（2変数エンコード） | P2 | `TODO` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
+| [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（2変数エンコード） | P2 | `IN_PROGRESS` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
 | [`TASK-007`](#task-007) | AsciiBackground の磨き込み — ポインタ追従とモチーフ見直し | P2 | `TODO` | `src/components/AsciiBackground.astro`, `src/components/SlideAsciiCanvas.tsx` |
 | [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `TODO` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
 | [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `TODO` | `vercel.json` |
@@ -164,7 +164,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-006] ArticleTreemap の PV データ復活（2変数エンコード）
-- Status: `TODO`
+- Status: `IN_PROGRESS`
 - Priority: P2
 - Target Files:
   - `src/components/ArticleTreemap.tsx`
