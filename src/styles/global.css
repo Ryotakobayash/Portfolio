@@ -51,9 +51,8 @@
   /* Shadows — subtle, no glow */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
 
-  /* CRT Overlay Tokens */
-  --crt-grain-opacity: 0.12;
-  --crt-scanline-opacity: 0.04;
+  /* CRT Scanline Token */
+  --crt-scanline-opacity: 0.05;
 }
 
 /* ===== Light Theme ===== */
@@ -74,9 +73,8 @@
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
 
-  /* CRT Overlay Tokens */
-  --crt-grain-opacity: 0.05;
-  --crt-scanline-opacity: 0.025;
+  /* CRT Scanline Token */
+  --crt-scanline-opacity: 0.03;
 }
 
 /* ===== Shared Tokens ===== */
