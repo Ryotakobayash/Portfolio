@@ -39,9 +39,10 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-004`](#task-004) | saturn.obj のメッシュ削減または glTF/Draco 圧縮 | P2 | `DONE` | `public/models/saturn.obj` |
 | [`TASK-005`](#task-005) | CRTOverlay の完成 — RGBシャドウマスク（つぶつぶピクセルグリッド） | P2 | `DONE` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
 | [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（Categorical / Sequential 切り替えUI） | P2 | `DONE` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
-| [`TASK-007`](#task-007) | AsciiBackground の磨き込み — ポインタ追従とモチーフ見直し | P2 | `TODO` | `src/components/AsciiBackground.astro`, `src/components/SlideAsciiCanvas.tsx` |
+| [`TASK-007`](#task-007) | AsciiBackground の 404 ページへの適用（信号途絶演出） | P2 | `TODO` | `src/components/AsciiBackground.tsx`, `src/pages/404.astro` |
 | [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `TODO` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
 | [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `TODO` | `vercel.json` |
+| [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `TODO` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
 
 ---
 
@@ -186,21 +187,22 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 
 ---
 
-### [TASK-007] AsciiBackground の磨き込み — ポインタ追従とモチーフ見直し
+### [TASK-007] AsciiBackground の 404 ページへの適用（信号途絶演出）
 - Status: `TODO`
 - Priority: P2
 - Target Files:
-  - `src/components/AsciiBackground.astro`
-  - `src/components/SlideAsciiCanvas.tsx`
+  - `src/components/AsciiBackground.tsx`
   - `src/pages/404.astro`
 - Verification Command: `pnpm build`
-- User Context: 背景 3D モデルのポインタ追従と、モチーフ（土星）自体の見直し。404 ページへの流用。
+- User Context: 背景 3D ASCII（土星モデル）を 404 ページへ流用。通信途絶（SIGNAL LOST）の世界観に沿って、信号が途絶えかけたチカチカ（flicker）する演出を適用する。（※ポインタ追従は不要と判断）
 - Specifications:
-  - [ ] マウス座標に対する lerp 視線追従の実装
-  - [ ] 404 ページ (`█▓▒░` の flicker 演出) への「信号途絶衛星」としての適用
+  - [ ] `404.astro` に AsciiBackground を配置
+  - [ ] 404 の `signal-flicker` アニメーションと連動した、不透明度の低い点滅・明滅演出を適用
+  - [ ] メインコンテンツの文字（404, SIGNAL LOST, メッセージ）の可読性を阻害しない z-index / opacity 調整
 - Acceptance Criteria:
-  - [ ] マウス操作に滑らかに追従すること（低負荷）
-  - [ ] 404 ページで世界観に沿った演出が表示されること
+  - [ ] 404 ページで世界観に沿った ASCII 土星の信号途絶演出が表示されること
+  - [ ] モバイル・デスクトップでリンク操作やテキストの可読性が維持されていること
+  - [ ] `pnpm build` でエラーが発生しないこと
 
 ---
 
@@ -236,6 +238,24 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 - Acceptance Criteria:
   - [ ] コンソールに違反レポートが出ない（または予期されたレポートのみが出る）こと
   - [ ] 既存機能（GA4, Vercel Analytics, Highcharts）に影響が出ないこと
+
+---
+
+### [TASK-010] モバイル表示時の ASCII 装飾の最適化・見え方改善
+- Status: `TODO`
+- Priority: P2
+- Target Files:
+  - `src/components/AsciiBackground.tsx`
+  - `src/components/slides/SlideAsciiCanvas.tsx`
+- Verification Command: `pnpm build`
+- User Context: スマートフォンなどの狭い画面幅（モバイルブラウザ）で表示した際、ASCII 装飾（背景の ASCII 3D や文字密度）の見え方やバランスを最適化したい。
+- Specifications:
+  - [ ] モバイル端末の画面幅（〜480px）における ASCII フォントサイズ・解像度・行間（line-height）の調整
+  - [ ] ASCII キャンバスのスケール・カメラ距離・トリミングの最適化
+  - [ ] 本文コンテンツや Bento カードとの重なり・コントラスト調整
+- Acceptance Criteria:
+  - [ ] モバイル表示時（幅375px〜430px）で ASCII 装飾が潰れたり見切れたりせず、美しく認識できること
+  - [ ] 画面の縦横比やスクロール時に不要なレイアウトシフトが発生しないこと
 
 ---
 
