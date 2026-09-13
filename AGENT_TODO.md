@@ -38,7 +38,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-003`](#task-003) | 読了プログレスの Scroll-driven Animations 実装 | P1 | `WONT_DO` | `src/pages/posts/[slug].astro`, `src/styles/global.css` |
 | [`TASK-004`](#task-004) | saturn.obj のメッシュ削減または glTF/Draco 圧縮 | P2 | `DONE` | `public/models/saturn.obj` |
 | [`TASK-005`](#task-005) | CRTOverlay の完成 — RGBシャドウマスク（つぶつぶピクセルグリッド） | P2 | `DONE` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
-| [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（2変数エンコード） | P2 | `DONE` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
+| [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（Categorical / Sequential 切り替えUI） | P2 | `DONE` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
 | [`TASK-007`](#task-007) | AsciiBackground の磨き込み — ポインタ追従とモチーフ見直し | P2 | `TODO` | `src/components/AsciiBackground.astro`, `src/components/SlideAsciiCanvas.tsx` |
 | [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `TODO` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
 | [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `TODO` | `vercel.json` |
@@ -163,21 +163,25 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 
 ---
 
-### [TASK-006] ArticleTreemap の PV データ復活（2変数エンコード）
+### [TASK-006] ArticleTreemap の PV データ復活（Categorical / Sequential 切り替えUI）
 - Status: `DONE`
-- Completed: 2026-09-13
+- Completed: 2026-09-14
 - Priority: P2
 - Target Files:
   - `src/components/ArticleTreemap.tsx`
+  - `src/utils/treemapUtils.ts`
   - `src/pages/api/pv/treemap.ts`
 - Verification Command: `pnpm build`
-- User Context: 一度外した PV データを、「面積 = 文字数、色の濃度 = PV」の2変数エンコードとして復活させたい。
+- User Context: ジャンル分け(categorical)とPV数マッピング(sequential)を混在させず、デフォルトはジャンル別、セグメンテッドコントロールでPVヒートマップ表示に切り替え可能にする。
 - Specifications:
   - [x] API 側で文字数と PV データの両方を返すように調整
-  - [x] Highcharts Treemap の colorAxis / saturation ロジックを実装
-  - [x] Tooltip に文字数と PV の両方を併記
+  - [x] デフォルト表示を categorical（ジャンル別・タグ固有色）に設定
+  - [x] Highcharts Treemap の colorAxis sequential パレット（PV別フラット表示）を実装
+  - [x] レトロフューチャーデザインのセグメンテッドコントロール（GENRE / PAGE VIEWS）を配置
+  - [x] 各モードに応じた凡例・注記（タグ一覧 / カラーバー凡例）の動的切り替え
 - Acceptance Criteria:
-  - [x] 2変数（文字数×PV）が視覚的に区別できること
+  - [x] セグメンテッドコントロールで2つの表示モードが滑らかに切り替わること
+  - [x] デフォルトのジャンル別とPVヒートマップが直感的に識別できること
   - [x] PV API 取得失敗時もフォールバック表示できること
 
 ---
