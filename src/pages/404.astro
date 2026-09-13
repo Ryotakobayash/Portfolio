@@ -4,33 +4,76 @@ export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_NAME } from '../consts';
+import AsciiBackground from '../components/AsciiBackground';
 ---
 
 <BaseLayout title={`404 — Page Not Found | ${SITE_NAME}`} description="The page you are looking for could not be found.">
-  <div class="not-found">
-    <div class="morse">█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░</div>
+  <div class="not-found-container">
+    <div class="not-found-bg" aria-hidden="true">
+      <AsciiBackground client:load scale={0.08} speed={0.35} />
+    </div>
 
-    <div class="not-found__code">404</div>
+    <div class="not-found">
+      <div class="morse">█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░</div>
 
-    <div class="not-found__label">SIGNAL LOST</div>
+      <div class="not-found__code">404</div>
 
-    <p class="not-found__message">
-      The page you're looking for has drifted beyond our telemetry range.
-    </p>
+      <div class="not-found__label">SIGNAL LOST</div>
 
-    <a href="/" class="link-arrow not-found__link">← Return to Base</a>
+      <p class="not-found__message">
+        The page you're looking for has drifted beyond our telemetry range.
+      </p>
 
-    <div class="morse">░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█</div>
+      <a href="/" class="link-arrow not-found__link">← Return to Base</a>
+
+      <div class="morse">░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░▒▓█</div>
+    </div>
   </div>
 </BaseLayout>
 
 <style>
+  .not-found-container {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - var(--header-height, 60px) - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .not-found-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    --bg-ascii-opacity: 0.24;
+    opacity: var(--bg-ascii-opacity);
+    animation: bg-signal-flicker 6s infinite;
+    mix-blend-mode: screen;
+  }
+
+  :global([data-theme="light"]) .not-found-bg {
+    --bg-ascii-opacity: 0.14;
+    mix-blend-mode: multiply;
+  }
+
+  @keyframes bg-signal-flicker {
+    0%, 94%, 100% { opacity: var(--bg-ascii-opacity); }
+    95%           { opacity: calc(var(--bg-ascii-opacity) * 0.15); }
+    96%           { opacity: calc(var(--bg-ascii-opacity) * 1.6); }
+    97%           { opacity: calc(var(--bg-ascii-opacity) * 0.05); }
+    98%           { opacity: calc(var(--bg-ascii-opacity) * 1.3); }
+    99%           { opacity: calc(var(--bg-ascii-opacity) * 0.4); }
+  }
+
   .not-found {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 60vh;
     gap: 1.5rem;
     text-align: center;
     padding: 2rem;

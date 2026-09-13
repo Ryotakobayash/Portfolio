@@ -39,7 +39,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-004`](#task-004) | saturn.obj のメッシュ削減または glTF/Draco 圧縮 | P2 | `DONE` | `public/models/saturn.obj` |
 | [`TASK-005`](#task-005) | CRTOverlay の完成 — RGBシャドウマスク（つぶつぶピクセルグリッド） | P2 | `DONE` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
 | [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（Categorical / Sequential 切り替えUI） | P2 | `DONE` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
-| [`TASK-007`](#task-007) | AsciiBackground の 404 ページへの適用（信号途絶演出） | P2 | `IN_PROGRESS` | `src/components/AsciiBackground.tsx`, `src/pages/404.astro` |
+| [`TASK-007`](#task-007) | AsciiBackground の 404 ページへの適用（信号途絶演出） | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/pages/404.astro` |
 | [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `TODO` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
 | [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `TODO` | `vercel.json` |
 | [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `TODO` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
@@ -188,7 +188,8 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-007] AsciiBackground の 404 ページへの適用（信号途絶演出）
-- Status: `IN_PROGRESS`
+- Status: `DONE`
+- Completed: 2026-09-14
 - Priority: P2
 - Target Files:
   - `src/components/AsciiBackground.tsx`
@@ -196,13 +197,13 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 - Verification Command: `pnpm build`
 - User Context: 背景 3D ASCII（土星モデル）を 404 ページへ流用。通信途絶（SIGNAL LOST）の世界観に沿って、信号が途絶えかけたチカチカ（flicker）する演出を適用する。（※ポインタ追従は不要と判断）
 - Specifications:
-  - [ ] `404.astro` に AsciiBackground を配置
-  - [ ] 404 の `signal-flicker` アニメーションと連動した、不透明度の低い点滅・明滅演出を適用
-  - [ ] メインコンテンツの文字（404, SIGNAL LOST, メッセージ）の可読性を阻害しない z-index / opacity 調整
+  - [x] `404.astro` に AsciiBackground を配置
+  - [x] 404 の `signal-flicker` アニメーションと連動した、不透明度の低い点滅・明滅演出を適用
+  - [x] メインコンテンツの文字（404, SIGNAL LOST, メッセージ）の可読性を阻害しない z-index / opacity 調整
 - Acceptance Criteria:
-  - [ ] 404 ページで世界観に沿った ASCII 土星の信号途絶演出が表示されること
-  - [ ] モバイル・デスクトップでリンク操作やテキストの可読性が維持されていること
-  - [ ] `pnpm build` でエラーが発生しないこと
+  - [x] 404 ページで世界観に沿った ASCII 土星の信号途絶演出が表示されること
+  - [x] モバイル・デスクトップでリンク操作やテキストの可読性が維持されていること
+  - [x] `pnpm build` でエラーが発生しないこと
 
 ---
 
