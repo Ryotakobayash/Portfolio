@@ -181,13 +181,41 @@ const isActive = (path: string) => {
         const current = document.documentElement.getAttribute('data-fx') || 'on';
         updateFxToggleUI(current);
 
+        let powerTimeout: number | undefined;
+
         toggle.addEventListener('click', () => {
           const current = document.documentElement.getAttribute('data-fx') || 'on';
           const next = current === 'on' ? 'off' : 'on';
-          document.documentElement.setAttribute('data-fx', next);
-          document.documentElement.setAttribute('data-crt', next);
-          localStorage.setItem('site-fx', next);
-          updateFxToggleUI(next);
+
+          if (powerTimeout) {
+            window.clearTimeout(powerTimeout);
+            powerTimeout = undefined;
+          }
+
+          if (next === 'on') {
+            document.documentElement.setAttribute('data-fx', 'on');
+            document.documentElement.setAttribute('data-crt', 'on');
+            localStorage.setItem('site-fx', 'on');
+            updateFxToggleUI('on');
+
+            document.body.classList.remove('crt-powering-off');
+            document.body.classList.add('crt-powering-on');
+            powerTimeout = window.setTimeout(() => {
+              document.body.classList.remove('crt-powering-on');
+            }, 600);
+          } else {
+            // OFF時: 収束ビームアニメーションを見せてから属性を off に切り替える
+            document.body.classList.remove('crt-powering-on');
+            document.body.classList.add('crt-powering-off');
+            updateFxToggleUI('off');
+
+            powerTimeout = window.setTimeout(() => {
+              document.documentElement.setAttribute('data-fx', 'off');
+              document.documentElement.setAttribute('data-crt', 'off');
+              localStorage.setItem('site-fx', 'off');
+              document.body.classList.remove('crt-powering-off');
+            }, 420);
+          }
         });
       }
 

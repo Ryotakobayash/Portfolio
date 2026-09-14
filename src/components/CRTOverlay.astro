@@ -1,23 +1,137 @@
 ---
 /**
- * CRTOverlay — Aperture Grille / RGB Slot Mask effect
+ * CRTOverlay — Multi-layer vintage CRT monitor simulation
  *
- * Simulates high-end CRT monitors (e.g. Sony Trinitron aperture grille):
- * 1. Elongated vertical RGB subpixel phosphors (aspect ratio ~1:2.6)
- * 2. Distinct horizontal scanlines and vertical phosphor gap slits
+ * Layers:
+ * 1. .crt-curvature-frame: Curvature vignette, inner bezel shadow, and CRT rounded corners
+ * 2. .crt-glass-glare: Ambient curved glass reflection & gloss
+ * 3. .crt-scanline-sweep: Rolling electron beam sweep line (cathode ray scan)
+ * 4. .crt-chromatic-aberration: Edge optical RGB fringing (center text stays 100% sharp)
+ * 5. .crt-shadow-mask: Aperture grille vertical RGB phosphors & horizontal scanline slits
+ * 6. .crt-power-flash: Power-on / Power-off beam collapse flash
  *
- * pointer-events: none ensures it never blocks user interaction.
+ * pointer-events: none ensures zero interaction interference.
  */
 ---
 
-<div aria-hidden="true" class="crt-shadow-mask"></div>
+<div aria-hidden="true" class="crt-overlay-root">
+  <!-- 1. 画面湾曲ビネット ＆ ベゼルフレーム（四隅のブラウン管カーブ） -->
+  <div class="crt-curvature-frame"></div>
+
+  <!-- 2. 曲面ガラスの環境光ツヤ反射 -->
+  <div class="crt-glass-glare"></div>
+
+  <!-- 3. 動的走査ビーム（上から下へ通過するカソードレイスイープ） -->
+  <div class="crt-scanline-sweep"></div>
+
+  <!-- 4. 周辺部の光学色収差（外周のみ赤青フリンジ） -->
+  <div class="crt-chromatic-aberration"></div>
+
+  <!-- 5. 縦RGB蛍光体サブピクセル ＆ 水平走査線スリット -->
+  <div class="crt-shadow-mask"></div>
+
+  <!-- 6. 電源ON/OFFビームフラッシュ -->
+  <div class="crt-power-flash"></div>
+</div>
 
 <style>
-  .crt-shadow-mask {
+  .crt-overlay-root {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 9000;
+    overflow: hidden;
+  }
+
+  /* ===== 1. 画面湾曲ビネット ＆ ベゼルフレーム ===== */
+  .crt-curvature-frame {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* 樽型ブラウン管ガラスの放射状減光 */
+    background: radial-gradient(
+      ellipse at 50% 50%,
+      transparent 55%,
+      rgba(0, 0, 0, var(--crt-vignette-mid, 0.15)) 80%,
+      rgba(0, 0, 0, var(--crt-vignette-edge, 0.55)) 100%
+    );
+    /* 画面内側のベゼルシャドウ */
+    box-shadow:
+      inset 0 0 60px 15px rgba(0, 0, 0, var(--crt-bezel-shadow, 0.45)),
+      inset 0 0 16px 4px rgba(0, 0, 0, var(--crt-bezel-edge, 0.7));
+  }
+
+  /* ブラウン管の四隅の丸みと外側黒ベゼル */
+  .crt-curvature-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--crt-screen-radius, 14px);
+    box-shadow: 0 0 0 100vmax rgba(5, 7, 12, var(--crt-outer-bezel, 0.35));
+    pointer-events: none;
+  }
+
+  /* ===== 2. 曲面ガラスの環境光ツヤ反射 ===== */
+  .crt-glass-glare {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 80% 50% at 25% 15%,
+      rgba(255, 255, 255, var(--crt-glare-opacity, 0.04)) 0%,
+      rgba(255, 255, 255, calc(var(--crt-glare-opacity, 0.04) * 0.4)) 40%,
+      transparent 75%
+    );
+    mix-blend-mode: overlay;
+  }
+
+  /* ===== 3. 動的走査ビーム（スイープ） ===== */
+  .crt-scanline-sweep {
+    position: absolute;
+    top: -25vh;
+    left: 0;
+    right: 0;
+    height: 25vh;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 240, 255, var(--crt-beam-opacity, 0.035)) 50%,
+      rgba(255, 255, 255, var(--crt-beam-core, 0.055)) 95%,
+      rgba(0, 0, 0, 0.06) 100%
+    );
+    pointer-events: none;
+    animation: crt-sweep-roll var(--crt-sweep-duration, 9s) linear infinite;
+    mix-blend-mode: screen;
+  }
+
+  @keyframes crt-sweep-roll {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(135vh);
+    }
+  }
+
+  /* ===== 4. 周辺部の光学色収差（RGBフリンジ） ===== */
+  .crt-chromatic-aberration {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow:
+      inset 5px 0 16px -2px rgba(255, 35, 35, var(--crt-fringe-opacity, 0.18)),
+      inset -5px 0 16px -2px rgba(0, 240, 255, var(--crt-fringe-opacity, 0.18)),
+      inset 0 4px 12px -2px rgba(255, 35, 35, calc(var(--crt-fringe-opacity, 0.18) * 0.7)),
+      inset 0 -4px 12px -2px rgba(0, 240, 255, calc(var(--crt-fringe-opacity, 0.18) * 0.7));
+    mix-blend-mode: screen;
+  }
+
+  /* ===== 5. 縦RGB蛍光体サブピクセル ＆ 水平走査線スリット ===== */
+  .crt-shadow-mask {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    animation: crt-phosphor-breathe 8s ease-in-out infinite;
   }
 
   /* 縦の RGB 蛍光体サブピクセル (幅 6px: 各 1.75px 発光 + 0.25px 微細スリット) */
@@ -56,5 +170,80 @@
       rgba(0, 0, 0, var(--crt-scanline-opacity, 0.08)) 6.0px
     );
     mix-blend-mode: multiply;
+  }
+
+  /* 蛍光体の極微細な呼吸ゆらぎ（100% ⇔ 93%） */
+  @keyframes crt-phosphor-breathe {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.93;
+    }
+  }
+
+  /* ===== 6. 電源ON/OFFビームフラッシュ ===== */
+  .crt-power-flash {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  :global(.crt-powering-on) .crt-power-flash {
+    animation: crt-power-on-flash 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  :global(.crt-powering-off) .crt-power-flash {
+    animation: crt-power-off-flash 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes crt-power-on-flash {
+    0% {
+      opacity: 1;
+      background: #ffffff;
+      transform: scaleY(0.003);
+      box-shadow: 0 0 50px 20px #00f0ff, 0 0 100px 40px #ffffff;
+    }
+    40% {
+      opacity: 1;
+      background: #e0f7ff;
+      transform: scaleY(0.008);
+      box-shadow: 0 0 60px 25px #00f0ff;
+    }
+    70% {
+      opacity: 0.8;
+      background: transparent;
+      transform: scaleY(1);
+      box-shadow: inset 0 0 100px rgba(0, 240, 255, 0.5);
+    }
+    100% {
+      opacity: 0;
+      transform: scaleY(1);
+      box-shadow: none;
+    }
+  }
+
+  @keyframes crt-power-off-flash {
+    0% {
+      opacity: 0;
+      transform: scaleY(1);
+    }
+    30% {
+      opacity: 0.9;
+      background: rgba(0, 240, 255, 0.3);
+      transform: scaleY(0.015);
+      box-shadow: 0 0 40px 10px #00f0ff;
+    }
+    70% {
+      opacity: 1;
+      background: #ffffff;
+      transform: scale(0.15, 0.003);
+      box-shadow: 0 0 30px 10px #ffffff;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0, 0);
+    }
   }
 </style>

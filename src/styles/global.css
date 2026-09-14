@@ -51,7 +51,18 @@
   /* Shadows — subtle, no glow */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
 
-  /* CRT Aperture Grille / Slot Mask Tokens (Readability-optimized) */
+  /* CRT Master Controls (FX: ON — Dark Mode) */
+  --crt-vignette-mid: 0.18;
+  --crt-vignette-edge: 0.60;
+  --crt-bezel-shadow: 0.50;
+  --crt-bezel-edge: 0.75;
+  --crt-screen-radius: 14px;
+  --crt-outer-bezel: 0.40;
+  --crt-glare-opacity: 0.04;
+  --crt-beam-opacity: 0.035;
+  --crt-beam-core: 0.055;
+  --crt-sweep-duration: 9s;
+  --crt-fringe-opacity: 0.18;
   --crt-rgb-opacity: 0.09;
   --crt-rgb-blend: screen;
   --crt-scanline-opacity: 0.08;
@@ -76,7 +87,18 @@
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
 
-  /* CRT Aperture Grille / Slot Mask Tokens (Readability-optimized) */
+  /* CRT Master Controls (FX: ON — Light Mode) */
+  --crt-vignette-mid: 0.08;
+  --crt-vignette-edge: 0.35;
+  --crt-bezel-shadow: 0.25;
+  --crt-bezel-edge: 0.45;
+  --crt-screen-radius: 14px;
+  --crt-outer-bezel: 0.20;
+  --crt-glare-opacity: 0.02;
+  --crt-beam-opacity: 0.025;
+  --crt-beam-core: 0.035;
+  --crt-sweep-duration: 9s;
+  --crt-fringe-opacity: 0.10;
   --crt-rgb-opacity: 0.05;
   --crt-rgb-blend: multiply;
   --crt-scanline-opacity: 0.05;
@@ -389,7 +411,7 @@ a:hover {
 }
 
 /* ===== Visual Effects & Decor ONOFF Rules (a11y) ===== */
-:is([data-fx="off"], [data-crt="off"]) .crt-shadow-mask {
+:is([data-fx="off"], [data-crt="off"]) :is(.crt-overlay-root, .crt-shadow-mask) {
   display: none !important;
 }
 
@@ -398,7 +420,7 @@ a:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root:not([data-fx="on"]):not([data-crt="on"]) .crt-shadow-mask {
+  :root:not([data-fx="on"]):not([data-crt="on"]) :is(.crt-overlay-root, .crt-shadow-mask) {
     display: none !important;
   }
 }
