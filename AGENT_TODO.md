@@ -41,7 +41,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（Categorical / Sequential 切り替えUI） | P2 | `DONE` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
 | [`TASK-007`](#task-007) | AsciiBackground の 404 ページへの適用（信号途絶演出） | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/pages/404.astro` |
 | [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `BLOCKED` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
-| [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `IN_PROGRESS` | `vercel.json` |
+| [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `DONE` | `vercel.json` |
 | [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
 
 ---
@@ -228,18 +228,19 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-009] CSP (Content-Security-Policy) の段階導入
-- Status: `IN_PROGRESS`
+- Status: `DONE`
+- Completed: 2026-09-14
 - Priority: P3
 - Target Files:
   - `vercel.json`
 - Verification Command: `pnpm build`
 - User Context: セキュリティ強化のため CSP を導入したい。いきなりブロックすると機能破損の恐れがあるためレポートモードから始める。
 - Specifications:
-  - [ ] `vercel.json` の headers に `Content-Security-Policy-Report-Only` を設定
-  - [ ] 必要ディレクティブ（script-src, style-src, font-src, connect-src 等）の精査
+  - [x] `vercel.json` の headers に `Content-Security-Policy-Report-Only` を設定
+  - [x] 必要ディレクティブ（script-src, style-src, font-src, connect-src 等）の精査
 - Acceptance Criteria:
-  - [ ] コンソールに違反レポートが出ない（または予期されたレポートのみが出る）こと
-  - [ ] 既存機能（GA4, Vercel Analytics, Highcharts）に影響が出ないこと
+  - [x] コンソールに違反レポートが出ない（または予期されたレポートのみが出る）こと
+  - [x] 既存機能（GA4, Vercel Analytics, Highcharts）に影響が出ないこと
 
 ---
 
