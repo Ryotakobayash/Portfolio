@@ -54,7 +54,7 @@ const isActive = (path: string) => {
 
     <ClientRouter />
 
-    <!-- Dark mode & CRT effects script (run before render to prevent flash) -->
+    <!-- Dark mode & Visual effects (FX) script (run before render to prevent flash) -->
     <script is:inline>
       (function() {
         // Theme
@@ -62,14 +62,16 @@ const isActive = (path: string) => {
         const theme = storedTheme || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
 
-        // CRT & Visual Effects (a11y: prefers-reduced-motion fallback)
-        const storedCrt = localStorage.getItem('crt-effects');
-        if (storedCrt) {
-          document.documentElement.setAttribute('data-crt', storedCrt);
+        // Visual Effects / FX (a11y: prefers-reduced-motion fallback)
+        const storedFx = localStorage.getItem('site-fx') || localStorage.getItem('crt-effects');
+        if (storedFx) {
+          document.documentElement.setAttribute('data-fx', storedFx);
+          document.documentElement.setAttribute('data-crt', storedFx);
         } else {
           const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          const initialCrt = prefersReduced ? 'off' : 'on';
-          document.documentElement.setAttribute('data-crt', initialCrt);
+          const initialFx = prefersReduced ? 'off' : 'on';
+          document.documentElement.setAttribute('data-fx', initialFx);
+          document.documentElement.setAttribute('data-crt', initialFx);
         }
       })();
     </script>
@@ -106,9 +108,9 @@ const isActive = (path: string) => {
 <a href="/talks" class={`nav-link ${isActive('/talks') ? 'nav-link--accent' : ''}`}>Talks</a>
         </nav>
         <div class="header-actions">
-          <button id="crt-toggle" class="crt-toggle" role="switch" aria-checked="true" aria-label="CRTアナログテレビ風装飾の切り替え">
-            <span class="crt-on-text">CRT: ON</span>
-            <span class="crt-off-text">CRT: OFF</span>
+          <button id="fx-toggle" class="fx-toggle" role="switch" aria-checked="true" aria-label="視覚効果・装飾（FX）の切り替え">
+            <span class="fx-on-text">FX: ON</span>
+            <span class="fx-off-text">FX: OFF</span>
           </button>
           <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
             <span class="sun-icon">LIGHT</span>
@@ -153,37 +155,39 @@ const isActive = (path: string) => {
         document.documentElement.setAttribute('data-theme', theme);
       }
 
-      function initCrt() {
-        const stored = localStorage.getItem('crt-effects');
-        let crtState = stored;
-        if (!crtState) {
+      function initFx() {
+        const stored = localStorage.getItem('site-fx') || localStorage.getItem('crt-effects');
+        let fxState = stored;
+        if (!fxState) {
           const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          crtState = prefersReduced ? 'off' : 'on';
+          fxState = prefersReduced ? 'off' : 'on';
         }
-        document.documentElement.setAttribute('data-crt', crtState);
-        updateCrtToggleUI(crtState);
+        document.documentElement.setAttribute('data-fx', fxState);
+        document.documentElement.setAttribute('data-crt', fxState);
+        updateFxToggleUI(fxState);
       }
 
-      function updateCrtToggleUI(state: string) {
-        const toggle = document.getElementById('crt-toggle');
+      function updateFxToggleUI(state: string) {
+        const toggle = document.getElementById('fx-toggle');
         if (!toggle) return;
         const isChecked = state === 'on';
         toggle.setAttribute('aria-checked', isChecked ? 'true' : 'false');
       }
 
-      function setupCrtToggle() {
-        const toggle = document.getElementById('crt-toggle');
+      function setupFxToggle() {
+        const toggle = document.getElementById('fx-toggle');
         if (!toggle) return;
 
-        const current = document.documentElement.getAttribute('data-crt') || 'on';
-        updateCrtToggleUI(current);
+        const current = document.documentElement.getAttribute('data-fx') || 'on';
+        updateFxToggleUI(current);
 
         toggle.addEventListener('click', () => {
-          const current = document.documentElement.getAttribute('data-crt') || 'on';
+          const current = document.documentElement.getAttribute('data-fx') || 'on';
           const next = current === 'on' ? 'off' : 'on';
+          document.documentElement.setAttribute('data-fx', next);
           document.documentElement.setAttribute('data-crt', next);
-          localStorage.setItem('crt-effects', next);
-          updateCrtToggleUI(next);
+          localStorage.setItem('site-fx', next);
+          updateFxToggleUI(next);
         });
       }
 
@@ -244,14 +248,14 @@ const isActive = (path: string) => {
       // astro:page-load は初回ロード時とページ遷移後に発火する
       document.addEventListener('astro:page-load', () => {
         setupThemeToggle();
-        setupCrtToggle();
+        setupFxToggle();
       });
 
       // astro:after-swap は新しいHTMLに入れ替わった直後（表示前）に発火
-      // ここでテーマとCRT属性を再適用しないと、一瞬デフォルトに戻るチラつきが起きる
+      // ここでテーマとFX属性を再適用しないと、一瞬デフォルトに戻るチラつきが起きる
       document.addEventListener('astro:after-swap', () => {
         initTheme();
-        initCrt();
+        initFx();
       });
 
       // /slides/[slug] への遷移開始時にスケルトンを被せる（現在ページの overlay に対して）

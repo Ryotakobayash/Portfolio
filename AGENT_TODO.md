@@ -44,7 +44,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `DONE` | `vercel.json` |
 | [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
 | [`TASK-011`](#task-011) | ブログ記事の脚注（Footnote）UI/UX 刷新（Popover 化と目次衝突の解消） | P1 | `DONE` | `src/pages/posts/[slug].astro` |
-| [`TASK-012`](#task-012) | アナログテレビ風装飾（CRT & 視覚効果）ON/OFF 切り替え機能（a11y 配慮） | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css` |
+| [`TASK-012`](#task-012) | 視覚効果・装飾（FX / CRT）ON/OFF 切り替え機能（a11y 配慮） | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css` |
 
 ---
 
@@ -290,7 +290,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 
 ---
 
-### [TASK-012] アナログテレビ風装飾（CRT & 視覚効果）ON/OFF 切り替え機能（a11y 配慮）
+### [TASK-012] 視覚効果・装飾（FX / CRT）ON/OFF 切り替え機能（a11y 配慮）
 - Status: `DONE`
 - Completed: 2026-09-14
 - Priority: P1
@@ -298,15 +298,16 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
   - `src/layouts/BaseLayout.astro`
   - `src/styles/global.css`
 - Verification Command: `pnpm build`
-- User Context: 制作したアナログテレビ風装飾（CRTOverlay: 縦横のRGBシャドウマスク・走査線）は世界観を強く演出する一方、可読性優先の読者や視覚過敏、a11yの観点からは文字の視認性を損ねるため、ヘッダーにトグルボタンを設置して手軽に ON/OFF できるようにしたい。
+- User Context: アナログテレビ風装飾（CRTOverlay: 縦横のRGBシャドウマスク・走査線）や視覚効果は世界観を演出する一方、可読性優先の読者や視覚過敏、a11yの観点からは文字の視認性を損ねるため、ヘッダーにトグルボタンを設置して手軽に ON/OFF できるようにしたい。また将来の装飾追加も見据えて汎用的な「FX」表現とし、切り替え時の幅ガタつきを完全解消したい。
 - Specifications:
-  - [x] ヘッダーに `CRT: ON` / `CRT: OFF` 切り替えトグルボタンを追加（`role="switch"`, `aria-checked`）
-  - [x] `document.documentElement` に `data-crt="on"` / `data-crt="off"` を付与し、`localStorage` で永続化
+  - [x] ヘッダーに汎用的な `FX: ON` / `FX: OFF` 切り替えトグルボタンを追加（`role="switch"`, `aria-checked`）
+  - [x] CSS Grid 重ね合わせテクニックにより、切り替え時（ON/OFF）のボタン幅伸縮・ガタつきを 0px に完全固定
+  - [x] `document.documentElement` に `data-fx="on"` / `data-fx="off"` を付与し、`localStorage` で永続化
   - [x] 初回訪問時、OS の `prefers-reduced-motion: reduce` が有効な場合は自動的に `off` にフォールバック
-  - [x] `data-crt="off"` 時に `.crt-shadow-mask` を完全非表示にし、高解像度かつクリアなテキスト表示を提供
+  - [x] `data-fx="off"` 時に `.crt-shadow-mask` を完全非表示にし、高解像度かつクリアなテキスト表示を提供
   - [x] モバイル画面幅（〜375px）でもボタン同士が窮屈にならず綺麗に収まるヘッダー配置調整
 - Acceptance Criteria:
-  - [x] ボタンクリックで即座に CRT エフェクトが ON/OFF 切り替わり、ラベル・ARIA 状態が同期すること
+  - [x] ボタンクリックで即座に視覚効果が ON/OFF 切り替わり、ボタン幅が 1px も伸縮しないこと
   - [x] OFF 時に走査線やRGBスリットが消え、文字がクッキリと読みやすくなること
   - [x] ページ遷移やブラウザ再読込を行っても設定状態が保持されること
   - [x] モバイル端末でもヘッダーのナビゲーションや各トグルボタンが崩れず操作できること

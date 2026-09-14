@@ -312,6 +312,7 @@ a:hover {
 }
 
 .theme-toggle,
+.fx-toggle,
 .crt-toggle {
   background: none;
   border: 1px solid var(--color-border);
@@ -329,19 +330,31 @@ a:hover {
     background-color var(--transition-fast);
   line-height: 1;
   min-height: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  /* 切り替え時に幅が一切変わらないよう同一グリッドセルに重ねて最大幅を自動維持 */
+  display: inline-grid;
+  grid-template-columns: 1fr;
+  place-items: center;
   user-select: none;
 }
 
+.theme-toggle > span,
+.fx-toggle > span,
+.crt-toggle > span {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  text-align: center;
+  transition: opacity var(--transition-fast), visibility var(--transition-fast);
+}
+
 .theme-toggle:hover,
+.fx-toggle:hover,
 .crt-toggle:hover {
   color: var(--color-text);
   border-color: var(--color-primary);
 }
 
 .theme-toggle:focus-visible,
+.fx-toggle:focus-visible,
 .crt-toggle:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
@@ -350,37 +363,42 @@ a:hover {
 /* Theme toggle icons */
 [data-theme="light"] .moon-icon,
 [data-theme="dark"] .sun-icon {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
-/* CRT toggle text & state */
-[data-crt="on"] .crt-toggle {
+/* FX / CRT toggle text & state */
+:is([data-fx="on"], [data-crt="on"]) :is(.fx-toggle, .crt-toggle) {
   border-color: rgba(0, 240, 255, 0.4);
   color: var(--color-primary);
   background: rgba(0, 240, 255, 0.05);
 }
 
-[data-crt="off"] .crt-toggle {
+:is([data-fx="off"], [data-crt="off"]) :is(.fx-toggle, .crt-toggle) {
   border-color: var(--color-border);
   color: var(--color-text-muted);
 }
 
-[data-crt="on"] .crt-off-text,
-[data-crt="off"] .crt-on-text {
-  display: none;
+/* 非表示ラベルを visibility: hidden にすることで、幅を完全に維持してガタつきゼロにする */
+:is([data-fx="on"], [data-crt="on"]) :is(.fx-off-text, .crt-off-text),
+:is([data-fx="off"], [data-crt="off"]) :is(.fx-on-text, .crt-on-text) {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
-/* ===== CRT & Effects ONOFF Rules (a11y) ===== */
-[data-crt="off"] .crt-shadow-mask {
+/* ===== Visual Effects & Decor ONOFF Rules (a11y) ===== */
+:is([data-fx="off"], [data-crt="off"]) .crt-shadow-mask {
   display: none !important;
 }
 
-[data-crt="off"] .ambient-glow {
+:is([data-fx="off"], [data-crt="off"]) .ambient-glow {
   opacity: 0.15;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root:not([data-crt="on"]) .crt-shadow-mask {
+  :root:not([data-fx="on"]):not([data-crt="on"]) .crt-shadow-mask {
     display: none !important;
   }
 }
