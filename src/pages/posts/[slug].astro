@@ -1124,8 +1124,8 @@ const allPostsMeta = allPosts.map((p) => ({
     margin-top: 3.5rem;
     padding-top: 1.5rem;
     border-top: 1px dashed var(--color-border);
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
+    font-size: 0.88rem;
+    color: var(--color-text);
   }
 
   .prose :global(.footnotes h2#footnote-label) {
@@ -1156,15 +1156,21 @@ const allPostsMeta = allPosts.map((p) => ({
   .prose :global(.footnotes ol) {
     padding-left: 1.25rem;
     margin: 0;
+    color: var(--color-text);
   }
 
   .prose :global(.footnotes li) {
     margin-bottom: 0.75rem;
-    line-height: 1.6;
+    line-height: 1.65;
     scroll-margin-top: 100px;
     border-radius: 4px;
     padding: 2px 6px;
+    color: var(--color-text);
     transition: background-color 0.3s ease, border-left-color 0.3s ease;
+  }
+
+  .prose :global(.footnotes li p) {
+    color: var(--color-text);
   }
 
   .prose :global(.footnotes li:target) {
