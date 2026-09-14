@@ -955,22 +955,4 @@ a:hover {
   }
 }
 
-/* ===== ASCII 3D Canvas / Background Optimization ===== */
-.ascii-canvas-wrapper {
-  overflow: hidden;
-  contain: layout paint;
-}
-
-/* AsciiEffect 生成 DOM のセンタリングとオーバーフロー防止 */
-.ascii-canvas-wrapper > div {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  overflow: hidden !important;
-}
-
-.ascii-canvas-wrapper table {
-  margin: auto !important;
-  user-select: none;
-}
 

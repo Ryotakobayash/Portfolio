@@ -85,7 +85,7 @@ export default function SlideAsciiCanvas({
   return (
     <div
       ref={ref}
-      className={`ascii-canvas-wrapper ${className || ''}`.trim()}
+      className={className}
       style={{ width: '100%', height: '100%' }}
     >
       {visible && (
