@@ -40,7 +40,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-005`](#task-005) | CRTOverlay の完成 — RGBシャドウマスク（つぶつぶピクセルグリッド） | P2 | `DONE` | `src/components/CRTOverlay.astro`, `src/styles/global.css` |
 | [`TASK-006`](#task-006) | ArticleTreemap の PV データ復活（Categorical / Sequential 切り替えUI） | P2 | `DONE` | `src/components/ArticleTreemap.tsx`, `src/pages/api/pv/treemap.ts` |
 | [`TASK-007`](#task-007) | AsciiBackground の 404 ページへの適用（信号途絶演出） | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/pages/404.astro` |
-| [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `TODO` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
+| [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `BLOCKED` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
 | [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `TODO` | `vercel.json` |
 | [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
 
@@ -208,14 +208,14 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-008] SkillRadar の救出と GitHubActivity との統合
-- Status: `TODO`
+- Status: `BLOCKED`
 - Priority: P2
 - Target Files:
   - `src/pages/about.astro`
   - `src/data/goals.json`
   - `src/components/SkillRadar.tsx` (復元元: `git show a96ce29^:src/components/SkillRadar.tsx`)
 - Verification Command: `pnpm build`
-- User Context: 削除された旧 SkillRadar を about ページの Hero 横に計器盤風に復元・統合したい。各軸に根拠（記事タグ数等）を持たせる。
+- User Context: ⚠️ **保留方針**: スキルの数値の根拠（実績や学習プロセス）となるブログ記事を執筆・公開してからでないと表示しない方針。前提となる記事の蓄積が完了するまで着手・提案しないこと。各軸に根拠（記事タグ数等）を持たせる構成を前提とする。
 - Specifications:
   - [ ] `SkillRadar.tsx` を復元し、テーマ判定を `useTheme` フックに統一
   - [ ] `data/goals.json` に skills データを定義
