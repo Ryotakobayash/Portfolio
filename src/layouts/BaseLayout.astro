@@ -54,13 +54,23 @@ const isActive = (path: string) => {
 
     <ClientRouter />
 
-    <!-- Dark mode script (run before render to prevent flash) -->
+    <!-- Dark mode & CRT effects script (run before render to prevent flash) -->
     <script is:inline>
       (function() {
-        // Default to dark — light is the opt-in
-        const stored = localStorage.getItem('theme');
-        const theme = stored || 'dark';
+        // Theme
+        const storedTheme = localStorage.getItem('theme');
+        const theme = storedTheme || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
+
+        // CRT & Visual Effects (a11y: prefers-reduced-motion fallback)
+        const storedCrt = localStorage.getItem('crt-effects');
+        if (storedCrt) {
+          document.documentElement.setAttribute('data-crt', storedCrt);
+        } else {
+          const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          const initialCrt = prefersReduced ? 'off' : 'on';
+          document.documentElement.setAttribute('data-crt', initialCrt);
+        }
       })();
     </script>
 
@@ -95,10 +105,16 @@ const isActive = (path: string) => {
           <a href="/about" class={`nav-link ${isActive('/about') ? 'nav-link--accent' : ''}`}>About</a>
 <a href="/talks" class={`nav-link ${isActive('/talks') ? 'nav-link--accent' : ''}`}>Talks</a>
         </nav>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-          <span class="sun-icon">LIGHT</span>
-          <span class="moon-icon">DARK</span>
-        </button>
+        <div class="header-actions">
+          <button id="crt-toggle" class="crt-toggle" role="switch" aria-checked="true" aria-label="CRTアナログテレビ風装飾の切り替え">
+            <span class="crt-on-text">CRT: ON</span>
+            <span class="crt-off-text">CRT: OFF</span>
+          </button>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <span class="sun-icon">LIGHT</span>
+            <span class="moon-icon">DARK</span>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -135,6 +151,40 @@ const isActive = (path: string) => {
         const stored = localStorage.getItem('theme');
         const theme = stored || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
+      }
+
+      function initCrt() {
+        const stored = localStorage.getItem('crt-effects');
+        let crtState = stored;
+        if (!crtState) {
+          const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          crtState = prefersReduced ? 'off' : 'on';
+        }
+        document.documentElement.setAttribute('data-crt', crtState);
+        updateCrtToggleUI(crtState);
+      }
+
+      function updateCrtToggleUI(state: string) {
+        const toggle = document.getElementById('crt-toggle');
+        if (!toggle) return;
+        const isChecked = state === 'on';
+        toggle.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      }
+
+      function setupCrtToggle() {
+        const toggle = document.getElementById('crt-toggle');
+        if (!toggle) return;
+
+        const current = document.documentElement.getAttribute('data-crt') || 'on';
+        updateCrtToggleUI(current);
+
+        toggle.addEventListener('click', () => {
+          const current = document.documentElement.getAttribute('data-crt') || 'on';
+          const next = current === 'on' ? 'off' : 'on';
+          document.documentElement.setAttribute('data-crt', next);
+          localStorage.setItem('crt-effects', next);
+          updateCrtToggleUI(next);
+        });
       }
 
       function setupThemeToggle() {
@@ -194,13 +244,14 @@ const isActive = (path: string) => {
       // astro:page-load は初回ロード時とページ遷移後に発火する
       document.addEventListener('astro:page-load', () => {
         setupThemeToggle();
+        setupCrtToggle();
       });
 
       // astro:after-swap は新しいHTMLに入れ替わった直後（表示前）に発火
-      // ここでテーマを再適用しないと、一瞬デフォルトテーマに戻るチラつきや、属性消失によるアイコン重複が起きる
-      // 新しいページの overlay は HTML 上 hidden=true で出てくるので、ここで明示的なリセットは不要。
+      // ここでテーマとCRT属性を再適用しないと、一瞬デフォルトに戻るチラつきが起きる
       document.addEventListener('astro:after-swap', () => {
         initTheme();
+        initCrt();
       });
 
       // /slides/[slug] への遷移開始時にスケルトンを被せる（現在ページの overlay に対して）

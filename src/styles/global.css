@@ -296,40 +296,93 @@ a:hover {
     letter-spacing: 0.12em;
   }
 
-  .theme-toggle {
+  .theme-toggle,
+  .crt-toggle {
     font-size: 0.55rem;
-    padding: 3px 6px;
-    letter-spacing: 0.08em;
+    padding: 3px 5px;
+    letter-spacing: 0.06em;
   }
 }
 
-/* ===== Theme Toggle ===== */
-.theme-toggle {
+/* ===== Header Actions & Toggles ===== */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.theme-toggle,
+.crt-toggle {
   background: none;
   border: 1px solid var(--color-border);
-  padding: 3px 10px;
+  padding: 3px 8px;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-size: 0.6rem;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   color: var(--color-text-muted);
   text-transform: uppercase;
   transition:
     color var(--transition-fast),
-    border-color var(--transition-fast);
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
   line-height: 1;
   min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.crt-toggle:hover {
   color: var(--color-text);
   border-color: var(--color-primary);
 }
 
+.theme-toggle:focus-visible,
+.crt-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Theme toggle icons */
 [data-theme="light"] .moon-icon,
 [data-theme="dark"] .sun-icon {
   display: none;
+}
+
+/* CRT toggle text & state */
+[data-crt="on"] .crt-toggle {
+  border-color: rgba(0, 240, 255, 0.4);
+  color: var(--color-primary);
+  background: rgba(0, 240, 255, 0.05);
+}
+
+[data-crt="off"] .crt-toggle {
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+[data-crt="on"] .crt-off-text,
+[data-crt="off"] .crt-on-text {
+  display: none;
+}
+
+/* ===== CRT & Effects ONOFF Rules (a11y) ===== */
+[data-crt="off"] .crt-shadow-mask {
+  display: none !important;
+}
+
+[data-crt="off"] .ambient-glow {
+  opacity: 0.15;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-crt="on"]) .crt-shadow-mask {
+    display: none !important;
+  }
 }
 
 /* ===== Main / Page Background ===== */
