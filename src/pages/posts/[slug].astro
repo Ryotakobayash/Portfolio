@@ -469,6 +469,17 @@ const allPostsMeta = allPosts.map((p) => ({
       });
     });
 
+    // 記事末尾の脚注から本文へ戻る（↩）リンク押下時に、残っているポップオーバーを全て閉じる
+    footnoteSection.querySelectorAll('a[data-footnote-backref]').forEach((backref) => {
+      backref.addEventListener('click', () => {
+        document.querySelectorAll('.footnote-popover.is-open').forEach((popover) => {
+          popover.classList.remove('is-open', 'is-pinned');
+          const ref = popover.parentElement?.querySelector('a[data-footnote-ref]');
+          ref?.setAttribute('aria-expanded', 'false');
+        });
+      });
+    });
+
     // グローバル閉じるハンドラー（外側クリック & Escキー）
     if (!(window as any).__footnoteGlobalDismissBound) {
       (window as any).__footnoteGlobalDismissBound = true;
@@ -904,9 +915,11 @@ const allPostsMeta = allPosts.map((p) => ({
     top: -0.45em;
     font-size: 0.75em;
     line-height: 0;
+    scroll-margin-top: clamp(140px, 35vh, 280px);
   }
 
-  .prose :global(sup a[data-footnote-ref]) {
+  .prose :global(sup a[data-footnote-ref]),
+  .prose :global([id^="user-content-fnref-"]) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -926,6 +939,7 @@ const allPostsMeta = allPosts.map((p) => ({
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     user-select: none;
+    scroll-margin-top: clamp(140px, 35vh, 280px);
   }
 
   .prose :global(sup a[data-footnote-ref]:hover),
@@ -934,6 +948,32 @@ const allPostsMeta = allPosts.map((p) => ({
     background: rgba(0, 240, 255, 0.25);
     border-color: var(--color-primary);
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  }
+
+  /* 脚注からの戻りジャンプ時のターゲットハイライト (a11y & UX) */
+  .prose :global(sup:target a[data-footnote-ref]),
+  .prose :global(sup:has(:target) a[data-footnote-ref]),
+  .prose :global(sup a[data-footnote-ref]:target),
+  .prose :global([id^="user-content-fnref-"]:target) {
+    color: #fff;
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.8), 0 0 4px #fff;
+    animation: footnote-target-pulse 2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes footnote-target-pulse {
+    0% {
+      transform: scale(1.35);
+      box-shadow: 0 0 24px rgba(0, 240, 255, 0.95), 0 0 8px #fff;
+    }
+    40% {
+      transform: scale(1.15);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   /* 脚注ポップオーバーカード */

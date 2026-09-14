@@ -45,6 +45,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
 | [`TASK-011`](#task-011) | ブログ記事の脚注（Footnote）UI/UX 刷新（Popover 化と目次衝突の解消） | P1 | `DONE` | `src/pages/posts/[slug].astro` |
 | [`TASK-012`](#task-012) | 視覚効果・装飾（FX / CRT）ON/OFF 切り替え機能（a11y 配慮） | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css` |
+| [`TASK-013`](#task-013) | 脚注（Footnote）の戻りジャンプ位置の最適化（スクロール余白・文脈可視化・ハイライト） | P1 | `DONE` | `src/pages/posts/[slug].astro` |
 
 ---
 
@@ -311,6 +312,25 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
   - [x] OFF 時に走査線やRGBスリットが消え、文字がクッキリと読みやすくなること
   - [x] ページ遷移やブラウザ再読込を行っても設定状態が保持されること
   - [x] モバイル端末でもヘッダーのナビゲーションや各トグルボタンが崩れず操作できること
+
+---
+
+### [TASK-013] 脚注（Footnote）の戻りジャンプ位置の最適化（スクロール余白・文脈可視化・ハイライト）
+- Status: `DONE`
+- Completed: 2026-09-15
+- Priority: P1
+- Target Files: `src/pages/posts/[slug].astro`
+- Verification Command: `pnpm build`
+- User Context: 記事末尾の脚注から「↩（戻る）」リンクをクリックした際、本文中の上付き数字（脚注参照）の `scroll-margin-top` が未設定のため、固定ヘッダーの裏に隠れるか画面最上部に貼り付いてしまい、参照元の数字や前後の文脈が見えなくなる。数字より上の数行や画面中央付近にゆったり配置されるようスクロール位置を調整し、戻った位置がひと目でわかるハイライト演出を追加したい。
+- Specifications:
+  - [x] 本文中の脚注参照（`sup a[data-footnote-ref]`、`sup[id^="user-content-fnref-"]`、`[id^="user-content-fnref-"]`）に `scroll-margin-top: clamp(140px, 35vh, 280px)` を指定
+  - [x] 脚注（↩）から戻ってきた際、該当の数字が画面中央〜やや上（前後の文章がしっかり視界に入る位置）にスクロールされること
+  - [x] `:target` 疑似クラスおよびアニメーションを活用し、戻り先の数字が一目でわかるパルスハイライト演出を適用
+  - [x] 固定ヘッダーに数字や段落文頭が隠れないことを保証
+- Acceptance Criteria:
+  - [x] 脚注末尾の戻るボタン（↩）をクリックしたとき、本文の数字がヘッダーの下で隠れず、数行上の文章とともに視界内に収まること
+  - [x] 戻り先の数字が視覚的にハイライトされ、どこに戻ったか迷わないこと
+  - [x] デスクトップ・モバイル双方で自然なスクロール位置になること
 
 ---
 
