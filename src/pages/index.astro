@@ -156,7 +156,7 @@ const treemapPosts = await Promise.all(
 
         <!-- External articles -->
         <div class="bento-card bento-card--wide">
-            <ExternalPosts posts={externalPosts} />
+            <ExternalPosts client:visible posts={externalPosts} />
         </div>
     </div>
 </BaseLayout>

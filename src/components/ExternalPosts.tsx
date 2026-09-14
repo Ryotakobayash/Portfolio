@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import type { ExternalPost } from '../utils/externalPosts';
 import externalData from '../data/external-posts.json';
 
@@ -13,8 +14,29 @@ const SERVICE_CONFIG: Record<string, { color: string; label: string }> = {
 // Dates that are "past article" placeholders
 const PAST_DATES = new Set(['2022-01-01', '2023-01-01', '2024-01-01', '2025-01-01']);
 
+const STATIC_POSTS = externalData.posts as ExternalPost[];
+
 export default function ExternalPosts({ posts: propPosts }: Props = {}) {
-    const posts = propPosts ?? (externalData.posts as ExternalPost[]);
+    const [posts, setPosts] = useState<ExternalPost[]>(propPosts ?? STATIC_POSTS);
+
+    useEffect(() => {
+        if (propPosts && propPosts.length > 0) return;
+        let alive = true;
+        fetch('/api/note/posts')
+            .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+            .then((data: { posts?: ExternalPost[] }) => {
+                if (alive && Array.isArray(data.posts) && data.posts.length > 0) {
+                    setPosts(data.posts);
+                }
+            })
+            .catch(() => {
+                // 取得失敗時は静的データのまま（フォールバック）
+            });
+        return () => {
+            alive = false;
+        };
+    }, [propPosts]);
+
     if (!posts || posts.length === 0) return null;
 
     return (
