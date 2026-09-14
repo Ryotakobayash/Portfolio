@@ -42,7 +42,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-007`](#task-007) | AsciiBackground の 404 ページへの適用（信号途絶演出） | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/pages/404.astro` |
 | [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `TODO` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
 | [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `TODO` | `vercel.json` |
-| [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `TODO` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
+| [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `IN_PROGRESS` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
 
 ---
 
@@ -243,7 +243,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-010] モバイル表示時の ASCII 装飾の最適化・見え方改善
-- Status: `TODO`
+- Status: `IN_PROGRESS`
 - Priority: P2
 - Target Files:
   - `src/components/AsciiBackground.tsx`
