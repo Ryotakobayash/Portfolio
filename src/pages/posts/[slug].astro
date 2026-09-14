@@ -277,12 +277,12 @@ const allPostsMeta = allPosts.map((p) => ({
   // Run on initial load and setup a listener for Astro View Transitions if used
   document.addEventListener('DOMContentLoaded', () => {
     setupImageFigures();
-    setupSidenotes();
+    setupFootnotes();
     setupHeadingAnchorCopy();
   });
   document.addEventListener('astro:page-load', () => {
     setupImageFigures();
-    setupSidenotes();
+    setupFootnotes();
     setupHeadingAnchorCopy();
   });
 
@@ -315,16 +315,27 @@ const allPostsMeta = allPosts.map((p) => ({
   }
 
   /**
-   * 脚注（.footnotes セクション）をサイドノートとして本文横に展開する
-   * デスクトップ: float で右余白に配置
-   * モバイル: インライン表示にフォールバック
+   * 脚注の UI/UX を向上させる
+   * - 本文中の [^1] 参照をクリック/ホバーでその場にポップオーバーカードを展開
+   * - 右サイドバー（目次・TOC）との衝突を 100% 解消
+   * - 冪等性を担保し多重初期化を防止
+   * - 記事末尾の脚注一覧へのスムーズジャンプとハイライト
    */
-  function setupSidenotes() {
+  function setupFootnotes() {
     const footnoteSection = document.querySelector('.footnotes');
     if (!footnoteSection) return;
 
-    const refs = document.querySelectorAll('sup a[data-footnote-ref]');
+    const refs = document.querySelectorAll<HTMLAnchorElement>('sup a[data-footnote-ref]');
+    if (refs.length === 0) return;
+
     refs.forEach((ref) => {
+      const sup = ref.closest('sup');
+      if (!sup) return;
+
+      // 二重初期化防止ガード
+      if (sup.dataset.footnoteInitialized === 'true') return;
+      sup.dataset.footnoteInitialized = 'true';
+
       const href = ref.getAttribute('href');
       if (!href) return;
       // href は "#user-content-fn-1" など
@@ -332,30 +343,157 @@ const allPostsMeta = allPosts.map((p) => ({
       const footnoteItem = footnoteSection.querySelector(`#${CSS.escape(id)}`);
       if (!footnoteItem) return;
 
-      // サイドノート要素を生成
-      const sidenote = document.createElement('span');
-      sidenote.className = 'sidenote';
-      sidenote.setAttribute('role', 'note');
-      
-      // 読み上げ時に注釈番号がわかるように aria-label を付与
+      // 既存の旧 sidenote 要素があれば削除
+      sup.parentElement?.querySelectorAll('.sidenote').forEach((el) => el.remove());
+
+      // 注釈番号
       const noteNumber = ref.textContent?.trim() || '';
-      sidenote.setAttribute('aria-label', noteNumber ? `注釈 ${noteNumber}` : '注釈');
 
-      // li の中身を取得（バックリンクを除く）
-      const clone = footnoteItem.cloneNode(true);
+      // 注釈本文（バックリンク ↩ を除外）
+      const clone = footnoteItem.cloneNode(true) as HTMLElement;
       clone.querySelectorAll('a[data-footnote-backref]').forEach((el) => el.remove());
-      sidenote.innerHTML = clone.innerHTML;
+      const noteHtml = clone.innerHTML.trim();
 
-      // 脚注参照 <sup> の直後に挿入
-      const sup = ref.closest('sup');
-      if (sup?.parentNode) {
-        sup.parentNode.insertBefore(sidenote, sup.nextSibling);
-      }
+      // ポップオーバー要素を生成
+      const popover = document.createElement('div');
+      popover.className = 'footnote-popover';
+      popover.setAttribute('role', 'tooltip');
+      popover.id = `footnote-popover-${id}`;
+      popover.innerHTML = `
+        <div class="footnote-popover-header">
+          <span class="footnote-popover-badge">NOTE [${noteNumber}]</span>
+          <div class="footnote-popover-actions">
+            <a href="${href}" class="footnote-popover-jump" title="記事末尾の脚注へジャンプ" aria-label="記事末尾の脚注へジャンプ">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13l5 5 5-5M12 4v14"/></svg>
+            </a>
+            <button type="button" class="footnote-popover-close" title="閉じる" aria-label="閉じる">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="footnote-popover-body">${noteHtml}</div>
+      `;
 
-      // 脚注リンクのクリックによる不要なジャンプを無効化
-      ref.addEventListener('click', (e) => e.preventDefault());
-      ref.style.cursor = 'default'; // ジャンプしないためカーソルを変更
+      sup.style.position = 'relative';
+      sup.appendChild(popover);
+
+      // アクセシビリティ属性
+      ref.setAttribute('aria-expanded', 'false');
+      ref.setAttribute('aria-controls', popover.id);
+
+      let closeTimeout: number | undefined;
+
+      const adjustPosition = () => {
+        popover.classList.remove('align-right', 'align-left');
+        const rect = popover.getBoundingClientRect();
+        const padding = 16;
+        if (rect.right > window.innerWidth - padding) {
+          popover.classList.add('align-right');
+        } else if (rect.left < padding) {
+          popover.classList.add('align-left');
+        }
+      };
+
+      const openPopover = (isPinned = false) => {
+        if (closeTimeout) {
+          window.clearTimeout(closeTimeout);
+          closeTimeout = undefined;
+        }
+
+        // 他のポップオーバーを閉じる
+        if (isPinned) {
+          document.querySelectorAll('.footnote-popover.is-open').forEach((p) => {
+            if (p !== popover) {
+              p.classList.remove('is-open', 'is-pinned');
+              const otherRef = p.parentElement?.querySelector('a[data-footnote-ref]');
+              otherRef?.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+
+        popover.classList.add('is-open');
+        if (isPinned) {
+          popover.classList.add('is-pinned');
+        }
+        ref.setAttribute('aria-expanded', 'true');
+        adjustPosition();
+      };
+
+      const closePopover = (force = false) => {
+        if (!force && popover.classList.contains('is-pinned')) {
+          return;
+        }
+        popover.classList.remove('is-open', 'is-pinned');
+        ref.setAttribute('aria-expanded', 'false');
+      };
+
+      // ホバー時の動作（マウスが乗っている間は表示、離れたらディレイで非表示）
+      ref.addEventListener('mouseenter', () => openPopover(false));
+      ref.addEventListener('mouseleave', () => {
+        closeTimeout = window.setTimeout(() => closePopover(false), 200);
+      });
+
+      popover.addEventListener('mouseenter', () => {
+        if (closeTimeout) {
+          window.clearTimeout(closeTimeout);
+          closeTimeout = undefined;
+        }
+      });
+      popover.addEventListener('mouseleave', () => {
+        closeTimeout = window.setTimeout(() => closePopover(false), 200);
+      });
+
+      // クリック時の動作（ピン留めトグル）
+      ref.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (popover.classList.contains('is-open') && popover.classList.contains('is-pinned')) {
+          closePopover(true);
+        } else {
+          openPopover(true);
+        }
+      });
+
+      // 閉じるボタン
+      const closeBtn = popover.querySelector('.footnote-popover-close');
+      closeBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closePopover(true);
+      });
+
+      // 末尾へのジャンプリンク
+      const jumpLink = popover.querySelector('.footnote-popover-jump');
+      jumpLink?.addEventListener('click', () => {
+        closePopover(true);
+      });
     });
+
+    // グローバル閉じるハンドラー（外側クリック & Escキー）
+    if (!(window as any).__footnoteGlobalDismissBound) {
+      (window as any).__footnoteGlobalDismissBound = true;
+
+      document.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement | null;
+        if (!target?.closest('sup') && !target?.closest('.footnote-popover')) {
+          document.querySelectorAll('.footnote-popover.is-open').forEach((popover) => {
+            popover.classList.remove('is-open', 'is-pinned');
+            const ref = popover.parentElement?.querySelector('a[data-footnote-ref]');
+            ref?.setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          document.querySelectorAll('.footnote-popover.is-open').forEach((popover) => {
+            popover.classList.remove('is-open', 'is-pinned');
+            const ref = popover.parentElement?.querySelector('a[data-footnote-ref]');
+            ref?.setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+    }
   }
 </script>
 
@@ -756,55 +894,249 @@ const allPostsMeta = allPosts.map((p) => ({
     font-weight: 600;
   }
 
-  /* ===== 脚注 / サイドノート ===== */
+  /* ===== 脚注 / Footnotes ===== */
 
-  /* ページ下部のデフォルト脚注セクションを非表示にする */
-  .prose :global(.footnotes) {
-    display: none;
+  /* 本文中の上付き脚注参照 */
+  .prose :global(sup) {
+    position: relative;
+    display: inline-flex;
+    vertical-align: baseline;
+    top: -0.45em;
+    font-size: 0.75em;
+    line-height: 0;
   }
 
-  /* 脚注参照リンク（上付き数字） */
   .prose :global(sup a[data-footnote-ref]) {
-    color: var(--color-primary);
-    font-size: 0.7em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.35rem;
+    margin: 0 0.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
     font-weight: 700;
+    color: var(--color-primary);
     text-decoration: none;
-    padding: 0 1px;
+    background: rgba(0, 240, 255, 0.08);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    border-radius: 4px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
   }
 
-  .prose :global(sup a[data-footnote-ref]:hover) {
+  .prose :global(sup a[data-footnote-ref]:hover),
+  .prose :global(sup a[data-footnote-ref][aria-expanded="true"]) {
+    color: #fff;
+    background: rgba(0, 240, 255, 0.25);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  }
+
+  /* 脚注ポップオーバーカード */
+  .prose :global(.footnote-popover) {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    width: max-content;
+    min-width: 240px;
+    max-width: min(340px, 85vw);
+    padding: 0.75rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-top: 2px solid var(--color-primary);
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 14px rgba(0, 240, 255, 0.15);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    line-height: 1.55;
+    font-size: 0.78rem;
+    color: var(--color-text);
+    font-weight: 400;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+  }
+
+  /* 矢印（上向き三角） */
+  .prose :global(.footnote-popover::before) {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent var(--color-primary) transparent;
+  }
+
+  /* 左右位置アライメント調整（画面端のはみ出し防止） */
+  .prose :global(.footnote-popover.align-right) {
+    left: auto;
+    right: -12px;
+    transform: translateY(4px);
+  }
+  .prose :global(.footnote-popover.align-right::before) {
+    left: auto;
+    right: 20px;
+    transform: none;
+  }
+
+  .prose :global(.footnote-popover.align-left) {
+    left: -12px;
+    right: auto;
+    transform: translateY(4px);
+  }
+  .prose :global(.footnote-popover.align-left::before) {
+    left: 20px;
+    transform: none;
+  }
+
+  /* ポップオーバー表示状態 */
+  .prose :global(.footnote-popover.is-open) {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .prose :global(.footnote-popover.align-right.is-open) {
+    transform: translateY(0);
+  }
+  .prose :global(.footnote-popover.align-left.is-open) {
+    transform: translateY(0);
+  }
+
+  .prose :global(.footnote-popover-header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--color-border);
+  }
+
+  .prose :global(.footnote-popover-badge) {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    letter-spacing: 0.05em;
+  }
+
+  .prose :global(.footnote-popover-actions) {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .prose :global(.footnote-popover-jump),
+  .prose :global(.footnote-popover-close) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    color: var(--color-text-muted);
+    background: transparent;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .prose :global(.footnote-popover-jump:hover),
+  .prose :global(.footnote-popover-close:hover) {
+    color: var(--color-primary);
+    background: rgba(0, 240, 255, 0.12);
+  }
+
+  .prose :global(.footnote-popover-body) {
+    font-size: 0.78rem;
+    color: var(--color-text);
+  }
+
+  .prose :global(.footnote-popover-body p) {
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* 記事最下部の脚注セクション */
+  .prose :global(.footnotes) {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--color-border);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .prose :global(.footnotes h2#footnote-label) {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    margin-top: 0;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .prose :global(.footnotes h2#footnote-label::before) {
+    content: "//";
     color: var(--color-accent-2);
   }
 
-  /* サイドノート本体 — デスクトップ: 右余白に float */
-  .prose :global(.sidenote) {
-    display: block;
-    float: right;
-    clear: right;
-    width: 180px;
-    margin-right: -210px;
-    margin-top: 0.2em;
-    margin-bottom: 0.5em;
-    padding: 6px 8px;
-    font-size: 0.72rem;
-    line-height: 1.5;
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    border-left: 2px solid var(--color-primary);
-    opacity: 0.85;
+  .prose :global(.footnotes ol) {
+    padding-left: 1.25rem;
+    margin: 0;
   }
 
-  /* モバイル: float 解除してインライン表示 */
-  @media (max-width: 1023px) {
-    .prose :global(.sidenote) {
-      float: none;
-      clear: none;
-      width: 100%;
-      margin-right: 0;
-      margin: 0.75rem 0;
-      padding: 0.5rem 0.75rem;
-      background-color: var(--color-bg-secondary);
-      border-left: 2px solid var(--color-primary);
-    }
+  .prose :global(.footnotes li) {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+    scroll-margin-top: 100px;
+    border-radius: 4px;
+    padding: 2px 6px;
+    transition: background-color 0.3s ease, border-left-color 0.3s ease;
+  }
+
+  .prose :global(.footnotes li:target) {
+    background-color: rgba(0, 240, 255, 0.08);
+    border-left: 3px solid var(--color-primary);
+    padding-left: 0.5rem;
+  }
+
+  .prose :global(.footnotes a.data-footnote-backref) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    text-decoration: none;
+    margin-left: 0.5rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    padding: 0 4px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+  }
+
+  .prose :global(.footnotes a.data-footnote-backref:hover) {
+    color: #fff;
+    background: rgba(0, 240, 255, 0.2);
+    text-shadow: 0 0 6px var(--color-primary);
   }
 </style>

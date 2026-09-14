@@ -43,6 +43,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `BLOCKED` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
 | [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `DONE` | `vercel.json` |
 | [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
+| [`TASK-011`](#task-011) | ブログ記事の脚注（Footnote）UI/UX 刷新（Popover 化と目次衝突の解消） | P1 | `DONE` | `src/pages/posts/[slug].astro` |
 
 ---
 
@@ -263,6 +264,28 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 - Acceptance Criteria:
   - [x] モバイル表示時（幅375px〜430px）で ASCII 装飾が潰れたり見切れたりせず、美しく認識できること
   - [x] 画面の縦横比やスクロール時に不要なレイアウトシフトが発生しないこと
+
+---
+
+### [TASK-011] ブログ記事の脚注（Footnote）UI/UX 刷新（Popover 化と目次衝突の解消）
+- Status: `DONE`
+- Completed: 2026-09-14
+- Priority: P1
+- Target Files:
+  - `src/pages/posts/[slug].astro`
+- Verification Command: `pnpm build`
+- User Context: ブログ記事で脚注を使った際、Tufte 式サイドノートの右マージン押し出しによって右サイドバーの目次（TOC）と重なってしまい読めない問題、二重生成バグ、および目次の「Footnotes」が不発になる問題を解消し、モダンなポップオーバー UI に刷新したい。
+- Specifications:
+  - [x] `float: right; margin-right: -210px` による右サイドバー・目次（TOC）との物理的衝突を完全解消
+  - [x] 脚注番号クリック/ホバーでその場に表示されるサイバー調ポップオーバーカード（ツールチップ）の実装
+  - [x] 画面外はみ出し防止（Viewport 境界を考慮した配置）と外側クリック・Esc・再クリックによる閉じる挙動
+  - [x] `astro:page-load` / `DOMContentLoaded` での二重生成・多重登録の防止ガード
+  - [x] 記事末尾の `.footnotes` セクションの美化と目次「Footnotes」からのスムーズスクロール連携
+- Acceptance Criteria:
+  - [x] デスクトップ表示時、脚注番号を操作しても目次や右サイドバーと一切重ならないこと
+  - [x] ポップオーバーがクリック/ホバーで滑らかに表示・消去され、注釈内容が読みやすいこと
+  - [x] モバイルでも画面幅を崩さずに自然に表示されること
+  - [x] ページ末尾の脚注一覧が綺麗にレイアウトされ、目次リンクおよび戻るリンク（`↩`）が機能すること
 
 ---
 
