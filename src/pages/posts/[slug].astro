@@ -950,29 +950,42 @@ const allPostsMeta = allPosts.map((p) => ({
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
   }
 
-  /* 脚注からの戻りジャンプ時のターゲットハイライト (a11y & UX) */
+  /* 脚注からの戻りジャンプ時のターゲットハイライト (約3秒で通常スタイルへ自然復帰) */
   .prose :global(sup:target a[data-footnote-ref]),
   .prose :global(sup:has(:target) a[data-footnote-ref]),
   .prose :global(sup a[data-footnote-ref]:target),
   .prose :global([id^="user-content-fnref-"]:target) {
-    color: #fff;
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    box-shadow: 0 0 16px rgba(0, 240, 255, 0.8), 0 0 4px #fff;
-    animation: footnote-target-pulse 2s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: footnote-target-pulse 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes footnote-target-pulse {
     0% {
       transform: scale(1.35);
+      color: #fff;
+      background: var(--color-primary);
+      border-color: var(--color-primary);
       box-shadow: 0 0 24px rgba(0, 240, 255, 0.95), 0 0 8px #fff;
     }
-    40% {
-      transform: scale(1.15);
-      box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+    30% {
+      transform: scale(1);
+      color: #fff;
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.8), 0 0 4px #fff;
+    }
+    70% {
+      transform: scale(1);
+      color: #fff;
+      background: rgba(0, 240, 255, 0.4);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
     }
     100% {
       transform: scale(1);
+      color: var(--color-primary);
+      background: rgba(0, 240, 255, 0.08);
+      border-color: rgba(0, 240, 255, 0.25);
+      box-shadow: none;
     }
   }
 
