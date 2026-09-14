@@ -34,6 +34,7 @@ interface Props {
   modelUrl?: string;
   scale?: number;
   speed?: number;
+  className?: string;
 }
 
 export default function SlideAsciiCanvas({
@@ -41,6 +42,7 @@ export default function SlideAsciiCanvas({
   modelUrl = '/models/saturn.obj',
   scale = 0.1,
   speed = 1,
+  className,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -81,7 +83,11 @@ export default function SlideAsciiCanvas({
   }, []);
 
   return (
-    <div ref={ref} style={{ width: '100%', height: '100%' }}>
+    <div
+      ref={ref}
+      className={`ascii-canvas-wrapper ${className || ''}`.trim()}
+      style={{ width: '100%', height: '100%' }}
+    >
       {visible && (
         <Canvas
           camera={{ position: [0, 0, 5], fov: 50 }}

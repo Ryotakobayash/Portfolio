@@ -955,3 +955,44 @@ a:hover {
   }
 }
 
+/* ===== ASCII 3D Canvas / Background Optimization ===== */
+.ascii-canvas-wrapper {
+  overflow: hidden;
+  contain: layout paint;
+}
+
+/* AsciiEffect 生成 DOM のセンタリングとオーバーフロー防止 */
+.ascii-canvas-wrapper > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+/* 等幅フォントの縦横比補正（アスペクト比の歪み解消 & レスポンシブ解像度） */
+.ascii-canvas-wrapper table {
+  margin: auto !important;
+  font-family: var(--font-mono, "Courier New", monospace) !important;
+  font-size: 13px !important;
+  line-height: 9px !important;
+  letter-spacing: -0.5px !important;
+  user-select: none;
+}
+
+/* モバイル（タブレット以下）端末での文字密度・解像度最適化 */
+@media (max-width: 768px) {
+  .ascii-canvas-wrapper table {
+    font-size: 11px !important;
+    line-height: 7.5px !important;
+    letter-spacing: 0px !important;
+  }
+}
+
+/* 狭小スマートフォン（幅 380px 以下） */
+@media (max-width: 380px) {
+  .ascii-canvas-wrapper table {
+    font-size: 10px !important;
+    line-height: 6.8px !important;
+  }
+}
+

@@ -42,7 +42,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-007`](#task-007) | AsciiBackground の 404 ページへの適用（信号途絶演出） | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/pages/404.astro` |
 | [`TASK-008`](#task-008) | SkillRadar の救出と GitHubActivity との統合 | P2 | `TODO` | `src/pages/about.astro`, `src/components/SkillRadar.tsx` |
 | [`TASK-009`](#task-009) | CSP (Content-Security-Policy) の段階導入 | P3 | `TODO` | `vercel.json` |
-| [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `IN_PROGRESS` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
+| [`TASK-010`](#task-010) | モバイル表示時の ASCII 装飾の最適化・見え方改善 | P2 | `DONE` | `src/components/AsciiBackground.tsx`, `src/components/slides/SlideAsciiCanvas.tsx` |
 
 ---
 
@@ -243,20 +243,24 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-010] モバイル表示時の ASCII 装飾の最適化・見え方改善
-- Status: `IN_PROGRESS`
+- Status: `DONE`
+- Completed: 2026-09-14
 - Priority: P2
 - Target Files:
   - `src/components/AsciiBackground.tsx`
   - `src/components/slides/SlideAsciiCanvas.tsx`
+  - `src/styles/global.css`
+  - `src/pages/404.astro`
+  - `src/pages/index.astro`
 - Verification Command: `pnpm build`
 - User Context: スマートフォンなどの狭い画面幅（モバイルブラウザ）で表示した際、ASCII 装飾（背景の ASCII 3D や文字密度）の見え方やバランスを最適化したい。
 - Specifications:
-  - [ ] モバイル端末の画面幅（〜480px）における ASCII フォントサイズ・解像度・行間（line-height）の調整
-  - [ ] ASCII キャンバスのスケール・カメラ距離・トリミングの最適化
-  - [ ] 本文コンテンツや Bento カードとの重なり・コントラスト調整
+  - [x] モバイル端末の画面幅（〜480px）における ASCII フォントサイズ・解像度・行間（line-height）の調整
+  - [x] ASCII キャンバスのスケール・カメラ距離・トリミングの最適化
+  - [x] 本文コンテンツや Bento カードとの重なり・コントラスト調整
 - Acceptance Criteria:
-  - [ ] モバイル表示時（幅375px〜430px）で ASCII 装飾が潰れたり見切れたりせず、美しく認識できること
-  - [ ] 画面の縦横比やスクロール時に不要なレイアウトシフトが発生しないこと
+  - [x] モバイル表示時（幅375px〜430px）で ASCII 装飾が潰れたり見切れたりせず、美しく認識できること
+  - [x] 画面の縦横比やスクロール時に不要なレイアウトシフトが発生しないこと
 
 ---
 
