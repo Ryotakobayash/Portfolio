@@ -63,10 +63,10 @@
   --crt-beam-core: 0.055;
   --crt-sweep-duration: 9s;
   --crt-fringe-opacity: 0.18;
-  --crt-rgb-opacity: 0.09;
+  --crt-rgb-opacity: 0.045;
   --crt-rgb-blend: screen;
-  --crt-scanline-opacity: 0.08;
-  --crt-slot-gap-opacity: 0.06;
+  --crt-scanline-opacity: 0.04;
+  --crt-slot-gap-opacity: 0.025;
 }
 
 /* ===== Light Theme ===== */
@@ -99,10 +99,10 @@
   --crt-beam-core: 0.035;
   --crt-sweep-duration: 9s;
   --crt-fringe-opacity: 0.10;
-  --crt-rgb-opacity: 0.05;
+  --crt-rgb-opacity: 0.025;
   --crt-rgb-blend: multiply;
-  --crt-scanline-opacity: 0.05;
-  --crt-slot-gap-opacity: 0.04;
+  --crt-scanline-opacity: 0.025;
+  --crt-slot-gap-opacity: 0.018;
 }
 
 /* ===== Shared Tokens ===== */
