@@ -1,6 +1,12 @@
 {
     "posts": [
         {
+            "service": "hatena",
+            "title": "W3C Japan 30周年記念イベント Web Together 参加レポート",
+            "url": "https://blog.cybozu.io/entry/2026/09/14/113000",
+            "date": "2026-09-14"
+        },
+        {
             "service": "zenn",
             "title": "issue/PRのURLをmarkdown形式で綺麗にコピーするブックマークレット作った",
             "url": "https://zenn.dev/ryota5884/articles/498c5f6dcec42c",

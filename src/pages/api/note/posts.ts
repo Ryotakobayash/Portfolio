@@ -4,7 +4,7 @@ import externalData from '../../../data/external-posts.json';
 
 export const prerender = false;
 
-type ServiceType = 'zenn' | 'note';
+type ServiceType = 'zenn' | 'note' | 'hatena';
 
 interface ExternalPost {
     service: ServiceType;

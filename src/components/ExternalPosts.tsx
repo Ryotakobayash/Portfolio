@@ -9,6 +9,7 @@ interface Props {
 const SERVICE_CONFIG: Record<string, { color: string; label: string }> = {
     zenn: { color: 'var(--color-primary)', label: 'Zenn' },
     note: { color: 'var(--color-accent-2)', label: 'note' },
+    hatena: { color: '#00a4de', label: 'Hatena' },
 };
 
 // Dates that are "past article" placeholders

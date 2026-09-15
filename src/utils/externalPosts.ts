@@ -1,6 +1,6 @@
 import externalData from '../data/external-posts.json';
 
-export type ExternalService = 'zenn' | 'note';
+export type ExternalService = 'zenn' | 'note' | 'hatena';
 
 export interface ExternalPost {
     service: ExternalService;

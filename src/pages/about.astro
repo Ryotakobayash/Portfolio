@@ -2,7 +2,7 @@
 export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedPosts } from '../utils/posts';
-import { fetchNotePosts } from '../utils/externalPosts';
+import { getAllExternalPosts } from '../utils/externalPosts';
 import LifeProgress from '../components/LifeProgress';
 import CreativeLifeCountdown from '../components/CreativeLifeCountdown';
 import PostBurndown from '../components/PostBurndown';
@@ -18,15 +18,15 @@ const internalPostDates = posts.map((post) => ({
     date: post.data.date,
 }));
 
-// note 記事も投稿実績に合算
-const notePosts = await fetchNotePosts();
-const notePostDates = notePosts.map((p) => ({
+// 外部記事（note, Zenn, はてなブログ等）も投稿実績に合算
+const externalPosts = await getAllExternalPosts();
+const externalPostDates = externalPosts.map((p) => ({
     slug: p.url,
-    title: `[note] ${p.title}`,
+    title: `[${p.service}] ${p.title}`,
     date: p.date,
 }));
 
-const postDates = [...internalPostDates, ...notePostDates].sort((a, b) => b.date.localeCompare(a.date));
+const postDates = [...internalPostDates, ...externalPostDates].sort((a, b) => b.date.localeCompare(a.date));
 ---
 
 <BaseLayout title="RK / About" description="小林 諒大のプロフィールとダッシュボード">
