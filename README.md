@@ -33,12 +33,29 @@ src/
 | `pnpm build` | 本番ビルド(`dist/`) |
 | `pnpm preview` | ビルド結果のプレビュー |
 | `pnpm dev:fresh` | キャッシュ削除して dev 起動 |
+| `pnpm new:post` | 新規ブログ記事と画像フォルダの雛形作成 |
 
 環境変数(GA4_PROPERTY_ID / GCP_PROJECT_NUMBER / GITHUB_TOKEN 等)は未設定でもダミーデータで動作する。スキーマは `astro.config.mjs` の `env.schema` を参照。
+
+## ブログ記事の執筆と画像管理
+
+記事の作成や画像管理は以下のルールで統一されています（詳細は [docs/article-workflow.md](docs/article-workflow.md) を参照）。
+
+1. **新規作成コマンド:**
+   - `pnpm new:post`（対話形式）または `pnpm new:post "タイトル"` で実行すると、本日の日付に基づき記事と専用画像フォルダが自動生成されます。
+2. **配置ルール:**
+   - 記事: `src/content/posts/YYYYMMDD_<slug_or_title>.md`
+   - 画像: `src/content/posts/YYYYMMDD_<slug>/`
+3. **画像記法と自動連番キャプション:**
+   - `![ALT](./YYYYMMDD_<slug>/image.png "図表タイトル")`
+   - `"図表タイトル"` を指定すると、`src/components/CustomImage.astro` により画面下部に **「図1: 図表タイトル」** のように自動で番号付き `<figcaption>` が出力されます。
+4. **公開ステータス:**
+   - 執筆中は Frontmatter を `draft: true` に設定します。未公開記事は Git コミットに含めない運用です。
 
 ## 運用メモ
 
 - タスク管理と作業ルールは [AGENT_TODO.md](AGENT_TODO.md)（完了履歴は [docs/tasks-archive.md](docs/tasks-archive.md)）
 - 記事ネタ・思考メモ・アイデアは [docs/ideas.md](docs/ideas.md)
-- 記事の執筆フローは [docs/article-workflow.md](docs/article-workflow.md)、設計判断の記録は [docs/adr/](docs/adr/)
+- 記事の執筆フロー詳細は [docs/article-workflow.md](docs/article-workflow.md)、設計判断の記録は [docs/adr/](docs/adr/)
 - 記事の公開はフロントマターの `draft` / talks は `published`(opt-in)で制御
+

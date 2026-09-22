@@ -47,6 +47,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-012`](#task-012) | 視覚効果・装飾（FX / CRT）ON/OFF 切り替え機能（a11y 配慮） | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css` |
 | [`TASK-013`](#task-013) | 脚注（Footnote）の戻りジャンプ位置の最適化（スクロール余白・文脈可視化・ハイライト） | P1 | `DONE` | `src/pages/posts/[slug].astro` |
 | [`TASK-014`](#task-014) | CRTエフェクトの網羅的強化（画面湾曲・ベゼル・走査ビーム・ガラス反射・電源ON/OFF展開） | P1 | `DONE` | `src/components/CRTOverlay.astro`, `src/styles/global.css`, `src/layouts/BaseLayout.astro` |
+| [`TASK-015`](#task-015) | ブログ記事新規作成スクリプトの導入と執筆・画像管理ガイドラインの整備 | P1 | `DONE` | `scripts/new-post.mjs`, `package.json`, `docs/article-workflow.md`, `README.md`, `GEMINI.md` |
 
 ---
 
@@ -359,6 +360,32 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
   - [x] `FX: OFF` 切替時にすべて綺麗に消え、クッキリとした現代的表示に即座に復帰すること
   - [x] デスクトップ・モバイル双方でレイアウト崩れなく滑らかに動作すること
 
+---
+
+### [TASK-015] ブログ記事新規作成スクリプトの導入と執筆・画像管理ガイドラインの整備
+- Status: `DONE`
+- Completed: 2026-09-22
+- Priority: P1
+- Target Files:
+  - `scripts/new-post.mjs`
+  - `package.json`
+  - `docs/article-workflow.md`
+  - `README.md`
+  - `GEMINI.md`
+- Verification Command: `node scripts/new-post.mjs --help && pnpm build`
+- User Context: 記事執筆頻度がたまにある程度であるため、画像の保管場所やMarkdown記法（図表自動ナンバリングなど）のルールを忘れやすい。コマンド1発でルール通りの雛形ファイルと画像フォルダを生成し、かつルールをドキュメント（README.md, docs/article-workflow.md, GEMINI.md）に体系化して人間・LLM双方から参照しやすくする。
+- Specifications:
+  - [x] `scripts/new-post.mjs` を作成し、タイトルやスラッグを渡して（または対話式で）`src/content/posts/YYYYMMDD_<slug>.md` および画像保管用フォルダ `src/content/posts/YYYYMMDD_<slug>/` を生成可能にする
+  - [x] 生成される markdown には frontmatter（title, date, tags, draft: true）と画像記法ルール・キャプション記法のヒントコメントを埋め込む
+  - [x] `package.json` の scripts に `"new:post": "node scripts/new-post.mjs"` を追加
+  - [x] `docs/article-workflow.md` を最新仕様（新コマンド、画像フォルダ方針、CustomImage記法、公開フロー）に全面アップデート
+  - [x] `README.md` に新コマンドおよび執筆・画像管理の基本ルールを追記
+  - [x] `GEMINI.md` にブログ記事の作成ルール（命名規則、画像管理、コミット注意点など）を明記し、LLM協業時に確実に守られるようにする
+- Acceptance Criteria:
+  - [x] `pnpm new:post --help` が正常にヘルプを出力すること
+  - [x] スクリプト実行により、指定した日付・タイトルの記事と画像フォルダが想定通りの構造で生成されること
+  - [x] `pnpm build` がエラーなく通過すること
+  - [x] README.md / docs/article-workflow.md / GEMINI.md に執筆・画像保管の仕組みが分かりやすく明記されていること
 
 ---
 
