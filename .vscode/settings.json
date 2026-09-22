@@ -3,5 +3,31 @@
     "pasteImage.basePath": "${currentFileDir}",
     "pasteImage.forceUnixStyleSeparator": true,
     "pasteImage.defaultName": "Y-MM-DD-HH-mm-ss",
-    "pasteImage.insertPattern": "![](${imageFilePath})"
+    "pasteImage.insertPattern": "![](${imageFilePath})",
+
+    // ブログ記事（Markdown / MDX）執筆時に、LLM・エディタによる勝手な文章提案（Ghost Text）を抑止
+    "[markdown]": {
+        "editor.inlineSuggest.enabled": false,
+        "editor.quickSuggestions": {
+            "other": "off",
+            "comments": "off",
+            "strings": "off"
+        },
+        "editor.suggest.showWords": false
+    },
+    "[mdx]": {
+        "editor.inlineSuggest.enabled": false,
+        "editor.quickSuggestions": {
+            "other": "off",
+            "comments": "off",
+            "strings": "off"
+        },
+        "editor.suggest.showWords": false
+    },
+    // GitHub Copilot をご利用の場合の無効化設定
+    "github.copilot.enable": {
+        "*": true,
+        "markdown": false,
+        "plaintext": false
+    }
 }
