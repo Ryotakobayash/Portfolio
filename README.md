@@ -52,10 +52,23 @@ src/
 4. **公開ステータス:**
    - 執筆中は Frontmatter を `draft: true` に設定します。未公開記事は Git コミットに含めない運用です。
 
+## AI エージェント / LLM 協業開発ガイド
+
+本リポジトリは、Claude Code、Gemini（Antigravity）、Cursor、Codex など、**どの AI エージェント・LLM を利用しても一貫した品質とルールで開発できるように標準化**されています。
+
+- **統一ルールファイル（Single Source of Truth）:**
+  - ルートの [AGENTS.md](AGENTS.md) に技術スタック、コーディング規約、ブログ執筆ルール、Git コミットルールを集約しています。
+  - Claude Code 向けに `CLAUDE.md -> AGENTS.md` のシンボリックリンクを配置しているため、どのツールでも同じ指示が自動読み込みされます。
+- **タスク・進捗管理:**
+  - タスクの追加・進捗更新・完了確認はすべて [AGENT_TODO.md](AGENT_TODO.md) の Task Registry およびプロトコルに従って機械的・自律的に行われます。
+- **自律的 Git コミット:**
+  - 各タスクの検証完了後、LLM は自律的にコミットを作成します。ただし未公開記事（`draft: true`）はユーザーの明示指示がない限りコミットに含めず、対象ファイルのみをピンポイントでステージングします。
+
 ## 運用メモ
 
 - タスク管理と作業ルールは [AGENT_TODO.md](AGENT_TODO.md)（完了履歴は [docs/tasks-archive.md](docs/tasks-archive.md)）
 - 記事ネタ・思考メモ・アイデアは [docs/ideas.md](docs/ideas.md)
 - 記事の執筆フロー詳細は [docs/article-workflow.md](docs/article-workflow.md)、設計判断の記録は [docs/adr/](docs/adr/)
 - 記事の公開はフロントマターの `draft` / talks は `published`(opt-in)で制御
+
 
