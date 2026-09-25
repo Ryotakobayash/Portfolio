@@ -58,6 +58,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-023`](#task-023) | SEO基盤の整備（canonical・description・OGP・JSON-LD） | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/pages/posts/[slug].astro` |
 | [`TASK-024`](#task-024) | Biome lint と GitHub Actions CI の導入 | P0 | `DONE` | `biome.json`, `.github/workflows/ci.yml`, `package.json` |
 | [`TASK-025`](#task-025) | 第2段階の残り（reduced-motion・更新日対応） | P1 | `DONE` | `src/components/QuadtreeThumbnail.tsx`, `src/content.config.ts`, `src/components/ArticlePerformance.tsx` |
+| [`TASK-026`](#task-026) | 性能・保守性の改善（Island遅延化・外部記事統合・型安全性） | P2 | `DONE` | `src/pages/*.astro`, `src/utils/note.ts`, `src/utils/treemapUtils.ts` |
 
 ---
 
@@ -80,6 +81,24 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-026] 性能・保守性の改善（Island遅延化・外部記事統合・型安全性）
+- Status: `DONE`
+- Completed: 2026-09-26
+- Priority: P2
+- Target Files: `src/pages/index.astro`, `src/pages/about.astro`, `src/pages/posts/[slug].astro`, `src/utils/note.ts`, `src/utils/externalPosts.ts`, `src/pages/api/note/posts.ts`, `src/utils/treemapUtils.ts`, `src/components/PostSearch.tsx`, `src/components/TalkSearch.tsx`
+- Verification Command: `pnpm exec astro check && pnpm build`
+- User Context: 初期ロードの軽量化、重複コードの削除、型安全性の向上で保守性を高める。
+- Specifications:
+  - [x] client:loadをclient:idle/client:visibleへ変更する
+  - [x] note.tsとexternalPosts.tsの重複fetchNotePosts実装を統合する
+  - [x] サブコンポーネントとTreemapユーティリティのany型を除去する
+- Acceptance Criteria:
+  - [x] note.tsが削除され、API RouteがexternalPosts.tsを使うこと
+  - [x] any型が6箇所以上削減されること
+  - [x] 型検査とビルドが成功すること
+
+---
 
 ### [TASK-025] 第2段階の残り（reduced-motion・更新日対応）
 - Status: `DONE`
