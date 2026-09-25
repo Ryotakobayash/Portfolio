@@ -113,7 +113,7 @@ const allPostsMeta = allPosts.map((p) => ({
 
       <div class="article-performance-wrapper">
         <ArticlePerformance
-          client:load
+          client:idle
           slug={slug}
           wordCount={charCount}
           readingTime={readingTime}
@@ -143,7 +143,7 @@ const allPostsMeta = allPosts.map((p) => ({
       <!-- 記事フッター -->
       <footer class="article-footer">
         <ShareButtons
-          client:load
+          client:idle
           title={post.data.title}
           url={new URL(`/posts/${slug}`, Astro.site).href}
         />
@@ -289,7 +289,7 @@ const allPostsMeta = allPosts.map((p) => ({
       {toc.length > 0 && (
         <div class="sidebar-toc-wrapper">
           <h2 class="sidebar-section-title">このページの内容</h2>
-          <StickyToc client:load toc={toc} />
+          <StickyToc client:idle toc={toc} />
         </div>
       )}
     </aside>

@@ -49,14 +49,14 @@ const postDates = [...internalPostDates, ...externalPostDates].sort((a, b) => b.
       <div class="me-grid me-grid--2col">
           <div class="bento-card">
               <LifeProgress
-                  client:load
+                  client:idle
                   birthYear={goalsData.lifeExpectancy.birthYear}
                   expectedAge={goalsData.lifeExpectancy.expectedAge}
               />
           </div>
           <div class="bento-card">
               <CreativeLifeCountdown
-                  client:load
+                  client:idle
                   startDate={goalsData.creativeLife.start}
                   endDate={goalsData.creativeLife.end}
               />
@@ -71,7 +71,7 @@ const postDates = [...internalPostDates, ...externalPostDates].sort((a, b) => b.
       <h2 class="section-title"><span>02 · Post Count {goalsData.posts.period}</span></h2>
       <div class="bento-card">
           <PostBurndown
-              client:load
+              client:visible
               posts={internalPostDates}
               yearlyTarget={goalsData.posts.yearlyTarget}
               period={goalsData.posts.period}
@@ -85,7 +85,7 @@ const postDates = [...internalPostDates, ...externalPostDates].sort((a, b) => b.
     <section class="section">
       <h2 class="section-title"><span>03 · PV Timeline</span></h2>
       <div class="bento-card">
-          <PVTimeline client:load posts={postDates} />
+          <PVTimeline client:visible posts={postDates} />
       </div>
     </section>
 
@@ -95,7 +95,7 @@ const postDates = [...internalPostDates, ...externalPostDates].sort((a, b) => b.
     <section class="section">
       <h2 class="section-title"><span>04 · GitHub Activity</span></h2>
       <div class="bento-card">
-          <GitHubActivity client:load />
+          <GitHubActivity client:visible />
       </div>
     </section>
 

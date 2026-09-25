@@ -67,7 +67,7 @@ const treemapPosts = await Promise.all(
 
 <BaseLayout jsonLd={homeJsonLd}>
     <!-- ASCII 3D Background -->
-    <AsciiBackground client:load className="home-ascii-bg" />
+    <AsciiBackground client:idle className="home-ascii-bg" />
 
     <!-- Orbital background decoration -->
     <OrbitalBackground />
@@ -131,7 +131,7 @@ const treemapPosts = await Promise.all(
     <div class="bento-card bento-card--wide treemap-card">
         <div class="bento-card__title">Article Map — Character Count</div>
         <div class="treemap-chart-wrapper">
-            <ArticleTreemap client:load posts={treemapPosts} />
+            <ArticleTreemap client:visible posts={treemapPosts} />
         </div>
     </div>
 
@@ -145,7 +145,7 @@ const treemapPosts = await Promise.all(
         <!-- Popular posts -->
         <div class="bento-card">
             <div class="bento-card__title">Popular Posts · 30 Days</div>
-            <PopularPosts client:load />
+            <PopularPosts client:visible />
         </div>
 
         <!-- Latest posts -->
