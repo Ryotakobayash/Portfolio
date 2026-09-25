@@ -1,5 +1,13 @@
+import Highcharts from 'highcharts';
 import HighchartsReactImport from 'highcharts-react-official';
 import type { HighchartsReactRefObject } from 'highcharts-react-official';
+
+if (typeof window !== 'undefined') {
+    import('highcharts/modules/accessibility').then((mod) => {
+        const init = (mod as any).default || mod;
+        if (typeof init === 'function') init(Highcharts);
+    }).catch(() => {});
+}
 
 // highcharts-react-official は UMD バンドルのため、dev の SSR(Node の CJS interop)では
 // default import がモジュール全体({ HighchartsReact, default })に化けて

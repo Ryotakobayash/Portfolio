@@ -64,7 +64,7 @@ export default function ArticleTreemap({ posts }: Props) {
     useEffect(() => {
         Promise.all([
             import('highcharts/modules/heatmap'),
-            import('highcharts/modules/treemap')
+            import('highcharts/modules/treemap'),
         ]).then(([heatmapMod, treemapMod]) => {
             const initHeatmap = (heatmapMod as any).default || heatmapMod;
             const initTreemap = (treemapMod as any).default || treemapMod;
@@ -100,6 +100,14 @@ export default function ArticleTreemap({ posts }: Props) {
             },
             title: { text: undefined },
             credits: { enabled: false },
+            accessibility: {
+                description: viewMode === 'genre'
+                    ? '記事をジャンル別に分類したツリーマップ。ブロック面積は文字数を表す。'
+                    : '記事の閲覧数を色で表したツリーマップ。ブロック面積は文字数を表す。',
+                point: {
+                    descriptionFormat: '{name}: {value}文字{#if pv}, {pv}PV{/if}',
+                },
+            },
             ...(viewMode === 'pv' ? {
                 colorAxis: {
                     min: 0,
