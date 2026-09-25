@@ -23,7 +23,8 @@ const POSTS_PER_PAGE = 6;
 const SearchInput = ({ query, setQuery, resetPage }: any) => (
     <div className="mb-md" style={{ position: 'relative' }}>
         <input
-            type="text"
+            type="search"
+            aria-label="記事を検索"
             placeholder="Search posts..."
             value={query}
             onChange={(e) => { setQuery(e.target.value); resetPage(); }}
@@ -31,24 +32,23 @@ const SearchInput = ({ query, setQuery, resetPage }: any) => (
                 width: '100%', padding: '10px 14px', fontSize: '0.875rem',
                 border: '1px solid var(--color-border)',
                 backgroundColor: 'var(--color-bg-card)', color: 'var(--color-text)',
-                outline: 'none', transition: 'border-color var(--transition-fast)',
+                transition: 'border-color var(--transition-fast)',
                 boxSizing: 'border-box', fontFamily: 'var(--font-sans)',
                 letterSpacing: '0.02em',
             }}
-            onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
-            onBlur={(e) => (e.target.style.borderColor = 'var(--color-border)')}
         />
     </div>
 );
 
 const TagFilter = ({ allTags, selectedTags, toggleTag }: any) => (
-    <div className="flex flex-wrap gap-sm mb-md">
+    <div className="flex flex-wrap gap-sm mb-md" role="group" aria-label="タグで絞り込み">
         {allTags.map((tag: string) => {
             const isActive = selectedTags.has(tag);
             return (
                 <button
                     key={tag}
                     onClick={() => toggleTag(tag)}
+                    aria-pressed={isActive}
                     style={{
                         padding: '3px 10px',
                         fontSize: '0.65rem', fontWeight: 600,
@@ -175,6 +175,7 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
             <div className="flex justify-between items-center text-sm text-muted mb-md">
                 <select
                     value={sortOrder}
+                    aria-label="並び順"
                     onChange={(e) => { setSortOrder(e.target.value as SortOrder); resetPage(); }}
                     style={{
                         padding: '4px 10px', fontSize: '0.7rem',
@@ -187,7 +188,7 @@ export function PostSearch({ posts, allTags }: PostSearchProps) {
                     <option value="newest">Newest</option>
                     <option value="oldest">Oldest</option>
                 </select>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.65rem', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)' }}>
+                <div aria-live="polite" aria-atomic="true" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.65rem', letterSpacing: '0.1em', fontFamily: 'var(--font-mono)' }}>
                     <span>{filteredPosts.length} posts</span>
                     {selectedTags.size > 0 && (
                         <>
