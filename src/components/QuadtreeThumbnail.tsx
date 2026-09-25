@@ -34,13 +34,16 @@ export default function QuadtreeThumbnail({
 }: QuadtreeThumbnailProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const prefersReduced = typeof window !== 'undefined'
+        && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const shouldAnimate = animateOnLoad && !prefersReduced;
     const [imageLoaded, setImageLoaded] = useState(false);
-    const [animationDone, setAnimationDone] = useState(!animateOnLoad);
-    const [showRealImage, setShowRealImage] = useState(!animateOnLoad);
+    const [animationDone, setAnimationDone] = useState(!shouldAnimate);
+    const [showRealImage, setShowRealImage] = useState(!shouldAnimate);
 
     // SSR時は何もしない
     useEffect(() => {
-        if (!animateOnLoad) {
+        if (!shouldAnimate) {
             setImageLoaded(true);
             return;
         }
@@ -64,7 +67,7 @@ export default function QuadtreeThumbnail({
             img.onerror = null;
             cancelAnimation?.();
         };
-    }, [src, animateOnLoad]);
+    }, [src, shouldAnimate]);
 
     const runQuadtreeAnimation = (img: HTMLImageElement) => {
         const canvas = canvasRef.current;
@@ -256,7 +259,7 @@ export default function QuadtreeThumbnail({
             }
         >
             {/* 四分木アニメーション用の Canvas */}
-            {animateOnLoad && !showRealImage && (
+            {shouldAnimate && !showRealImage && (
                 <canvas
                     ref={canvasRef}
                     style={{
