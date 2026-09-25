@@ -53,6 +53,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-018`](#task-018) | スライド画面のClientRouterライフサイクル対応 | P0 | `DONE` | `src/pages/slides/[slug].astro` |
 | [`TASK-019`](#task-019) | 秘密情報ファイルの誤コミット防止 | P0 | `DONE` | `.gitignore` |
 | [`TASK-020`](#task-020) | サイトの位置づけをポートフォリオから個人サイトへ変更 | P1 | `DONE` | `README.md`, `AGENTS.md`, `src/consts.ts`, `src/layouts/BaseLayout.astro`, `src/pages/rss.xml.ts`, `src/pages/feed.json.ts` |
+| [`TASK-021`](#task-021) | 共通アクセシビリティ基盤の改善 | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css` |
 
 ---
 
@@ -75,6 +76,27 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-021] 共通アクセシビリティ基盤の改善
+- Status: `DONE`
+- Completed: 2026-09-26
+- Priority: P1
+- Target Files: `src/layouts/BaseLayout.astro`, `src/styles/global.css`
+- Verification Command: `pnpm exec astro check && pnpm build`
+- User Context: 装飾性を維持しながら、キーボード操作、文字拡大、動きに敏感な利用者、狭い画面での基本的な使いやすさを改善する。
+- Specifications:
+  - [x] 本文スキップリンクと現在地通知を追加する
+  - [x] 操作要素の共通フォーカス表示と44px相当のタップ領域を設ける
+  - [x] モバイル文字拡大を許可する
+  - [x] prefers-reduced-motion時にページ・テーマ・装飾アニメーションを抑制する
+  - [x] muted textのコントラストを通常文字の基準へ近づける
+- Acceptance Criteria:
+  - [x] キーボードで本文へ直接移動でき、現在ページとフォーカス位置を判別できること
+  - [x] OSの動きを減らす設定で主要アニメーションが実質停止すること
+  - [x] 320px幅でもヘッダー操作が収まる設計であること
+  - [x] 型検査とビルドが成功すること
+
+---
 
 ### [TASK-020] サイトの位置づけをポートフォリオから個人サイトへ変更
 - Status: `DONE`

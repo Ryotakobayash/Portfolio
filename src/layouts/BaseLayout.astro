@@ -87,6 +87,8 @@ const isActive = (path: string) => {
 
   </head>
   <body>
+    <a class="skip-link" href="#main-content">本文へスキップ</a>
+
     <!-- Deep background glow -->
     <div transition:persist="ambient-glow">
       <AmbientGlow />
@@ -98,21 +100,27 @@ const isActive = (path: string) => {
 
     <header class="header">
       <div class="container header-content">
-        <a href="/" class="logo" transition:name="site-logo">
+        <a
+          href="/"
+          class="logo"
+          transition:name="site-logo"
+          aria-label={`${SITE_NAME} トップページ`}
+          aria-current={currentPath === '/' ? 'page' : undefined}
+        >
           <span class="logo-full">{SITE_NAME_UPPER}</span>
           <span class="logo-short">RK</span>
         </a>
-        <nav class="nav-links">
-          <a href="/posts" class={`nav-link ${isActive('/posts') ? 'nav-link--accent' : ''}`}>Posts</a>
-          <a href="/about" class={`nav-link ${isActive('/about') ? 'nav-link--accent' : ''}`}>About</a>
-<a href="/talks" class={`nav-link ${isActive('/talks') ? 'nav-link--accent' : ''}`}>Talks</a>
+        <nav class="nav-links" aria-label="主要ナビゲーション">
+          <a href="/posts" class={`nav-link ${isActive('/posts') ? 'nav-link--accent' : ''}`} aria-current={isActive('/posts') ? 'page' : undefined}>Posts</a>
+          <a href="/about" class={`nav-link ${isActive('/about') ? 'nav-link--accent' : ''}`} aria-current={isActive('/about') ? 'page' : undefined}>About</a>
+          <a href="/talks" class={`nav-link ${isActive('/talks') ? 'nav-link--accent' : ''}`} aria-current={isActive('/talks') ? 'page' : undefined}>Talks</a>
         </nav>
         <div class="header-actions">
           <button id="fx-toggle" class="fx-toggle" role="switch" aria-checked="true" aria-label="視覚効果・装飾（FX）の切り替え">
             <span class="fx-on-text">FX: ON</span>
             <span class="fx-off-text">FX: OFF</span>
           </button>
-          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <button id="theme-toggle" class="theme-toggle" aria-label="表示テーマを切り替える">
             <span class="sun-icon">LIGHT</span>
             <span class="moon-icon">DARK</span>
           </button>
@@ -120,7 +128,7 @@ const isActive = (path: string) => {
       </div>
     </header>
 
-    <main class="main" transition:animate={fade({ duration: '0.20s' })}>
+    <main id="main-content" class="main" tabindex="-1" transition:animate={fade({ duration: '0.20s' })}>
       <div class="container">
         <slot />
       </div>
@@ -204,7 +212,17 @@ const isActive = (path: string) => {
               document.body.classList.remove('crt-powering-on');
             }, 600);
           } else {
-            // OFF時: 収束ビームアニメーションを見せてから属性を off に切り替える
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion) {
+              document.documentElement.setAttribute('data-fx', 'off');
+              document.documentElement.setAttribute('data-crt', 'off');
+              localStorage.setItem('site-fx', 'off');
+              updateFxToggleUI('off');
+              document.body.classList.remove('crt-powering-on', 'crt-powering-off');
+              return;
+            }
+
+            // OFF時は収束ビームを表示してから属性を切り替える
             document.body.classList.remove('crt-powering-on');
             document.body.classList.add('crt-powering-off');
             updateFxToggleUI('off');
@@ -225,9 +243,11 @@ const isActive = (path: string) => {
           const current = document.documentElement.getAttribute('data-theme');
           const next = current === 'dark' ? 'light' : 'dark';
 
-          // View Transition API 非対応ブラウザではフォールバック
+          const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+          // 非対応ブラウザまたは動きを減らす設定では即時に切り替える
           // @ts-ignore
-          if (!document.startViewTransition) {
+          if (!document.startViewTransition || prefersReducedMotion) {
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
             return;
