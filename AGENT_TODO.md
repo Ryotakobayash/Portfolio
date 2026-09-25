@@ -57,6 +57,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-022`](#task-022) | API防御の強化（slug検証・タイムアウト・エラーログ安全化） | P0 | `DONE` | `src/pages/api/pv/[slug].ts`, `src/pages/api/github/contributions.ts` |
 | [`TASK-023`](#task-023) | SEO基盤の整備（canonical・description・OGP・JSON-LD） | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/pages/posts/[slug].astro` |
 | [`TASK-024`](#task-024) | Biome lint と GitHub Actions CI の導入 | P0 | `DONE` | `biome.json`, `.github/workflows/ci.yml`, `package.json` |
+| [`TASK-025`](#task-025) | 第2段階の残り（reduced-motion・更新日対応） | P1 | `DONE` | `src/components/QuadtreeThumbnail.tsx`, `src/content.config.ts`, `src/components/ArticlePerformance.tsx` |
 
 ---
 
@@ -79,6 +80,25 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-025] 第2段階の残り（reduced-motion・更新日対応）
+- Status: `DONE`
+- Completed: 2026-09-26
+- Priority: P1
+- Target Files: `src/components/QuadtreeThumbnail.tsx`, `src/content.config.ts`, `src/components/ArticlePerformance.tsx`, `src/pages/posts/[slug].astro`, `src/layouts/BaseLayout.astro`
+- Verification Command: `pnpm exec astro check && pnpm build`
+- User Context: Canvas系アニメーションのreduced-motion対応と、古い技術記事の鮮度判断を可能にする更新日フィールドを追加する。
+- Specifications:
+  - [x] Quadtreeアニメーションをprefers-reduced-motionで抑制する
+  - [x] Content CollectionsにupdatedDateフィールドを追加する
+  - [x] 記事パフォーマンスカードに更新日を表示する
+  - [x] JSON-LDとOGPに更新日を反映する
+- Acceptance Criteria:
+  - [x] reduced-motion設定時にQuadtreeアニメーションが即完了すること
+  - [x] updatedDateを持つ記事でUpdated行が表示されること
+  - [x] 型検査とビルドが成功すること
+
+---
 
 ### [TASK-024] Biome lint と GitHub Actions CI の導入
 - Status: `DONE`
