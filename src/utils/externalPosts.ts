@@ -63,16 +63,12 @@ export async function fetchNotePosts(): Promise<ExternalPost[]> {
     const NOTE_RSS_URL = 'https://note.com/tender_hyssop572/rss';
 
     try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
-
         const res = await fetch(NOTE_RSS_URL, {
-            signal: controller.signal,
+            signal: AbortSignal.timeout(5000),
             headers: {
-                'User-Agent': 'Ryota-Personal-Site-FeedFetcher/1.0',
+                'User-Agent': 'Ryota-Personal-Site',
             },
         });
-        clearTimeout(timeoutId);
 
         if (!res.ok) {
             console.warn(`[fetchNotePosts] RSS取得失敗 HTTP ${res.status}`);
