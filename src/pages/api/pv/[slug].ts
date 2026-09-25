@@ -11,11 +11,11 @@ import {
 export const prerender = false;
 
 const PERIOD_DAYS = 30;
-const SLUG_MAX_LENGTH = 128;
-const SLUG_PATTERN = /^[\w-]+$/;
+const SLUG_MAX_LENGTH = 200;
+const SLUG_DANGEROUS = /[\/\\<>"'`;&|]/;
 
 function isValidSlug(value: string): boolean {
-    return value.length > 0 && value.length <= SLUG_MAX_LENGTH && SLUG_PATTERN.test(value);
+    return value.length > 0 && value.length <= SLUG_MAX_LENGTH && !SLUG_DANGEROUS.test(value);
 }
 
 function dummyCount(slug: string): number {
