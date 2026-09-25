@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Highcharts from 'highcharts';
 import { HighchartsReact, type HighchartsReactRefObject } from '../utils/highchartsReact';
 import { useTheme } from '../hooks/useTheme';
 
 interface PostDate {
     slug: string;
-    date: string; // "2026-01-15"
+    date: string;
 }
 
 interface Props {
     posts: PostDate[];
     yearlyTarget: number;
-    period: string; // "2026"
+    period: string;
 }
 
 interface ExternalPost {
@@ -19,79 +19,130 @@ interface ExternalPost {
     date: string;
 }
 
+type ExternalState = 'loading' | 'loaded' | 'error';
+type ProgressStatus = 'ON TRACK' | 'BEHIND' | 'NOT STARTED';
+
+function normalizePostKey(slug: string): string {
+    return slug.trim().replace(/\/+$/, '');
+}
+
+interface TokyoDateContext {
+    dateKey: string;
+    year: number;
+    monthIndex: number;
+}
+
+function getTokyoDateContext(date: Date): TokyoDateContext {
+    const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Tokyo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).formatToParts(date);
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    const year = Number.parseInt(values.year, 10);
+    const month = Number.parseInt(values.month, 10);
+    const day = Number.parseInt(values.day, 10);
+
+    return {
+        dateKey: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+        year,
+        monthIndex: month - 1,
+    };
+}
+
 /**
- * 投稿バーンダウンチャート コンポーネント
- * 年間の投稿目標(理想線) vs 実績(実績線) を Highcharts で描画。
- * 内部記事(Markdown)に加え、note の投稿を /api/note/posts から取得して合算する。
+ * 年間の投稿目標と実績を表示する。
+ * 内部記事はprops、外部記事はAPIから取得し、同じURLは一度だけ集計する。
  */
 export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
     const chartRef = useRef<HighchartsReactRefObject>(null);
     const isDark = useTheme();
-
-    // note などの外部投稿(マウント後に取得して合算)
     const [externalPosts, setExternalPosts] = useState<PostDate[]>([]);
-    const [hasExternal, setHasExternal] = useState(false);
+    const [externalState, setExternalState] = useState<ExternalState>('loading');
 
     useEffect(() => {
-        let alive = true;
-        fetch('/api/note/posts')
-            .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+        const controller = new AbortController();
+
+        fetch('/api/note/posts', { signal: controller.signal })
+            .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`HTTP ${res.status}`))))
             .then((data: { posts?: ExternalPost[] }) => {
-                if (alive && Array.isArray(data.posts) && data.posts.length > 0) {
-                    setExternalPosts(data.posts.map((p) => ({ slug: p.url, date: p.date })));
-                    setHasExternal(true);
-                }
+                const fetchedPosts = Array.isArray(data.posts)
+                    ? data.posts.map((post) => ({ slug: post.url, date: post.date }))
+                    : [];
+                setExternalPosts(fetchedPosts);
+                setExternalState('loaded');
             })
-            .catch(() => {
-                // 取得失敗時は内部記事のみで集計(フォールバック)
+            .catch((error: unknown) => {
+                if (error instanceof DOMException && error.name === 'AbortError') return;
+                setExternalPosts([]);
+                setExternalState('error');
             });
-        return () => {
-            alive = false;
-        };
+
+        return () => controller.abort();
     }, []);
 
-    // 対象年の記事をフィルタし、月別累積を計算
-    const { idealLine, actualLine, currentTotal, isOnTrack } = useMemo(() => {
-        const year = parseInt(period);
-        const allPosts = [...posts, ...externalPosts];
-        const yearPosts = allPosts.filter((p) => p.date.startsWith(period));
+    const { idealLine, actualLine, currentTotal, progressStatus } = useMemo(() => {
+        const year = Number.parseInt(period, 10);
+        const today = getTokyoDateContext(new Date());
+        const todayKey = today.dateKey;
+        const currentMonth = year < today.year
+            ? 11
+            : year === today.year
+                ? today.monthIndex
+                : -1;
 
-        // 月別カウント
-        const monthlyCounts = new Array(12).fill(0);
-        for (const post of yearPosts) {
-            const month = parseInt(post.date.slice(5, 7)) - 1; // 0-indexed
-            monthlyCounts[month]++;
+        const uniquePosts = new Map<string, PostDate>();
+        for (const post of [...posts, ...externalPosts]) {
+            const key = normalizePostKey(post.slug);
+            if (key) uniquePosts.set(key, post);
         }
 
-        // 累積
-        const actual: (number | null)[] = [];
-        let cumulative = 0;
-        const now = new Date();
-        const currentMonth = now.getFullYear() === year ? now.getMonth() : 11;
+        const monthlyCounts = new Array<number>(12).fill(0);
+        for (const post of uniquePosts.values()) {
+            if (!post.date.startsWith(period) || post.date.slice(0, 10) > todayKey) continue;
+            const month = Number.parseInt(post.date.slice(5, 7), 10) - 1;
+            if (month >= 0 && month < 12) monthlyCounts[month] += 1;
+        }
 
-        for (let i = 0; i < 12; i++) {
-            cumulative += monthlyCounts[i];
-            if (i <= currentMonth) {
-                actual.push(cumulative);
+        const actual: (number | null)[] = [];
+        let visibleTotal = 0;
+        for (let month = 0; month < 12; month += 1) {
+            if (month <= currentMonth) {
+                visibleTotal += monthlyCounts[month];
+                actual.push(visibleTotal);
             } else {
-                actual.push(null); // 未来月はnull
+                actual.push(null);
             }
         }
 
-        // 理想線: 毎月 target/12 ずつ増える
         const monthlyTarget = yearlyTarget / 12;
-        const ideal = Array.from({ length: 12 }, (_, i) =>
-            Math.round(monthlyTarget * (i + 1) * 10) / 10,
+        const ideal = Array.from({ length: 12 }, (_, index) =>
+            Math.round(monthlyTarget * (index + 1) * 10) / 10,
         );
+        const expectedByNow = currentMonth >= 0
+            ? Math.round(monthlyTarget * (currentMonth + 1) * 10) / 10
+            : 0;
+        const status: ProgressStatus = currentMonth < 0
+            ? 'NOT STARTED'
+            : visibleTotal >= expectedByNow
+                ? 'ON TRACK'
+                : 'BEHIND';
 
-        const total = cumulative;
-        const expectedByNow = Math.round(monthlyTarget * (currentMonth + 1) * 10) / 10;
-        const onTrack = total >= expectedByNow;
-
-        return { idealLine: ideal, actualLine: actual, currentTotal: total, isOnTrack: onTrack };
+        return {
+            idealLine: ideal,
+            actualLine: actual,
+            currentTotal: visibleTotal,
+            progressStatus: status,
+        };
     }, [posts, externalPosts, yearlyTarget, period]);
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const statusColor = progressStatus === 'ON TRACK'
+        ? 'var(--color-primary)'
+        : progressStatus === 'BEHIND'
+            ? '#802520'
+            : 'var(--color-text-muted)';
 
     const colors = {
         text: isDark ? '#8A8A7A' : '#6B6B5A',
@@ -146,23 +197,27 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
                 type: 'line',
                 name: 'Actual',
                 data: actualLine,
-                color: isOnTrack ? colors.actual : colors.warning,
+                color: progressStatus === 'BEHIND' ? colors.warning : colors.actual,
                 lineWidth: 2.5,
                 connectNulls: false,
             },
         ],
     };
 
-    // テーマ変更時にチャート更新
     useEffect(() => {
         if (chartRef.current?.chart) {
             chartRef.current.chart.update(options, true, true);
         }
-    }, [isDark]);
+    }, [isDark, idealLine, actualLine, progressStatus]);
+
+    const sourceLabel = externalState === 'loading'
+        ? 'Local Markdown（外部記事を取得中）'
+        : externalState === 'loaded'
+            ? 'Local Markdown + External Posts API'
+            : 'Local Markdown（外部記事を取得できませんでした）';
 
     return (
         <div>
-            {/* ヘッダー */}
             <div style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 marginBottom: '8px',
@@ -178,8 +233,7 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span style={{
                         fontSize: '1.5rem', fontWeight: 900,
-                        letterSpacing: '-0.04em',
-                        color: isOnTrack ? 'var(--color-primary)' : '#802520',
+                        letterSpacing: '-0.04em', color: statusColor,
                         fontFamily: 'var(--font-sans)',
                     }}>
                         {currentTotal}
@@ -190,23 +244,21 @@ export default function PostBurndown({ posts, yearlyTarget, period }: Props) {
                     <span style={{
                         fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em',
                         textTransform: 'uppercase', padding: '2px 6px',
-                        border: `1px solid ${isOnTrack ? 'var(--color-primary)' : '#802520'}`,
-                        color: isOnTrack ? 'var(--color-primary)' : '#802520',
+                        border: `1px solid ${statusColor}`,
+                        color: statusColor,
                     }}>
-                        {isOnTrack ? 'ON TRACK' : 'BEHIND'}
+                        {progressStatus}
                     </span>
                 </div>
             </div>
 
-            {/* チャート */}
             <HighchartsReact highcharts={Highcharts} options={options} ref={chartRef} />
 
-            {/* Data Source */}
             <div style={{
                 marginTop: '4px', fontSize: '0.6rem', color: 'var(--color-text-muted)',
-                fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
+                fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right',
             }}>
-                Source: Local Files (Markdown){hasExternal ? ' + note' : ''}
+                Source: {sourceLabel} / {period}年・本日まで
             </div>
         </div>
     );

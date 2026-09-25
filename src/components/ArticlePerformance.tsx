@@ -1,47 +1,62 @@
 import { useEffect, useState } from 'react';
+import type { ArticlePvResponse } from '../types/pv';
 
 interface Props {
     slug: string;
     wordCount: number;
     readingTime: number;
-    publishDate: string; // YYYY-MM-DD
+    publishDate: string;
 }
 
-export default function ArticlePerformance({ slug, wordCount, readingTime, publishDate }: Props) {
-    const [viewCount, setViewCount] = useState<number | null>(null);
+type PvState =
+    | { status: 'loading'; periodDays: number }
+    | { status: 'ready'; count: number; periodDays: number }
+    | { status: 'demo'; periodDays: number }
+    | { status: 'unavailable'; periodDays: number };
 
-    // PV取得
+export default function ArticlePerformance({ slug, wordCount, readingTime, publishDate }: Props) {
+    const [pvState, setPvState] = useState<PvState>({ status: 'loading', periodDays: 30 });
+
     useEffect(() => {
-        fetch(`/api/pv/${slug}`)
-            .then((res) => res.json())
-            .then((json) => setViewCount(json.count))
-            .catch(() => setViewCount(null));
+        const controller = new AbortController();
+        setPvState({ status: 'loading', periodDays: 30 });
+
+        fetch(`/api/pv/${encodeURIComponent(slug)}`, { signal: controller.signal })
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json() as Promise<ArticlePvResponse>;
+            })
+            .then((data) => {
+                if (data.source === 'ga4' && typeof data.count === 'number') {
+                    setPvState({ status: 'ready', count: data.count, periodDays: data.periodDays });
+                } else if (data.source === 'dummy') {
+                    setPvState({ status: 'demo', periodDays: data.periodDays });
+                } else {
+                    setPvState({ status: 'unavailable', periodDays: data.periodDays });
+                }
+            })
+            .catch((error: unknown) => {
+                if (error instanceof DOMException && error.name === 'AbortError') return;
+                setPvState({ status: 'unavailable', periodDays: 30 });
+            });
+
+        return () => controller.abort();
     }, [slug]);
 
-    // YYYY/MM/DD形式にフォーマット
     const formattedDate = publishDate.replace(/-/g, '/');
+    const pvValue = pvState.status === 'ready'
+        ? pvState.count.toLocaleString()
+        : pvState.status === 'demo'
+            ? 'DEMO'
+            : pvState.status === 'unavailable'
+                ? 'N/A'
+                : '--';
 
     const metrics = [
-        {
-            label: 'Published',
-            value: formattedDate,
-            suffix: ''
-        },
-        {
-            label: 'Reading Time',
-            value: readingTime,
-            suffix: 'min'
-        },
-        {
-            label: 'Views (30d)',
-            value: viewCount !== null ? viewCount.toLocaleString() : '--',
-            suffix: 'PV'
-        },
-        {
-            label: 'Word Count',
-            value: wordCount.toLocaleString(),
-            suffix: 'chars'
-        }
+        { label: 'Published', value: formattedDate, suffix: '' },
+        { label: 'Reading Time', value: readingTime, suffix: 'min' },
+        { label: `Views (${pvState.periodDays}d)`, value: pvValue, suffix: pvState.status === 'ready' ? 'PV' : '' },
+        { label: 'Character Count', value: wordCount.toLocaleString(), suffix: 'chars' },
     ];
 
     return (
@@ -53,8 +68,8 @@ export default function ArticlePerformance({ slug, wordCount, readingTime, publi
             border: '1px solid var(--color-border)',
             backgroundColor: 'var(--color-border)',
         }}>
-            {metrics.map((metric, i) => (
-                <div key={i} style={{
+            {metrics.map((metric) => (
+                <div key={metric.label} style={{
                     display: 'flex', flexDirection: 'column', gap: '6px',
                     padding: '14px 16px',
                     backgroundColor: 'var(--color-bg-secondary)',

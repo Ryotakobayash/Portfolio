@@ -72,7 +72,7 @@ const postDates = [...internalPostDates, ...externalPostDates].sort((a, b) => b.
       <div class="bento-card">
           <PostBurndown
               client:load
-              posts={postDates}
+              posts={internalPostDates}
               yearlyTarget={goalsData.posts.yearlyTarget}
               period={goalsData.posts.period}
           />

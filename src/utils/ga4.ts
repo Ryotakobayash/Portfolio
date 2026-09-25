@@ -12,6 +12,9 @@ export { GA4_PROPERTY_ID };
 // GA4 Data API のクォータ消費と関数実行数を抑える
 export const GA4_CACHE_CONTROL = 'public, s-maxage=3600, stale-while-revalidate=86400';
 
+// 未設定・障害時は短時間だけキャッシュし、外部APIへの再試行集中を避ける
+export const GA4_DEGRADED_CACHE_CONTROL = 'public, s-maxage=60, stale-while-revalidate=300';
+
 /**
  * GA4 を叩ける構成かどうか。
  * 未設定(ローカル等)や開発モードでは各エンドポイントがダミーデータへフォールバックする。

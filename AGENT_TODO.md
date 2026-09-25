@@ -49,6 +49,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-014`](#task-014) | CRTエフェクトの網羅的強化（画面湾曲・ベゼル・走査ビーム・ガラス反射・電源ON/OFF展開） | P1 | `DONE` | `src/components/CRTOverlay.astro`, `src/styles/global.css`, `src/layouts/BaseLayout.astro` |
 | [`TASK-015`](#task-015) | ブログ記事新規作成スクリプトの導入と執筆・画像管理ガイドラインの整備 | P1 | `DONE` | `scripts/new-post.mjs`, `package.json`, `docs/article-workflow.md`, `README.md`, `AGENTS.md` |
 | [`TASK-016`](#task-016) | Astro 7 と関連 Integration へのメジャーアップデート | P0 | `DONE` | `package.json`, `pnpm-lock.yaml`, `astro.config.mjs` |
+| [`TASK-017`](#task-017) | ダッシュボード数値の信頼性改善 | P0 | `DONE` | `src/pages/about.astro`, `src/components/PostBurndown.tsx`, `src/pages/api/pv/...`, `src/components/...` |
 
 ---
 
@@ -71,6 +72,26 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-017] ダッシュボード数値の信頼性改善
+- Status: `DONE`
+- Completed: 2026-09-25
+- Priority: P0
+- Target Files: `src/pages/about.astro`, `src/components/PostBurndown.tsx`, `src/pages/index.astro`, `src/components/ArticleTreemap.tsx`, `src/components/ArticlePerformance.tsx`, `src/components/PopularPosts.tsx`, `src/components/PVTimeline.tsx`, `src/pages/api/pv/`, `src/types/pv.ts`
+- Verification Command: `pnpm exec astro check && pnpm build`
+- User Context: 個人サイトの活動ダッシュボードとして、投稿数やPVが実値・デモ・障害時で誤認されず、集計期間と対象が分かる状態にする。
+- Specifications:
+  - [x] 外部記事の二重取得・二重計上を解消する
+  - [x] 未来日・未来月を現在の投稿実績へ含めない
+  - [x] PV APIの実データ・デモ・障害をUIで区別する
+  - [x] PVの集計期間と対象を画面に明示する
+- Acceptance Criteria:
+  - [x] 同じ外部記事が投稿数へ重複計上されないこと
+  - [x] 表示中の実績線と合計・達成判定が同じ期間を使うこと
+  - [x] ダミー値や障害時の値が実PVとして表示されないこと
+  - [x] 型検査とビルドが成功すること
+
+---
 
 ### [TASK-016] Astro 7 と関連 Integration へのメジャーアップデート
 - Status: `DONE`

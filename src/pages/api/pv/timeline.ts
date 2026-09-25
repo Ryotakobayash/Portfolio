@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import {
     GA4_PROPERTY_ID,
     GA4_CACHE_CONTROL,
+    GA4_DEGRADED_CACHE_CONTROL,
     isGA4Configured,
     createAnalyticsClient,
 } from '../../../utils/ga4';
@@ -9,64 +10,63 @@ import {
 export const prerender = false;
 
 interface MonthlyPV {
-    month: string; // "YYYYMM"
+    month: string;
     pv: number;
 }
 
-// ダミーデータ生成（過去6ヶ月分）
-function generateDummyData(): MonthlyPV[] {
-    const data: MonthlyPV[] = [];
+const PERIOD_DAYS = 180;
+
+// ローカル表示専用の決定的なデモデータ
+function generateDemoData(): MonthlyPV[] {
+    const values = [640, 820, 760, 1_120, 980, 1_340];
     const today = new Date();
-    for (let i = 5; i >= 0; i--) {
-        const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-        data.push({
-            month: `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}`,
-            pv: Math.floor(Math.random() * 2000) + 500,
-        });
-    }
-    return data;
+    return values.map((pv, index) => {
+        const date = new Date(today.getFullYear(), today.getMonth() - (values.length - 1 - index), 1);
+        return {
+            month: `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}`,
+            pv,
+        };
+    });
 }
 
 /**
- * 過去6ヶ月の月別PVデータを取得するAPI Route
+ * 過去約180日の月別PVデータを取得する。
  */
 export const GET: APIRoute = async () => {
-    // 環境変数未設定 or 開発モード → ダミーデータ
     if (!isGA4Configured()) {
-        return Response.json({
-            data: generateDummyData(),
-            source: 'dummy',
-        });
+        return Response.json(
+            { data: generateDemoData(), source: 'dummy', periodDays: PERIOD_DAYS },
+            { headers: { 'Cache-Control': GA4_DEGRADED_CACHE_CONTROL } },
+        );
     }
 
     try {
         const analytics = await createAnalyticsClient();
-
         const [response] = await analytics.runReport({
             property: `properties/${GA4_PROPERTY_ID}`,
-            dateRanges: [{ startDate: '180daysAgo', endDate: 'today' }], // 約6ヶ月
-            dimensions: [{ name: 'yearMonth' }], // YYYYMM
+            dateRanges: [{ startDate: `${PERIOD_DAYS - 1}daysAgo`, endDate: 'today' }],
+            dimensions: [{ name: 'yearMonth' }],
             metrics: [{ name: 'screenPageViews' }],
-            orderBys: [{ dimension: { dimensionName: 'yearMonth' } }]
+            orderBys: [{ dimension: { dimensionName: 'yearMonth' } }],
         });
 
         const data: MonthlyPV[] = [];
         for (const row of response.rows || []) {
             data.push({
                 month: row.dimensionValues?.[0]?.value || '',
-                pv: parseInt(row.metricValues?.[0]?.value || '0', 10),
+                pv: Number.parseInt(row.metricValues?.[0]?.value || '0', 10),
             });
         }
 
         return Response.json(
-            { data, source: 'ga4' },
+            { data, source: 'ga4', periodDays: PERIOD_DAYS },
             { headers: { 'Cache-Control': GA4_CACHE_CONTROL } },
         );
     } catch (error) {
         console.error('GA4 timeline API Error:', error);
-        return Response.json({
-            data: generateDummyData(),
-            source: 'fallback',
-        });
+        return Response.json(
+            { data: [], source: 'fallback', periodDays: PERIOD_DAYS },
+            { headers: { 'Cache-Control': GA4_DEGRADED_CACHE_CONTROL } },
+        );
     }
 };

@@ -92,7 +92,7 @@ const treemapPosts = await Promise.all(
 
         <div class="bento-card kpi-mini">
             <span class="kpi-mini__value" id="total-pv-hero">—</span>
-            <span class="kpi-mini__label">Total PV</span>
+            <span class="kpi-mini__label" id="total-pv-label">Article PV · 365 Days</span>
         </div>
 
         <div class="bento-card kpi-mini kpi-mini--link">
@@ -110,7 +110,7 @@ const treemapPosts = await Promise.all(
     <div class="section-divider"><span class="section-divider__label">01 · Explore</span></div>
 
     <div class="bento-card bento-card--wide treemap-card">
-        <div class="bento-card__title">Article Map — Word Count</div>
+        <div class="bento-card__title">Article Map — Character Count</div>
         <div class="treemap-chart-wrapper">
             <ArticleTreemap client:load posts={treemapPosts} />
         </div>
@@ -160,18 +160,35 @@ const treemapPosts = await Promise.all(
     </div>
 </BaseLayout>
 
-<!-- Total PV のクライアントサイド取得 -->
+<!-- 記事PVのクライアントサイド取得 -->
 <script>
+    import type { TreemapPvResponse } from '../types/pv';
+
     document.addEventListener('astro:page-load', () => {
-        const el = document.getElementById('total-pv-hero');
-        if (!el) return;
+        const valueElement = document.getElementById('total-pv-hero');
+        const labelElement = document.getElementById('total-pv-label');
+        if (!valueElement || !labelElement) return;
+
         fetch('/api/pv/treemap')
-            .then((res) => res.json())
-            .then((json) => {
-                el.textContent = (json.totalPV || 0).toLocaleString();
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json() as Promise<TreemapPvResponse>;
+            })
+            .then((data) => {
+                if (data.source === 'ga4' && typeof data.totalPV === 'number') {
+                    valueElement.textContent = data.totalPV.toLocaleString();
+                    labelElement.textContent = `Article PV · ${data.periodDays} Days`;
+                } else if (data.source === 'dummy') {
+                    valueElement.textContent = 'DEMO';
+                    labelElement.textContent = `PV Demo · ${data.periodDays} Days`;
+                } else {
+                    valueElement.textContent = '—';
+                    labelElement.textContent = 'Article PV · Unavailable';
+                }
             })
             .catch(() => {
-                el.textContent = '—';
+                valueElement.textContent = '—';
+                labelElement.textContent = 'Article PV · Unavailable';
             });
     });
 </script>

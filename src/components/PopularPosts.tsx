@@ -1,53 +1,62 @@
-import { useState, useEffect } from 'react';
-
-interface RankingItem {
-    path: string;
-    title: string;
-    pv: number;
-}
+import { useEffect, useState } from 'react';
+import type { RankingItem, RankingPvResponse, PvSource } from '../types/pv';
 
 export function PopularPosts() {
     const [ranking, setRanking] = useState<RankingItem[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [source, setSource] = useState<PvSource | 'loading'>('loading');
+    const [periodDays, setPeriodDays] = useState(30);
 
     useEffect(() => {
-        fetch('/api/pv/ranking')
-            .then((res) => res.json())
-            .then((json) => { setRanking(json.ranking || []); })
-            .catch(() => setRanking([]))
-            .finally(() => setIsLoading(false));
+        const controller = new AbortController();
+
+        fetch('/api/pv/ranking', { signal: controller.signal })
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json() as Promise<RankingPvResponse>;
+            })
+            .then((data) => {
+                setRanking(Array.isArray(data.ranking) ? data.ranking : []);
+                setSource(data.source || 'fallback');
+                setPeriodDays(data.periodDays);
+            })
+            .catch((error: unknown) => {
+                if (error instanceof DOMException && error.name === 'AbortError') return;
+                setRanking([]);
+                setSource('fallback');
+            });
+
+        return () => controller.abort();
     }, []);
 
-    if (isLoading) {
-        // 実リスト（1行 padding 10px×2 + 内容行で約55px × 5行 + margin-top 12px の Source 行）と
-        // 高さを一致させ、ロード完了時のレイアウトシフトを防ぐ
+    if (source === 'loading') {
         return (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {[1, 2, 3, 4, 5].map((i) => (
+            <div style={{ display: 'flex', flexDirection: 'column' }} aria-label="人気記事を読み込み中">
+                {[1, 2, 3, 4, 5].map((index) => (
                     <div
-                        key={i}
+                        key={index}
                         className="skeleton"
                         style={{
                             height: '55px',
-                            borderBottom: i < 5 ? '1px solid var(--color-border)' : 'none',
+                            borderBottom: index < 5 ? '1px solid var(--color-border)' : 'none',
                         }}
                     />
                 ))}
-                <div
-                    className="skeleton"
-                    style={{ height: '10px', width: '140px', marginTop: '12px', marginLeft: 'auto' }}
-                />
+                <div className="skeleton" style={{ height: '10px', width: '140px', marginTop: '12px', marginLeft: 'auto' }} />
             </div>
         );
     }
 
+    if (source === 'fallback') {
+        return <p style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', letterSpacing: '0.05em' }}>PVデータを一時的に取得できません。</p>;
+    }
+
     if (ranking.length === 0) {
-        return <p style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', letterSpacing: '0.05em' }}>No data available.</p>;
+        return <p style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', letterSpacing: '0.05em' }}>過去{periodDays}日のデータはありません。</p>;
     }
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-            {ranking.map((item, i) => (
+            {ranking.map((item, index) => (
                 <a
                     key={item.path}
                     href={item.path}
@@ -58,30 +67,25 @@ export function PopularPosts() {
                         textDecoration: 'none', color: 'var(--color-text)',
                         transition: 'color 120ms ease',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-primary)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text)')}
+                    onMouseEnter={(event) => (event.currentTarget.style.color = 'var(--color-primary)')}
+                    onMouseLeave={(event) => (event.currentTarget.style.color = 'var(--color-text)')}
                 >
-                    {/* Rank number */}
                     <span style={{
                         width: '20px', flexShrink: 0, textAlign: 'center',
                         fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em',
-                        color: i < 3 ? 'var(--color-accent-2)' : 'var(--color-text-muted)',
+                        color: index < 3 ? 'var(--color-accent-2)' : 'var(--color-text-muted)',
                         fontFamily: 'var(--font-mono)',
                     }}>
-                        {String(i + 1).padStart(2, '0')}
+                        {String(index + 1).padStart(2, '0')}
                     </span>
-
-                    {/* Accent rule */}
                     <span style={{
                         width: '2px', height: '14px', flexShrink: 0,
-                        backgroundColor: i === 0
+                        backgroundColor: index === 0
                             ? 'var(--color-accent-2)'
-                            : i === 1
+                            : index === 1
                                 ? 'var(--color-primary)'
                                 : 'var(--color-border)',
                     }} />
-
-                    {/* Title */}
                     <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{
                             fontSize: '0.875rem', fontWeight: 400,
@@ -90,25 +94,24 @@ export function PopularPosts() {
                             {item.title || item.path.replace('/posts/', '')}
                         </div>
                     </div>
-
-                    {/* PV */}
                     <span style={{
                         fontSize: '0.7rem', fontWeight: 700,
                         letterSpacing: '0.05em',
                         color: 'var(--color-text-muted)', flexShrink: 0,
                         fontFamily: 'var(--font-mono)',
                     }}>
-                        {item.pv.toLocaleString()} PV
+                        {source === 'ga4' ? `${item.pv.toLocaleString()} PV` : `${item.pv.toLocaleString()} DEMO`}
                     </span>
                 </a>
             ))}
 
-            {/* Data Source */}
             <div style={{
                 marginTop: '12px', fontSize: '0.6rem', color: 'var(--color-text-muted)',
-                fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
+                fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right',
             }}>
-                Source: GA4 Data API
+                {source === 'ga4'
+                    ? `Source: GA4 / 公開記事 / 過去${periodDays}日`
+                    : `Source: Demo data / 過去${periodDays}日 / 実際のPVではありません`}
             </div>
         </div>
     );

@@ -4,6 +4,7 @@ import { HighchartsReact, type HighchartsReactRefObject } from '../utils/highcha
 import { useTheme } from '../hooks/useTheme';
 import { buildGenreData, buildPVData, getUsedTags, getTagColor } from '../utils/treemapUtils';
 import type { PostData } from '../utils/treemapUtils';
+import type { PvSource, TreemapPvResponse } from '../types/pv';
 
 type ViewMode = 'genre' | 'pv';
 
@@ -18,34 +19,45 @@ export default function ArticleTreemap({ posts }: Props) {
     const [treemapReady, setTreemapReady] = useState(false);
     const [pvMap, setPvMap] = useState<Record<string, number>>({});
     const [totalPV, setTotalPV] = useState<number>(0);
-    const [source, setSource] = useState<string>('Local Files');
+    const [pvSource, setPvSource] = useState<PvSource | 'loading'>('loading');
+    const [periodDays, setPeriodDays] = useState(365);
 
     // 合計文字数の計算
-    const totalWords = useMemo(() => {
+    const totalCharacters = useMemo(() => {
         return posts.reduce((acc, post) => acc + (post.wordCount || 0), 0);
     }, [posts]);
 
-    // PV データを API Route から非同期フェッチ
+    // PVデータを取得し、実測・デモ・障害を明確に分ける
     useEffect(() => {
-        let isMounted = true;
-        fetch('/api/pv/treemap')
+        const controller = new AbortController();
+
+        fetch('/api/pv/treemap', { signal: controller.signal })
             .then((res) => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return res.json();
+                return res.json() as Promise<TreemapPvResponse>;
             })
             .then((data) => {
-                if (!isMounted) return;
-                if (data.pvMap) setPvMap(data.pvMap);
-                if (data.totalPV != null) setTotalPV(data.totalPV);
-                if (data.source === 'ga4') setSource('Google Analytics 4');
-                else if (data.source === 'dummy') setSource('Local Files (Estimated PV)');
+                setPeriodDays(data.periodDays);
+                setPvSource(data.source);
+                if (data.source === 'ga4') {
+                    setPvMap(data.pvMap || {});
+                    setTotalPV(typeof data.totalPV === 'number' ? data.totalPV : 0);
+                } else if (data.source === 'dummy') {
+                    setPvMap(data.pvMap || {});
+                    setTotalPV(0);
+                } else {
+                    setPvMap({});
+                    setTotalPV(0);
+                }
             })
-            .catch((err) => {
-                console.warn('Failed to fetch PV data for Treemap:', err);
+            .catch((error: unknown) => {
+                if (error instanceof DOMException && error.name === 'AbortError') return;
+                setPvMap({});
+                setTotalPV(0);
+                setPvSource('fallback');
             });
-        return () => {
-            isMounted = false;
-        };
+
+        return () => controller.abort();
     }, []);
 
     // Highcharts Treemap / Heatmap モジュールを動的にロード
@@ -75,6 +87,8 @@ export default function ArticleTreemap({ posts }: Props) {
     // チャートオプション
     const options: Highcharts.Options = useMemo(() => {
         const textColor = isDark ? '#c1c2c5' : '#495057';
+        const pvUnit = pvSource === 'dummy' ? 'DEMO' : 'PV';
+        const valueLabel = pvSource === 'dummy' ? 'Demo value' : 'Views';
 
         return {
             chart: {
@@ -98,7 +112,7 @@ export default function ArticleTreemap({ posts }: Props) {
                             fontFamily: 'var(--font-mono, monospace)',
                         },
                         formatter: function() {
-                            return `${this.value} PV`;
+                            return `${this.value} ${pvUnit}`;
                         }
                     }
                 },
@@ -124,13 +138,13 @@ export default function ArticleTreemap({ posts }: Props) {
                 useHTML: true,
                 formatter: function (this: Highcharts.Point): string {
                     const point = this as any;
-                    const pvText = point.pv != null && point.pv > 0 ? `${point.pv.toLocaleString()} PV` : (point.pv === 0 ? '0 PV' : '---');
+                    const pvText = point.pv != null && point.pv > 0 ? `${point.pv.toLocaleString()} ${pvUnit}` : (point.pv === 0 ? `0 ${pvUnit}` : '---');
                     return `
                         <div style="padding:6px 10px; font-size:12px; line-height:1.5;">
                             <b style="font-size:13px;">${point.name}</b><br/>
                             <div style="margin-top:4px; display:flex; flex-direction:column; gap:2px;">
-                                <span style="color:${textColor}">Words (Area): <b>${point.value.toLocaleString()}</b></span>
-                                <span style="color:${textColor}">Views${viewMode === 'pv' ? ' (Color)' : ''}: <b>${pvText}</b></span>
+                                <span style="color:${textColor}">Characters (Area): <b>${point.value.toLocaleString()}</b></span>
+                                <span style="color:${textColor}">${valueLabel}${viewMode === 'pv' ? ' (Color)' : ''}: <b>${pvText}</b></span>
                                 <span style="color:${textColor}; font-size:11px; opacity:0.8;">Category: ${point.primaryTag || ''}</span>
                             </div>
                         </div>
@@ -189,7 +203,7 @@ export default function ArticleTreemap({ posts }: Props) {
                 }
             }
         };
-    }, [treemapData, isDark, viewMode]);
+    }, [treemapData, isDark, viewMode, pvSource]);
 
     // テーマ変更時・データ変更時にチャート更新
     useEffect(() => {
@@ -280,7 +294,7 @@ export default function ArticleTreemap({ posts }: Props) {
                             transition: 'all 0.15s ease',
                         }}
                     >
-                        Page Views
+                        {pvSource === 'dummy' ? 'Page Views (Demo)' : 'Page Views'}
                     </button>
                 </div>
             </div>
@@ -309,11 +323,13 @@ export default function ArticleTreemap({ posts }: Props) {
                     <span>
                         {viewMode === 'genre'
                             ? '※ ブロック面積 = 文字数'
-                            : '※ ブロック面積 = 文字数 / 色 = 閲覧数 (PV)'}
+                            : pvSource === 'dummy'
+                                ? '※ ブロック面積 = 文字数 / 色 = デモ値（実際のPVではありません）'
+                                : '※ ブロック面積 = 文字数 / 色 = 閲覧数 (PV)'}
                     </span>
-                    {totalWords > 0 && (
+                    {totalCharacters > 0 && (
                         <span>
-                            Total: {totalWords.toLocaleString()} Words
+                            Total: {totalCharacters.toLocaleString()} Characters
                             {viewMode === 'pv' && totalPV > 0 ? ` / ${totalPV.toLocaleString()} PV` : ''}
                         </span>
                     )}
@@ -325,7 +341,15 @@ export default function ArticleTreemap({ posts }: Props) {
                 marginTop: '12px', fontSize: '0.6rem', color: 'var(--color-text-muted)',
                 fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textAlign: 'right'
             }}>
-                Source: {viewMode === 'genre' ? 'Local Files' : source}
+                Source: {viewMode === 'genre'
+                    ? 'Local Files'
+                    : pvSource === 'ga4'
+                        ? `GA4 / 公開記事 / 過去${periodDays}日`
+                        : pvSource === 'dummy'
+                            ? `Demo data / 過去${periodDays}日 / 実際のPVではありません`
+                            : pvSource === 'fallback'
+                                ? 'PVデータを一時的に取得できません'
+                                : 'PVデータを読み込み中'}
             </div>
         </div>
     );
