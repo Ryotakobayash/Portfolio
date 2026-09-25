@@ -11,6 +11,7 @@ interface Props {
   ogImage?: string;
   ogType?: 'website' | 'article';
   publishedTime?: string;
+  modifiedTime?: string;
   jsonLd?: Record<string, unknown>;
 }
 
@@ -20,6 +21,7 @@ const {
   description = 'AstroやHighchartsを使った実験と情報発信をまとめる個人サイト',
   ogType = 'website',
   publishedTime,
+  modifiedTime,
   jsonLd,
 } = Astro.props;
 
@@ -58,6 +60,7 @@ const isActive = (path: string) => {
     <meta property="og:locale" content="ja_JP" />
     {Astro.props.ogImage && <meta property="og:image" content={new URL(Astro.props.ogImage, Astro.site)} />}
     {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />

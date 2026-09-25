@@ -36,7 +36,7 @@ const readingTime = Math.max(1, Math.ceil(charCount / 500));
 const articleDescription = post.data.excerpt
   || body.replace(/[#*\-\[\]()>|`~\n]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120) + '…';
 
-const articleJsonLd = {
+const articleJsonLd: Record<string, unknown> = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   headline: post.data.title,
@@ -45,6 +45,9 @@ const articleJsonLd = {
   url: new URL(`/posts/${slug}`, Astro.site).href,
   author: { '@type': 'Person', name: 'Ryota Kobayashi' },
 };
+if (post.data.updatedDate) {
+  articleJsonLd.dateModified = post.data.updatedDate;
+}
 
 // TOC用にheadingsをフォーマット
 // rehype-autolink-headings が見出し末尾に '#' を append するため、TOC 表示用には除去する
@@ -72,6 +75,7 @@ const allPostsMeta = allPosts.map((p) => ({
   ogImage={`/og/${slug}.png`}
   ogType="article"
   publishedTime={post.data.date}
+  modifiedTime={post.data.updatedDate}
   jsonLd={articleJsonLd}
 >
   <div class="article-layout">
@@ -114,6 +118,7 @@ const allPostsMeta = allPosts.map((p) => ({
           wordCount={charCount}
           readingTime={readingTime}
           publishDate={post.data.date}
+          updatedDate={post.data.updatedDate}
         />
       </div>
 

@@ -6,6 +6,7 @@ interface Props {
     wordCount: number;
     readingTime: number;
     publishDate: string;
+    updatedDate?: string;
 }
 
 type PvState =
@@ -14,7 +15,7 @@ type PvState =
     | { status: 'demo'; periodDays: number }
     | { status: 'unavailable'; periodDays: number };
 
-export default function ArticlePerformance({ slug, wordCount, readingTime, publishDate }: Props) {
+export default function ArticlePerformance({ slug, wordCount, readingTime, publishDate, updatedDate }: Props) {
     const [pvState, setPvState] = useState<PvState>({ status: 'loading', periodDays: 30 });
 
     useEffect(() => {
@@ -44,6 +45,7 @@ export default function ArticlePerformance({ slug, wordCount, readingTime, publi
     }, [slug]);
 
     const formattedDate = publishDate.replace(/-/g, '/');
+    const formattedUpdated = updatedDate ? updatedDate.replace(/-/g, '/') : null;
     const pvValue = pvState.status === 'ready'
         ? pvState.count.toLocaleString()
         : pvState.status === 'demo'
@@ -54,6 +56,7 @@ export default function ArticlePerformance({ slug, wordCount, readingTime, publi
 
     const metrics = [
         { label: 'Published', value: formattedDate, suffix: '' },
+        ...(formattedUpdated ? [{ label: 'Updated', value: formattedUpdated, suffix: '' }] : []),
         { label: 'Reading Time', value: readingTime, suffix: 'min' },
         { label: `Views (${pvState.periodDays}d)`, value: pvValue, suffix: pvState.status === 'ready' ? 'PV' : '' },
         { label: 'Character Count', value: wordCount.toLocaleString(), suffix: 'chars' },
