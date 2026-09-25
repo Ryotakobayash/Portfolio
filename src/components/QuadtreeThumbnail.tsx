@@ -122,9 +122,9 @@ export default function QuadtreeThumbnail({
                 for (let cx = x; cx < x + w; cx++) {
                     const idx = (cy * analyzeWidth + cx) * 4;
                     if (idx < data.length) {
-                        varR += Math.pow(data[idx] - r, 2);
-                        varG += Math.pow(data[idx + 1] - g, 2);
-                        varB += Math.pow(data[idx + 2] - b, 2);
+                        varR += (data[idx] - r) ** 2;
+                        varG += (data[idx + 1] - g) ** 2;
+                        varB += (data[idx + 2] - b) ** 2;
                     }
                 }
             }

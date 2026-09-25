@@ -48,6 +48,7 @@ const TagFilter = ({ allTags, selectedTags, toggleTag }: any) => (
             const isActive = selectedTags.has(tag);
             return (
                 <button
+                    type="button"
                     key={tag}
                     onClick={() => toggleTag(tag)}
                     aria-pressed={isActive}
@@ -76,6 +77,7 @@ const Pagination = ({ safePage, totalPages, setCurrentPage }: any) => {
     return (
         <div className="flex justify-center items-center" style={{ gap: '16px', marginTop: 'var(--spacing-xl)' }}>
             <button
+                type="button"
                 disabled={safePage <= 1}
                 onClick={() => setCurrentPage((p: number) => Math.max(1, p - 1))}
                 style={{
@@ -93,6 +95,7 @@ const Pagination = ({ safePage, totalPages, setCurrentPage }: any) => {
                 {safePage} / {totalPages}
             </span>
             <button
+                type="button"
                 disabled={safePage >= totalPages}
                 onClick={() => setCurrentPage((p: number) => Math.min(totalPages, p + 1))}
                 style={{
@@ -199,6 +202,7 @@ export function TalkSearch({ talks, allTags }: TalkSearchProps) {
                             <span style={{ color: 'var(--color-border)' }}>·</span>
                             <span>{selectedTags.size} tag{selectedTags.size === 1 ? '' : 's'}</span>
                             <button
+                                type="button"
                                 onClick={clearTags}
                                 style={{
                                     background: 'none',

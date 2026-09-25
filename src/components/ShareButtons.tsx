@@ -94,6 +94,7 @@ export default function ShareButtons({ title, url }: Props) {
             ))}
 
             <button
+                type="button"
                 onClick={handleCopy}
                 title="Copy URL"
                 style={{

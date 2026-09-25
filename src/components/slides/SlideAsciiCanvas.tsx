@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { AsciiRenderer } from '@react-three/drei';
-import * as THREE from 'three';
+import type * as THREE from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { useDecorativeFrameloop } from '../../hooks/useDecorativeFrameloop';
 

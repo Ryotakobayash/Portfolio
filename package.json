@@ -13,7 +13,9 @@
     "astro": "astro",
     "clean": "rm -rf .astro dist node_modules/.vite",
     "dev:fresh": "pnpm clean && pnpm dev",
-    "new:post": "node scripts/new-post.mjs"
+    "new:post": "node scripts/new-post.mjs",
+    "lint": "biome lint src/",
+    "lint:fix": "biome lint src/ --fix"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.3.0",
@@ -44,6 +46,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@biomejs/biome": "^2.5.14",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.184.0",

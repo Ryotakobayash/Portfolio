@@ -14,7 +14,7 @@ export interface ExternalPost {
  */
 function parsePubDateToYMD(pubDateStr: string): string {
     const d = new Date(pubDateStr);
-    if (isNaN(d.getTime())) return '';
+    if (Number.isNaN(d.getTime())) return '';
     // 日本時間 (JST = UTC+9) で YYYY-MM-DD を生成
     const jst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
     return jst.toISOString().slice(0, 10);

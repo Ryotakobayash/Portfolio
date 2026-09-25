@@ -56,6 +56,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-021`](#task-021) | 共通アクセシビリティ基盤の改善 | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css` |
 | [`TASK-022`](#task-022) | API防御の強化（slug検証・タイムアウト・エラーログ安全化） | P0 | `DONE` | `src/pages/api/pv/[slug].ts`, `src/pages/api/github/contributions.ts` |
 | [`TASK-023`](#task-023) | SEO基盤の整備（canonical・description・OGP・JSON-LD） | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/pages/posts/[slug].astro` |
+| [`TASK-024`](#task-024) | Biome lint と GitHub Actions CI の導入 | P0 | `DONE` | `biome.json`, `.github/workflows/ci.yml`, `package.json` |
 
 ---
 
@@ -78,6 +79,24 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-024] Biome lint と GitHub Actions CI の導入
+- Status: `DONE`
+- Completed: 2026-09-26
+- Priority: P0
+- Target Files: `biome.json`, `.github/workflows/ci.yml`, `package.json`
+- Verification Command: `pnpm lint && pnpm exec astro check && pnpm build`
+- User Context: 修正による不具合を自動検知できる品質ゲートを導入する。
+- Specifications:
+  - [x] Biomeでlintを導入し、コードベースに合ったルール設定を行う
+  - [x] GitHub Actions CIでlint・型検査・ビルドを自動実行する
+  - [x] package.jsonにlintスクリプトを追加する
+  - [x] 既存コードのlintエラーを解消する
+- Acceptance Criteria:
+  - [x] pnpm lintがエラー0で通ること
+  - [x] 型検査とビルドが成功すること
+
+---
 
 ### [TASK-022] API防御の強化（slug検証・タイムアウト・エラーログ安全化）
 - Status: `DONE`

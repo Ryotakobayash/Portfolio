@@ -13,7 +13,7 @@ export function useCountUp(end: number, duration: number = 1000): number {
             const percentage = Math.min(progress / duration, 1);
             
             // easeOutExpo
-            const easeOut = percentage === 1 ? 1 : 1 - Math.pow(2, -10 * percentage);
+            const easeOut = percentage === 1 ? 1 : 1 - 2 ** (-10 * percentage);
             
             setCount(Math.round(end * easeOut));
 

@@ -157,7 +157,7 @@ export default function LocalArticleNetworkGraph({
                 },
                 point: {
                     events: {
-                        click: function (e: any) {
+                        click: (e: any) => {
                             const point = e.target;
                             // 関連記事ノードをクリックしたときはその詳細ページへ遷移
                             if (point.type === 'post' && point.slug && point.slug !== currentSlug) {

@@ -1,4 +1,5 @@
-import React, { Suspense, lazy, useEffect, useState } from 'react';
+import type React from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 
 // three + R3F + drei を含む重量級チャンクはアイドル時まで取得しない
 const SlideAsciiCanvas = lazy(() => import('./slides/SlideAsciiCanvas'));
