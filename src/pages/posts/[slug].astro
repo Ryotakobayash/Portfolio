@@ -175,9 +175,15 @@ const allPostsMeta = allPosts.map((p) => ({
 
           img.style.cursor = 'zoom-in';
           img.style.transition = 'transform 150ms ease';
+          if (!img.getAttribute('tabindex')) img.setAttribute('tabindex', '0');
+          img.setAttribute('role', 'button');
+          img.setAttribute('aria-haspopup', 'dialog');
 
-          img.addEventListener('click', () => {
+          const openZoom = () => {
             const overlay = document.createElement('div');
+            overlay.setAttribute('role', 'dialog');
+            overlay.setAttribute('aria-modal', 'true');
+            overlay.setAttribute('aria-label', img.alt || '画像の拡大表示');
             overlay.style.cssText = `
               position: fixed;
               inset: 0;
@@ -188,6 +194,16 @@ const allPostsMeta = allPosts.map((p) => ({
               z-index: 1000;
               cursor: zoom-out;
               padding: 20px;
+            `;
+
+            const closeBtn = document.createElement('button');
+            closeBtn.setAttribute('aria-label', '閉じる');
+            closeBtn.textContent = '✕';
+            closeBtn.style.cssText = `
+              position: absolute; top: 16px; right: 16px;
+              background: none; border: 1px solid rgba(255,255,255,0.3);
+              color: #fff; font-size: 1.25rem; padding: 4px 10px;
+              cursor: pointer; z-index: 1001; line-height: 1;
             `;
 
             const zoomedImg = document.createElement('img');
@@ -214,24 +230,42 @@ const allPostsMeta = allPosts.map((p) => ({
             }
 
             overlay.appendChild(zoomedImg);
+            overlay.appendChild(closeBtn);
             document.body.appendChild(overlay);
             document.body.style.overflow = 'hidden';
+
+            closeBtn.focus();
 
             const close = () => {
               overlay.remove();
               document.body.style.overflow = '';
               document.removeEventListener('keydown', handleKeyDown);
+              img.focus();
             };
-            overlay.addEventListener('click', close);
+            overlay.addEventListener('click', (e) => {
+              if (e.target === overlay) close();
+            });
+            closeBtn.addEventListener('click', close);
             const handleKeyDown = (e: KeyboardEvent) => {
               if (e.key === 'Escape') close();
+              if (e.key === 'Tab') {
+                e.preventDefault();
+                closeBtn.focus();
+              }
             };
             document.addEventListener('keydown', handleKeyDown);
+          };
+
+          img.addEventListener('click', openZoom);
+          img.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openZoom();
+            }
           });
         });
       }
 
-      // 初回ロードと View Transitions 遷移後の両方で発火する
       document.addEventListener('astro:page-load', enableImageZoom);
     </script>
 
