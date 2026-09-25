@@ -1,36 +1,47 @@
-# build output
-dist/
-.vercel/
-# generated types
-.astro/
+# ビルド成果物
+/dist/
+/.vercel/
 
-# dependencies
-node_modules/
+# 生成型
+/.astro/
 
-# logs
+# 依存関係
+/node_modules/
+
+# ログ
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# 環境変数（値を持たないテンプレートのみ追跡可能）
+.env*
+!.env.example
 
-# environment variables
-.env
-.env.example
-.env.production
+# パッケージ・ビルドツールのローカル認証設定
+.npmrc
+gradle.properties
+.mise.local.toml
 
+# 秘密鍵・証明書
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_rsa.*
 
-# macOS-specific files
+# 認証・ブラウザセッション状態
+auth.json
+storageState.json
+
+# macOS固有ファイル
 .DS_Store
 
-# jetbrains setting folder
+# IDE・エディタのローカル設定
 .idea/
-
-# obsidian editor state
 .obsidian/
-
-# vscode local settings (e.g. MCP server configs)
 .vscode/mcp.json
 
-# Claude Code agent worktrees (isolated agent workspaces — never commit)
+# Claude Codeの分離ワークツリー
 .claude/worktrees/

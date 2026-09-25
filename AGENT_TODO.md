@@ -51,6 +51,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-016`](#task-016) | Astro 7 と関連 Integration へのメジャーアップデート | P0 | `DONE` | `package.json`, `pnpm-lock.yaml`, `astro.config.mjs` |
 | [`TASK-017`](#task-017) | ダッシュボード数値の信頼性改善 | P0 | `DONE` | `src/pages/about.astro`, `src/components/PostBurndown.tsx`, `src/pages/api/pv/...`, `src/components/...` |
 | [`TASK-018`](#task-018) | スライド画面のClientRouterライフサイクル対応 | P0 | `DONE` | `src/pages/slides/[slug].astro` |
+| [`TASK-019`](#task-019) | 秘密情報ファイルの誤コミット防止 | P0 | `DONE` | `.gitignore` |
 
 ---
 
@@ -73,6 +74,22 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-019] 秘密情報ファイルの誤コミット防止
+- Status: `DONE`
+- Completed: 2026-09-26
+- Priority: P0
+- Target Files: `.gitignore`
+- Verification Command: `git check-ignore -v --no-index .env.local .npmrc auth.json storageState.json private.pem .mise.local.toml`
+- User Context: ローカル認証情報やブラウザ状態ファイルを誤ってGitへ追加する事故を防ぎ、値を持たない環境変数テンプレートだけ共有可能にする。
+- Specifications:
+  - [x] `.env*`を包括的に除外し、`.env.example`だけ許可する
+  - [x] npm・鍵・認証・ブラウザ状態・ローカルmise設定を除外する
+- Acceptance Criteria:
+  - [x] 代表的な秘密情報ファイルがGitのignore対象になること
+  - [x] `.env.example`を必要に応じて追跡できること
+
+---
 
 ### [TASK-018] スライド画面のClientRouterライフサイクル対応
 - Status: `DONE`
