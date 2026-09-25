@@ -20,7 +20,7 @@ type SortOrder = 'newest' | 'oldest';
 const POSTS_PER_PAGE = 6;
 
 // Sub-components for better readability
-const SearchInput = ({ query, setQuery, resetPage }: any) => (
+const SearchInput = ({ query, setQuery, resetPage }: { query: string; setQuery: (v: string) => void; resetPage: () => void }) => (
     <div className="mb-md" style={{ position: 'relative' }}>
         <input
             type="search"
@@ -40,7 +40,7 @@ const SearchInput = ({ query, setQuery, resetPage }: any) => (
     </div>
 );
 
-const TagFilter = ({ allTags, selectedTags, toggleTag }: any) => (
+const TagFilter = ({ allTags, selectedTags, toggleTag }: { allTags: string[]; selectedTags: Set<string>; toggleTag: (tag: string) => void }) => (
     <div className="flex flex-wrap gap-sm mb-md" role="group" aria-label="タグで絞り込み">
         {allTags.map((tag: string) => {
             const isActive = selectedTags.has(tag);
@@ -70,7 +70,7 @@ const TagFilter = ({ allTags, selectedTags, toggleTag }: any) => (
     </div >
 );
 
-const Pagination = ({ safePage, totalPages, setCurrentPage }: any) => {
+const Pagination = ({ safePage, totalPages, setCurrentPage }: { safePage: number; totalPages: number; setCurrentPage: (fn: (p: number) => number) => void }) => {
     if (totalPages <= 1) return null;
     return (
         <div className="flex justify-center items-center" style={{ gap: '16px', marginTop: 'var(--spacing-xl)' }}>

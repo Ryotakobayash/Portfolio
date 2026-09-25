@@ -6,6 +6,18 @@ export interface PostData {
     date: string;
 }
 
+export interface TreemapPoint {
+    id?: string;
+    parent?: string;
+    name: string;
+    value?: number;
+    color?: string;
+    colorValue?: number;
+    slug?: string;
+    primaryTag?: string;
+    pv?: number;
+}
+
 /** タグ→色のパレット — レトロフューチャー設計システム準拠 */
 const TAG_COLORS: Record<string, string> = {
     // 日本語タグ
@@ -56,7 +68,7 @@ export function getTagColor(tag: string): string {
 export function buildGenreData(
     posts: PostData[],
     pvMap: Record<string, number> = {},
-): any[] {
+): TreemapPoint[] {
     const groups: Record<string, PostData[]> = {};
     for (const post of posts) {
         const primaryTag = post.tags[0] || 'Other';
@@ -64,7 +76,7 @@ export function buildGenreData(
         groups[primaryTag].push(post);
     }
 
-    const data: any[] = [];
+    const data: TreemapPoint[] = [];
 
     // 親ノード（タグ）— グループの色を設定
     for (const tag of Object.keys(groups)) {
@@ -100,7 +112,7 @@ export function buildGenreData(
 export function buildPVData(
     posts: PostData[],
     pvMap: Record<string, number> = {},
-): any[] {
+): TreemapPoint[] {
     return posts.map((post) => {
         const shortSlug = post.slug.replace(/^\d{8}_/, '');
         const pv = pvMap[post.slug] ?? pvMap[shortSlug] ?? 0;
