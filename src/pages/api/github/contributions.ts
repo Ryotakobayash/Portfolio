@@ -78,11 +78,11 @@ async function fetchWithGraphQL(token: string): Promise<Response> {
                 query,
                 variables: { userName: GITHUB_USERNAME },
             }),
+            signal: AbortSignal.timeout(10_000),
         });
 
         if (!res.ok) {
-            console.error('GitHub GraphQL API error:', res.status, await res.text());
-            // GraphQL失敗時はRESTにフォールバック
+            console.error('GitHub GraphQL API error:', res.status);
             return await fetchWithRestAPI();
         }
 
@@ -121,7 +121,7 @@ async function fetchWithGraphQL(token: string): Promise<Response> {
             }
         );
     } catch (err) {
-        console.error('GraphQL fetch error:', err);
+        console.error('GraphQL fetch error:', err instanceof Error ? err.message : 'unknown');
         return await fetchWithRestAPI();
     }
 }
@@ -138,6 +138,7 @@ async function fetchWithRestAPI(): Promise<Response> {
                 headers: {
                     'User-Agent': 'Ryota-Personal-Site',
                 },
+                signal: AbortSignal.timeout(10_000),
             }
         );
 
@@ -205,7 +206,7 @@ async function fetchWithRestAPI(): Promise<Response> {
             }
         );
     } catch (err) {
-        console.error('REST API fetch error:', err);
+        console.error('REST API fetch error:', err instanceof Error ? err.message : 'unknown');
         return new Response(JSON.stringify({ error: 'Internal server error' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },

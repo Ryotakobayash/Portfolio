@@ -63,7 +63,7 @@ export const GET: APIRoute = async () => {
             { headers: { 'Cache-Control': GA4_CACHE_CONTROL } },
         );
     } catch (error) {
-        console.error('GA4 timeline API Error:', error);
+        console.error('GA4 timeline API Error:', error instanceof Error ? error.message : 'unknown');
         return Response.json(
             { data: [], source: 'fallback', periodDays: PERIOD_DAYS },
             { headers: { 'Cache-Control': GA4_DEGRADED_CACHE_CONTROL } },

@@ -11,6 +11,12 @@ import {
 export const prerender = false;
 
 const PERIOD_DAYS = 30;
+const SLUG_MAX_LENGTH = 128;
+const SLUG_PATTERN = /^[\w-]+$/;
+
+function isValidSlug(value: string): boolean {
+    return value.length > 0 && value.length <= SLUG_MAX_LENGTH && SLUG_PATTERN.test(value);
+}
 
 function dummyCount(slug: string): number {
     let hash = 0;
@@ -21,13 +27,10 @@ function dummyCount(slug: string): number {
     return Math.abs(hash % 500) + 50;
 }
 
-/**
- * 公開記事の過去30日PVを取得する。
- */
 export const GET: APIRoute = async ({ params }) => {
     const { slug } = params;
-    if (!slug) {
-        return Response.json({ error: 'Slug is required' }, { status: 400 });
+    if (!slug || !isValidSlug(slug)) {
+        return Response.json({ error: 'Invalid slug' }, { status: 400 });
     }
 
     const publishedPosts = await getPublishedPosts();
@@ -73,7 +76,7 @@ export const GET: APIRoute = async ({ params }) => {
             { headers: { 'Cache-Control': GA4_CACHE_CONTROL } },
         );
     } catch (error) {
-        console.error('GA4 slug API Error:', error);
+        console.error('GA4 slug API Error:', error instanceof Error ? error.message : 'unknown');
         return Response.json(
             { slug, count: null, source: 'fallback', periodDays: PERIOD_DAYS },
             { headers: { 'Cache-Control': GA4_DEGRADED_CACHE_CONTROL } },

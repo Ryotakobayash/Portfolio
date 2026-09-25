@@ -97,7 +97,7 @@ export const GET: APIRoute = async () => {
             { headers: { 'Cache-Control': GA4_CACHE_CONTROL } },
         );
     } catch (error) {
-        console.error('GA4 ranking API Error:', error);
+        console.error('GA4 ranking API Error:', error instanceof Error ? error.message : 'unknown');
         return Response.json(
             { ranking: [], source: 'fallback', periodDays: PERIOD_DAYS },
             { headers: { 'Cache-Control': GA4_DEGRADED_CACHE_CONTROL } },

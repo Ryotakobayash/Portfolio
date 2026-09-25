@@ -54,6 +54,8 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-019`](#task-019) | 秘密情報ファイルの誤コミット防止 | P0 | `DONE` | `.gitignore` |
 | [`TASK-020`](#task-020) | サイトの位置づけをポートフォリオから個人サイトへ変更 | P1 | `DONE` | `README.md`, `AGENTS.md`, `src/consts.ts`, `src/layouts/BaseLayout.astro`, `src/pages/rss.xml.ts`, `src/pages/feed.json.ts` |
 | [`TASK-021`](#task-021) | 共通アクセシビリティ基盤の改善 | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css` |
+| [`TASK-022`](#task-022) | API防御の強化（slug検証・タイムアウト・エラーログ安全化） | P0 | `DONE` | `src/pages/api/pv/[slug].ts`, `src/pages/api/github/contributions.ts` |
+| [`TASK-023`](#task-023) | SEO基盤の整備（canonical・description・OGP・JSON-LD） | P1 | `TODO` | `src/layouts/BaseLayout.astro`, `src/pages/posts/[slug].astro` |
 
 ---
 
@@ -76,6 +78,43 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-022] API防御の強化（slug検証・タイムアウト・エラーログ安全化）
+- Status: `DONE`
+- Completed: 2026-09-26
+- Priority: P0
+- Target Files: `src/pages/api/pv/[slug].ts`, `src/pages/api/github/contributions.ts`
+- Verification Command: `pnpm exec astro check && pnpm build`
+- User Context: 公開APIに対するslugインジェクションを防ぎ、外部API通信のハングを回避し、エラーログから上流レスポンスが漏れないようにする。
+- Specifications:
+  - [x] `/api/pv/[slug]`のslugを英数字・ハイフン・アンダースコアに制限し、長さ上限を設ける
+  - [x] GitHub API fetchにタイムアウトを追加する
+  - [x] エラーログから上流レスポンス本文を除外する
+- Acceptance Criteria:
+  - [x] 不正なslugが400で拒否されること
+  - [x] GitHub API通信が10秒以内にタイムアウトすること
+  - [x] エラーログにレスポンス本文が含まれないこと
+  - [x] 型検査とビルドが成功すること
+
+---
+
+### [TASK-023] SEO基盤の整備（canonical・description・OGP・JSON-LD）
+- Status: `TODO`
+- Priority: P1
+- Target Files: `src/layouts/BaseLayout.astro`, `src/pages/posts/[slug].astro`, `src/pages/index.astro`
+- Verification Command: `pnpm exec astro check && pnpm build`
+- User Context: 検索エンジンとSNS共有での表示品質を向上させ、個人サイトとしての認知を高める。
+- Specifications:
+  - [ ] 全ページにcanonical URLを追加する
+  - [ ] 記事ページにexcerptベースのdescriptionを設定する
+  - [ ] OGPを充実させる（og:type、article:published_time、og:site_name、locale）
+  - [ ] トップページにWebSite+Person、記事にBlogPostingのJSON-LDを追加する
+- Acceptance Criteria:
+  - [ ] 全ページのHTMLにcanonicalタグが出力されること
+  - [ ] 記事ページのmeta descriptionが記事固有の内容になること
+  - [ ] 型検査とビルドが成功すること
+
+---
 
 ### [TASK-021] 共通アクセシビリティ基盤の改善
 - Status: `DONE`
