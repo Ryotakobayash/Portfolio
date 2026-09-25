@@ -468,11 +468,21 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
 </style>
 
 <script>
-  const viewer = document.querySelector<HTMLElement>('.slide-viewer');
-  if (!viewer) throw new Error('slide-viewer not found');
+  let cleanupSlideViewer: (() => void) | undefined;
 
-  const container = document.getElementById('slides-container');
-  if (!container) throw new Error('slides-container not found');
+  function setupSlideViewer() {
+    cleanupSlideViewer?.();
+    cleanupSlideViewer = undefined;
+
+    const viewer = document.querySelector<HTMLElement>('.slide-viewer');
+    if (!viewer) return;
+
+    const container = document.getElementById('slides-container');
+    if (!container) return;
+
+    const abortController = new AbortController();
+    const { signal } = abortController;
+    let disposed = false;
 
   const mode = viewer.dataset.mode === 'present' ? 'present' : 'audience';
   const slug = viewer.dataset.slug ?? 'unknown';
@@ -480,43 +490,45 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
   const slides = Array.from(container.querySelectorAll<HTMLElement>('[data-slide]'));
   const total = slides.length;
   let current = 0;
-  // Track in-flight view transitions so data-slide-dir survives interrupted runs
-  // (rapid keypresses) instead of being cleared by an earlier transition's .finally.
+  // 連続操作中もスライド方向を正しく維持する
   let pendingTransitions = 0;
 
-  // Cross-window sync (same-origin, same browser)
+  // 同一ブラウザ内の発表者画面と聴衆画面を同期する
   const channel = new BroadcastChannel(`slides-${slug}`);
 
-  channel.addEventListener('message', (e) => {
-    if (e.data?.type === 'slide' && typeof e.data.index === 'number') {
-      // broadcastChange=false: applying a remote change must not echo back,
-      // otherwise two windows can ping-pong between conflicting indices.
-      showSlide(e.data.index, true, false);
+  channel.addEventListener('message', (event) => {
+    if (event.data?.type === 'slide' && typeof event.data.index === 'number') {
+      // 受信した変更は再送信せず、ウィンドウ間の反射ループを防ぐ
+      showSlide(event.data.index, true, false);
     }
-  });
+  }, { signal });
 
   function showSlide(nextIndex: number, animate = true, broadcastChange = true) {
-    if (nextIndex < 0 || nextIndex >= total) return;
+    if (disposed || nextIndex < 0 || nextIndex >= total) return;
     if (nextIndex === current) return;
     const dir = nextIndex > current ? 'forward' : 'backward';
 
     const doUpdate = () => {
-      slides[current].classList.remove('is-active');
-      slides[nextIndex].classList.add('is-active');
+      if (disposed) return;
+      slides[current]?.classList.remove('is-active');
+      slides[nextIndex]?.classList.add('is-active');
       current = nextIndex;
       updateUI();
-      // Preserve other params (e.g. mode)
+      // modeなど既存のクエリパラメータを維持する
       const url = new URL(location.href);
       url.searchParams.set('slide', String(nextIndex));
       history.replaceState(null, '', url.toString());
-      if (broadcastChange) channel.postMessage({ type: 'slide', index: nextIndex });
+      if (broadcastChange && !disposed) {
+        channel.postMessage({ type: 'slide', index: nextIndex });
+      }
     };
 
     if (animate && 'startViewTransition' in document) {
       document.documentElement.dataset.slideDir = dir;
-      pendingTransitions++;
+      pendingTransitions += 1;
       (document as any).startViewTransition(doUpdate).finished.finally(() => {
-        pendingTransitions--;
+        if (disposed) return;
+        pendingTransitions -= 1;
         if (pendingTransitions === 0) delete document.documentElement.dataset.slideDir;
       });
     } else {
@@ -573,56 +585,57 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
   }
 
   function init() {
+    if (total === 0 || disposed) return;
     const params = new URLSearchParams(location.search);
-    const startIndex = Math.min(
-      Math.max(parseInt(params.get('slide') ?? '0', 10), 0),
-      total - 1
-    );
+    const parsedIndex = Number.parseInt(params.get('slide') ?? '0', 10);
+    const requestedIndex = Number.isFinite(parsedIndex) ? parsedIndex : 0;
+    const startIndex = Math.min(Math.max(requestedIndex, 0), total - 1);
+
+    slides.forEach((slide) => slide.classList.remove('is-active'));
     slides[startIndex].classList.add('is-active');
     current = startIndex;
     updateUI();
-    // Announce initial state so a freshly-opened companion window can sync
+    // 新しく開いた相手画面へ初期位置を通知する
     channel.postMessage({ type: 'slide', index: startIndex });
   }
 
-  // ===== Keyboard =====
-  document.addEventListener('keydown', (e) => {
-    // Don't intercept browser shortcuts (Cmd/Ctrl+R reload, Cmd+L, etc.)
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
-    // Ignore key events when typing in inputs
-    const target = e.target as HTMLElement | null;
+  // ===== キーボード操作 =====
+  document.addEventListener('keydown', (event) => {
+    // ブラウザ・OSショートカットは横取りしない
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+    const target = event.target as HTMLElement | null;
     if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return;
 
-    if (e.key === 'ArrowRight' || e.key === ' ') {
-      e.preventDefault();
+    if (event.key === 'ArrowRight' || event.key === ' ') {
+      event.preventDefault();
       showSlide(current + 1);
-    } else if (e.key === 'ArrowLeft') {
-      e.preventDefault();
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
       showSlide(current - 1);
-    } else if (mode === 'present' && (e.key === 's' || e.key === 'S')) {
-      e.preventDefault();
+    } else if (mode === 'present' && (event.key === 's' || event.key === 'S')) {
+      event.preventDefault();
       toggleTimer();
-    } else if (mode === 'present' && (e.key === 'r' || e.key === 'R')) {
-      e.preventDefault();
+    } else if (mode === 'present' && (event.key === 'r' || event.key === 'R')) {
+      event.preventDefault();
       resetTimer();
-    } else if (mode === 'audience' && (e.key === 'f' || e.key === 'F')) {
-      e.preventDefault();
+    } else if (mode === 'audience' && (event.key === 'f' || event.key === 'F')) {
+      event.preventDefault();
       toggleFullscreen();
     }
-  });
+  }, { signal });
 
-  document.getElementById('prev-btn')?.addEventListener('click', () => showSlide(current - 1));
-  document.getElementById('next-btn')?.addEventListener('click', () => showSlide(current + 1));
+  document.getElementById('prev-btn')?.addEventListener('click', () => showSlide(current - 1), { signal });
+  document.getElementById('next-btn')?.addEventListener('click', () => showSlide(current + 1), { signal });
 
-  // ===== Open Speaker View =====
+  // ===== 発表者画面を開く =====
   document.getElementById('open-presenter-btn')?.addEventListener('click', () => {
     const url = new URL(location.href);
     url.searchParams.set('mode', 'present');
     url.searchParams.set('slide', String(current));
     window.open(url.toString(), `slides-presenter-${slug}`);
-  });
+  }, { signal });
 
-  // ===== Fullscreen (audience only) =====
+  // ===== フルスクリーン（聴衆画面のみ） =====
   async function toggleFullscreen() {
     try {
       if (document.fullscreenElement) {
@@ -637,7 +650,7 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     }
   }
 
-  document.getElementById('fullscreen-btn')?.addEventListener('click', toggleFullscreen);
+  document.getElementById('fullscreen-btn')?.addEventListener('click', toggleFullscreen, { signal });
 
   // ===== Timer (presenter only) =====
   let timerStart: number | null = null;
@@ -682,66 +695,93 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
   }
 
   if (mode === 'present') {
-    document.getElementById('timer-toggle-btn')?.addEventListener('click', toggleTimer);
-    document.getElementById('timer-reset-btn')?.addEventListener('click', resetTimer);
+    document.getElementById('timer-toggle-btn')?.addEventListener('click', toggleTimer, { signal });
+    document.getElementById('timer-reset-btn')?.addEventListener('click', resetTimer, { signal });
     renderTimer();
   }
 
   // ===== Laser pointer (presenter → audience, same-browser sync) =====
   const POINTER_IDLE_MS = 1500;
+  let pointerFrame: number | null = null;
+  let pointerIdleTimer: ReturnType<typeof setTimeout> | null = null;
+  let remoteCursor: HTMLElement | null = null;
 
   if (mode === 'present') {
-    let rafPending = false;
     let lastX = 0;
     let lastY = 0;
-    let idleTimer: ReturnType<typeof setTimeout> | null = null;
 
     const flush = () => {
-      rafPending = false;
+      pointerFrame = null;
+      if (disposed) return;
       channel.postMessage({ type: 'pointer', x: lastX, y: lastY, visible: true });
     };
 
-    container.addEventListener('pointermove', (e) => {
+    container.addEventListener('pointermove', (event) => {
       const rect = container.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
+      const x = (event.clientX - rect.left) / rect.width;
+      const y = (event.clientY - rect.top) / rect.height;
       if (x < 0 || x > 1 || y < 0 || y > 1) return;
       lastX = x;
       lastY = y;
-      if (!rafPending) {
-        rafPending = true;
-        requestAnimationFrame(flush);
+      if (pointerFrame === null) {
+        pointerFrame = requestAnimationFrame(flush);
       }
-      if (idleTimer) clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => {
-        channel.postMessage({ type: 'pointer', visible: false });
+      if (pointerIdleTimer) clearTimeout(pointerIdleTimer);
+      pointerIdleTimer = setTimeout(() => {
+        if (!disposed) channel.postMessage({ type: 'pointer', visible: false });
       }, POINTER_IDLE_MS);
-    });
+    }, { signal });
 
     container.addEventListener('pointerleave', () => {
-      if (idleTimer) clearTimeout(idleTimer);
-      channel.postMessage({ type: 'pointer', visible: false });
-    });
+      if (pointerIdleTimer) clearTimeout(pointerIdleTimer);
+      pointerIdleTimer = null;
+      if (!disposed) channel.postMessage({ type: 'pointer', visible: false });
+    }, { signal });
   }
 
   if (mode === 'audience') {
-    const cursor = document.createElement('div');
-    cursor.className = 'remote-cursor';
-    container.appendChild(cursor);
+    remoteCursor = document.createElement('div');
+    remoteCursor.className = 'remote-cursor';
+    container.appendChild(remoteCursor);
 
-    channel.addEventListener('message', (e) => {
-      if (e.data?.type !== 'pointer') return;
-      if (e.data.visible === false) {
-        cursor.classList.remove('is-visible');
+    channel.addEventListener('message', (event) => {
+      if (event.data?.type !== 'pointer' || !remoteCursor) return;
+      if (event.data.visible === false) {
+        remoteCursor.classList.remove('is-visible');
         return;
       }
       const rect = container.getBoundingClientRect();
-      const px = e.data.x * rect.width - 11;
-      const py = e.data.y * rect.height - 11;
-      cursor.style.transform = `translate(${px}px, ${py}px)`;
-      cursor.classList.add('is-visible');
-    });
+      const px = event.data.x * rect.width - 11;
+      const py = event.data.y * rect.height - 11;
+      remoteCursor.style.transform = `translate(${px}px, ${py}px)`;
+      remoteCursor.classList.add('is-visible');
+    }, { signal });
   }
 
   init();
+
+  cleanupSlideViewer = () => {
+    if (disposed) return;
+    if (mode === 'present') {
+      channel.postMessage({ type: 'pointer', visible: false });
+    }
+    disposed = true;
+    abortController.abort();
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+    if (pointerFrame !== null) cancelAnimationFrame(pointerFrame);
+    pointerFrame = null;
+    if (pointerIdleTimer) clearTimeout(pointerIdleTimer);
+    pointerIdleTimer = null;
+    remoteCursor?.remove();
+    channel.close();
+    delete document.documentElement.dataset.slideDir;
+  };
+  }
+
+  document.addEventListener('astro:page-load', setupSlideViewer);
+  document.addEventListener('astro:before-swap', () => {
+    cleanupSlideViewer?.();
+    cleanupSlideViewer = undefined;
+  });
 </script>

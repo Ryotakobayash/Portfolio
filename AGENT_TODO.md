@@ -50,6 +50,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-015`](#task-015) | ブログ記事新規作成スクリプトの導入と執筆・画像管理ガイドラインの整備 | P1 | `DONE` | `scripts/new-post.mjs`, `package.json`, `docs/article-workflow.md`, `README.md`, `AGENTS.md` |
 | [`TASK-016`](#task-016) | Astro 7 と関連 Integration へのメジャーアップデート | P0 | `DONE` | `package.json`, `pnpm-lock.yaml`, `astro.config.mjs` |
 | [`TASK-017`](#task-017) | ダッシュボード数値の信頼性改善 | P0 | `DONE` | `src/pages/about.astro`, `src/components/PostBurndown.tsx`, `src/pages/api/pv/...`, `src/components/...` |
+| [`TASK-018`](#task-018) | スライド画面のClientRouterライフサイクル対応 | P0 | `DONE` | `src/pages/slides/[slug].astro` |
 
 ---
 
@@ -72,6 +73,26 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-018] スライド画面のClientRouterライフサイクル対応
+- Status: `DONE`
+- Completed: 2026-09-26
+- Priority: P0
+- Target Files: `src/pages/slides/[slug].astro`
+- Verification Command: `pnpm exec astro check && pnpm build`
+- User Context: ClientRouterでスライドへ再訪した場合も操作を初期化し、離脱後にキー操作・タイマー・ウィンドウ間同期が残らないようにする。
+- Specifications:
+  - [x] `astro:page-load`ごとにスライドUIを初期化する
+  - [x] `astro:before-swap`でイベント・タイマー・BroadcastChannelを破棄する
+  - [x] ポインター送信のrequestAnimationFrameとidle timerを破棄する
+  - [x] 遷移途中の非同期処理が旧DOMを更新しないようにする
+- Acceptance Criteria:
+  - [x] スライドから離脱後に矢印キー・Spaceが横取りされないこと
+  - [x] 同じスライドへ再訪して操作を再開できること
+  - [x] タイマーとBroadcastChannelが離脱時に停止すること
+  - [x] 型検査とビルドが成功すること
+
+---
 
 ### [TASK-017] ダッシュボード数値の信頼性改善
 - Status: `DONE`
