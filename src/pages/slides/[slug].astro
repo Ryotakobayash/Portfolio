@@ -9,7 +9,7 @@ const allDecks = await getPublishedTalks();
 const deck = allDecks.find(d => talkSlug(d) === slug);
 
 if (!deck || !hasSlideBody(deck)) {
-  return Astro.redirect('/404');
+  return new Response(null, { status: 404, statusText: 'Not Found' });
 }
 
 const { Content } = await render(deck);
