@@ -71,7 +71,7 @@ async function fetchWithGraphQL(token: string): Promise<Response> {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'User-Agent': 'Portfolio-App',
+                'User-Agent': 'Ryota-Personal-Site',
                 'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({
@@ -136,7 +136,7 @@ async function fetchWithRestAPI(): Promise<Response> {
             `https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=100`,
             {
                 headers: {
-                    'User-Agent': 'Portfolio-App',
+                    'User-Agent': 'Ryota-Personal-Site',
                 },
             }
         );

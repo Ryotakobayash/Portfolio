@@ -52,6 +52,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-017`](#task-017) | ダッシュボード数値の信頼性改善 | P0 | `DONE` | `src/pages/about.astro`, `src/components/PostBurndown.tsx`, `src/pages/api/pv/...`, `src/components/...` |
 | [`TASK-018`](#task-018) | スライド画面のClientRouterライフサイクル対応 | P0 | `DONE` | `src/pages/slides/[slug].astro` |
 | [`TASK-019`](#task-019) | 秘密情報ファイルの誤コミット防止 | P0 | `DONE` | `.gitignore` |
+| [`TASK-020`](#task-020) | サイトの位置づけをポートフォリオから個人サイトへ変更 | P1 | `DONE` | `README.md`, `AGENTS.md`, `src/consts.ts`, `src/layouts/BaseLayout.astro`, `src/pages/rss.xml.ts`, `src/pages/feed.json.ts` |
 
 ---
 
@@ -74,6 +75,25 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-020] サイトの位置づけをポートフォリオから個人サイトへ変更
+- Status: `DONE`
+- Completed: 2026-09-26
+- Priority: P1
+- Target Files: `README.md`, `AGENTS.md`, `docs/article-workflow.md`, `package.json`, `src/consts.ts`, `src/layouts/BaseLayout.astro`, `src/pages/rss.xml.ts`, `src/pages/feed.json.ts`, `src/pages/api/github/contributions.ts`, `src/utils/externalPosts.ts`, `src/utils/note.ts`
+- Verification Command: `pnpm exec astro check && pnpm build`
+- User Context: 営業・採用向けポートフォリオではなく、AstroやHighchartsを試しながら学習・実験・情報発信を行う個人サイトとして運営する。
+- Specifications:
+  - [x] サイト名・説明・Feedを個人サイト表現へ変更する
+  - [x] READMEとエージェント規約を現在の目的・Astro 7構成へ更新する
+  - [x] 実行時識別子を個人サイト名へ変更し、インフラ固有IDや過去記事は維持する
+  - [x] `/me`と`/about`の規約不一致を解消する
+- Acceptance Criteria:
+  - [x] 現行サイト説明に営業用ポートフォリオという位置づけが残らないこと
+  - [x] 歴史的記事・タグ・ADR・既存GA4互換処理・インフラIDは変更されないこと
+  - [x] 型検査とビルドが成功すること
+
+---
 
 ### [TASK-019] 秘密情報ファイルの誤コミット防止
 - Status: `DONE`

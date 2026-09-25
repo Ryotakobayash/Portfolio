@@ -46,7 +46,7 @@ function toISODate(pubDate: string | null): string | null {
  */
 export async function fetchNotePosts(): Promise<NotePost[]> {
     const res = await fetch(NOTE_RSS_URL, {
-        headers: { 'User-Agent': 'Portfolio-App' },
+        headers: { 'User-Agent': 'Ryota-Personal-Site' },
         // note 側の一時的な遅延で SSR が固まらないよう保険をかける
         signal: AbortSignal.timeout(5000),
     });

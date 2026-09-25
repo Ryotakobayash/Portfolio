@@ -69,7 +69,7 @@ export async function fetchNotePosts(): Promise<ExternalPost[]> {
         const res = await fetch(NOTE_RSS_URL, {
             signal: controller.signal,
             headers: {
-                'User-Agent': 'AstroPortfolio-FeedFetcher/1.0',
+                'User-Agent': 'Ryota-Personal-Site-FeedFetcher/1.0',
             },
         });
         clearTimeout(timeoutId);

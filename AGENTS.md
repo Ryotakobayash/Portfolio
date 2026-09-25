@@ -1,6 +1,6 @@
 # Project Context
-このプロジェクトは、個人のポートフォリオ兼ブログサイトです。
-ユーザーの活動データ（GitHub, 記事投稿数など）を可視化する「ダッシュボード」をコンセプトとしています。
+このプロジェクトは、AstroやHighchartsなどの学習・実験と、記事・登壇・活動データの情報発信を目的とした個人サイトです。
+ユーザーの活動データを可視化するダッシュボードと、技術を試せる遊び場として運営します。営業・採用やフリーランスの集客を主目的にしません。
 
 # Tech Stack Rules (Strict)
 以下の技術スタックを厳守してください。
@@ -43,9 +43,10 @@
 - GA4認証は Vercel OIDC + GCP Workload Identity Federation を使用。
 
 # Site Structure
-- `/` — ダッシュボードTOP（Hero → Explore Treemap → Proof）
-- `/me` — モチベーションダッシュボード（寿命進捗、バーンダウン、累計実績、GitHub Activity）
-- `/about` — 来歴・スキル
+- `/` — 個人サイトTOP（プロフィール、記事マップ、人気・最新記事、外部記事）
+- `/about` — 個人ダッシュボード（人生・創作期間、投稿実績、PV、GitHub Activity、外部リンク）
 - `/posts` — ブログ一覧
 - `/posts/[slug]` — 記事詳細
 - `/tags` — タグ一覧
+- `/talks` — 登壇情報一覧
+- `/slides/[slug]` — 自作スライド表示

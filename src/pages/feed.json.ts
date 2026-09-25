@@ -24,7 +24,7 @@ export async function GET(context: APIContext) {
         title: SITE_NAME,
         home_page_url: cleanSiteUrl,
         feed_url: `${cleanSiteUrl}/feed.json`,
-        description: "Ryota Kobayashi's blog and portfolio",
+        description: '小林諒大の個人サイト・ブログ',
         items: sortedPosts.map((post) => {
             const slug = post.data.slug || post.id;
             const postUrl = `${cleanSiteUrl}/posts/${slug}`;

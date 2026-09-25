@@ -20,7 +20,7 @@ export async function GET(context: APIContext) {
 
     return rss({
         title: SITE_NAME,
-        description: "Ryota Kobayashi's blog and portfolio",
+        description: '小林諒大の個人サイト・ブログ',
         site: context.site ?? 'https://www.ryota5884.com',
         items: sortedPosts.map((post) => {
             const slug = post.data.slug || post.id;

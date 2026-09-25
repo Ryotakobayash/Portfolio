@@ -1,6 +1,6 @@
 # ブログ記事 執筆・画像管理ワークフロー
 
-本ポートフォリオ（Astro 6 + Content Collections）における新しいブログ記事の作成方法、ファイル・画像の命名規則と配置方針、Markdown記法、および公開チェックリストをまとめたドキュメントです。
+本サイト（Astro 7 + Content Collections）における新しいブログ記事の作成方法、ファイル・画像の命名規則と配置方針、Markdown記法、および公開チェックリストをまとめたドキュメントです。
 
 ---
 
@@ -79,7 +79,7 @@ draft: true                # 執筆中は true、公開時に false または行
 ```
 
 ### 図表タイトルと代替テキストの役割分担
-[src/components/CustomImage.astro](file:///Users/kobayashiryota/Workspace/portfolio/src/components/CustomImage.astro) により、上記記法は以下のようにレンダリングされます：
+[`src/components/CustomImage.astro`](../src/components/CustomImage.astro) により、上記記法は以下のようにレンダリングされます：
 
 1. **`"画面に表示する図表タイトル"`（末尾のダブルクォート部分）:**
    - 画像の下部に `<figcaption>` として表示されます。
