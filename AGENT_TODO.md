@@ -55,7 +55,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-020`](#task-020) | サイトの位置づけをポートフォリオから個人サイトへ変更 | P1 | `DONE` | `README.md`, `AGENTS.md`, `src/consts.ts`, `src/layouts/BaseLayout.astro`, `src/pages/rss.xml.ts`, `src/pages/feed.json.ts` |
 | [`TASK-021`](#task-021) | 共通アクセシビリティ基盤の改善 | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css` |
 | [`TASK-022`](#task-022) | API防御の強化（slug検証・タイムアウト・エラーログ安全化） | P0 | `DONE` | `src/pages/api/pv/[slug].ts`, `src/pages/api/github/contributions.ts` |
-| [`TASK-023`](#task-023) | SEO基盤の整備（canonical・description・OGP・JSON-LD） | P1 | `TODO` | `src/layouts/BaseLayout.astro`, `src/pages/posts/[slug].astro` |
+| [`TASK-023`](#task-023) | SEO基盤の整備（canonical・description・OGP・JSON-LD） | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/pages/posts/[slug].astro` |
 
 ---
 
@@ -99,20 +99,21 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-023] SEO基盤の整備（canonical・description・OGP・JSON-LD）
-- Status: `TODO`
+- Status: `DONE`
+- Completed: 2026-09-26
 - Priority: P1
 - Target Files: `src/layouts/BaseLayout.astro`, `src/pages/posts/[slug].astro`, `src/pages/index.astro`
 - Verification Command: `pnpm exec astro check && pnpm build`
 - User Context: 検索エンジンとSNS共有での表示品質を向上させ、個人サイトとしての認知を高める。
 - Specifications:
-  - [ ] 全ページにcanonical URLを追加する
-  - [ ] 記事ページにexcerptベースのdescriptionを設定する
-  - [ ] OGPを充実させる（og:type、article:published_time、og:site_name、locale）
-  - [ ] トップページにWebSite+Person、記事にBlogPostingのJSON-LDを追加する
+  - [x] 全ページにcanonical URLを追加する
+  - [x] 記事ページにexcerptベースのdescriptionを設定する
+  - [x] OGPを充実させる（og:type、article:published_time、og:site_name、locale）
+  - [x] トップページにWebSite+Person、記事にBlogPostingのJSON-LDを追加する
 - Acceptance Criteria:
-  - [ ] 全ページのHTMLにcanonicalタグが出力されること
-  - [ ] 記事ページのmeta descriptionが記事固有の内容になること
-  - [ ] 型検査とビルドが成功すること
+  - [x] 全ページのHTMLにcanonicalタグが出力されること
+  - [x] 記事ページのmeta descriptionが記事固有の内容になること
+  - [x] 型検査とビルドが成功すること
 
 ---
 

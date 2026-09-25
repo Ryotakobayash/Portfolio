@@ -29,10 +29,22 @@ const { post } = Astro.props;
 const slug = (post.data.slug || post.id);
 const { Content, headings } = await render(post);
 
-// 読了時間を推定（日本語は1分あたり約500文字、英語は200語）
 const body = post.body || '';
 const charCount = body.length;
 const readingTime = Math.max(1, Math.ceil(charCount / 500));
+
+const articleDescription = post.data.excerpt
+  || body.replace(/[#*\-\[\]()>|`~\n]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120) + '…';
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  datePublished: post.data.date,
+  description: articleDescription,
+  url: new URL(`/posts/${slug}`, Astro.site).href,
+  author: { '@type': 'Person', name: 'Ryota Kobayashi' },
+};
 
 // TOC用にheadingsをフォーマット
 // rehype-autolink-headings が見出し末尾に '#' を append するため、TOC 表示用には除去する
@@ -56,7 +68,11 @@ const allPostsMeta = allPosts.map((p) => ({
 
 <BaseLayout
   title={`${post.data.title} | ${SITE_NAME}`}
+  description={articleDescription}
   ogImage={`/og/${slug}.png`}
+  ogType="article"
+  publishedTime={post.data.date}
+  jsonLd={articleJsonLd}
 >
   <div class="article-layout">
     <!-- メインコンテンツ -->

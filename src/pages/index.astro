@@ -10,6 +10,25 @@ import OrbitalBackground from '../components/OrbitalBackground.astro';
 import AsciiBackground from '../components/AsciiBackground';
 import DotGrid from '../components/DotGrid.astro';
 import careerData from '../data/career.json';
+import { SITE_NAME } from '../consts';
+
+const siteUrl = Astro.site?.href ?? 'https://www.ryota5884.com';
+const homeJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: SITE_NAME,
+      url: siteUrl,
+    },
+    {
+      '@type': 'Person',
+      name: 'Ryota Kobayashi',
+      url: siteUrl,
+      jobTitle: 'Product Designer',
+    },
+  ],
+};
 
 // 外部記事（note RSS + Zenn）を取得
 const externalPosts = await getAllExternalPosts();
@@ -46,7 +65,7 @@ const treemapPosts = await Promise.all(
 );
 ---
 
-<BaseLayout>
+<BaseLayout jsonLd={homeJsonLd}>
     <!-- ASCII 3D Background -->
     <AsciiBackground client:load className="home-ascii-bg" />
 

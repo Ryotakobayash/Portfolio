@@ -9,13 +9,21 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  ogType?: 'website' | 'article';
+  publishedTime?: string;
+  jsonLd?: Record<string, unknown>;
 }
 
 
 const {
   title = SITE_NAME,
   description = 'AstroやHighchartsを使った実験と情報発信をまとめる個人サイト',
+  ogType = 'website',
+  publishedTime,
+  jsonLd,
 } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 // Google Analytics 4 Measurement ID
 const GA_MEASUREMENT_ID = 'G-3XG4W5WQD1';
@@ -36,21 +44,25 @@ const isActive = (path: string) => {
     <link rel="preload" href="/fonts/outfit-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href="/rss.xml" />
     <link rel="alternate" type="application/feed+json" title={SITE_NAME} href="/feed.json" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    
-    <!-- OGP Tags -->
+
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content="ja_JP" />
     {Astro.props.ogImage && <meta property="og:image" content={new URL(Astro.props.ogImage, Astro.site)} />}
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {Astro.props.ogImage && <meta name="twitter:image" content={new URL(Astro.props.ogImage, Astro.site)} />}
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     <ClientRouter />
 
