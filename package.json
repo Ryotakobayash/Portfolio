@@ -2,6 +2,10 @@
   "name": "astro-portfolio",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@11.22.0",
+  "engines": {
+    "node": ">=22.12.0 <25"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -12,18 +16,19 @@
     "new:post": "node scripts/new-post.mjs"
   },
   "dependencies": {
-    "@astrojs/mdx": "^5.0.6",
-    "@astrojs/react": "^5.0.5",
-    "@astrojs/rss": "^4.0.18",
-    "@astrojs/sitemap": "^3.7.2",
-    "@astrojs/vercel": "^10.0.7",
+    "@astrojs/markdown-remark": "7.3.0",
+    "@astrojs/mdx": "8.0.1",
+    "@astrojs/react": "6.0.6",
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.4",
+    "@astrojs/vercel": "11.0.10",
     "@google-analytics/data": "^5.2.1",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.0",
     "@resvg/resvg-js": "^2.6.2",
     "@vercel/oidc": "^3.2.0",
-    "astro": "^6.3.3",
-    "astro-expressive-code": "^0.42.0",
+    "astro": "7.3.3",
+    "astro-expressive-code": "0.44.2",
     "fuse.js": "^7.1.0",
     "google-auth-library": "^10.5.0",
     "highcharts": "^12.5.0",
@@ -38,27 +43,11 @@
     "three": "^0.184.0"
   },
   "devDependencies": {
+    "@astrojs/check": "0.9.10",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.184.0",
-    "sharp": "^0.35.3"
-  },
-  "pnpm": {
-    "supportedArchitectures": {
-      "os": [
-        "current",
-        "linux"
-      ],
-      "cpu": [
-        "current",
-        "x64",
-        "arm64"
-      ],
-      "libc": [
-        "current",
-        "glibc",
-        "musl"
-      ]
-    }
+    "sharp": "0.35.4",
+    "typescript": "5.9.3"
   }
 }

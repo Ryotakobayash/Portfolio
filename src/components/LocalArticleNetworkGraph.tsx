@@ -197,7 +197,7 @@ export default function LocalArticleNetworkGraph({
             borderRadius: 0,
             shadow: false,
             formatter: function () {
-                const point = this.point as any;
+                const point = this as any;
                 if (point.type === 'current') {
                     return `
                         <div style="padding: 4px; max-width: 200px; font-family: var(--font-sans); font-size: 0.65rem; color: var(--color-text);">

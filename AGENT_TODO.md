@@ -48,6 +48,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-013`](#task-013) | 脚注（Footnote）の戻りジャンプ位置の最適化（スクロール余白・文脈可視化・ハイライト） | P1 | `DONE` | `src/pages/posts/[slug].astro` |
 | [`TASK-014`](#task-014) | CRTエフェクトの網羅的強化（画面湾曲・ベゼル・走査ビーム・ガラス反射・電源ON/OFF展開） | P1 | `DONE` | `src/components/CRTOverlay.astro`, `src/styles/global.css`, `src/layouts/BaseLayout.astro` |
 | [`TASK-015`](#task-015) | ブログ記事新規作成スクリプトの導入と執筆・画像管理ガイドラインの整備 | P1 | `DONE` | `scripts/new-post.mjs`, `package.json`, `docs/article-workflow.md`, `README.md`, `AGENTS.md` |
+| [`TASK-016`](#task-016) | Astro 7 と関連 Integration へのメジャーアップデート | P0 | `DONE` | `package.json`, `pnpm-lock.yaml`, `astro.config.mjs` |
 
 ---
 
@@ -70,6 +71,25 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-016] Astro 7 と関連 Integration へのメジャーアップデート
+- Status: `DONE`
+- Completed: 2026-09-25
+- Priority: P0
+- Target Files: `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `astro.config.mjs`
+- Verification Command: `pnpm exec astro check && pnpm build && pnpm audit --prod --audit-level=critical`
+- User Context: 個人サイトとしてAstroやHighchartsを使って学習・情報発信を続ける土台を安全に保つため、監査で検出されたAstro 6系の脆弱性を解消し、Astro 7へ更新する。
+- Specifications:
+  - [x] Astro本体と公式IntegrationをAstro 7互換バージョンへ更新する
+  - [x] 既存のremark/rehype処理をAstro 7でも維持する
+  - [x] Node・pnpmの実行環境を再現可能にする
+  - [x] pnpm 11で無視されるsupportedArchitectures設定を移行する
+- Acceptance Criteria:
+  - [x] Astro 7系でContent Collections・MDX・React Islands・Vercel adapterがビルドできること
+  - [x] Markdownの見出しアンカー、外部リンク、改行処理が維持されること
+  - [x] critical脆弱性が解消されること
+
+---
 
 ### [TASK-001] CLS 改善 — client:only 要素の高さ予約とサムネイル SSR 化
 - Status: `DONE`

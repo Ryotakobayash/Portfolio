@@ -1,0 +1,20 @@
+allowBuilds:
+  esbuild: true
+  protobufjs: true
+
+overrides:
+  protobufjs: 7.6.5
+  tar: 7.5.19
+
+supportedArchitectures:
+  os:
+    - current
+    - linux
+  cpu:
+    - current
+    - x64
+    - arm64
+  libc:
+    - current
+    - glibc
+    - musl
