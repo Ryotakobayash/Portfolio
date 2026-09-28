@@ -59,6 +59,12 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-024`](#task-024) | Biome lint と GitHub Actions CI の導入 | P0 | `DONE` | `biome.json`, `.github/workflows/ci.yml`, `package.json` |
 | [`TASK-025`](#task-025) | 第2段階の残り（reduced-motion・更新日対応） | P1 | `DONE` | `src/components/QuadtreeThumbnail.tsx`, `src/content.config.ts`, `src/components/ArticlePerformance.tsx` |
 | [`TASK-026`](#task-026) | 性能・保守性の改善（Island遅延化・外部記事統合・型安全性） | P2 | `DONE` | `src/pages/*.astro`, `src/utils/note.ts`, `src/utils/treemapUtils.ts` |
+| [`TASK-027`](#task-027) | CSPをReport-OnlyからEnforceへ移行 | P1 | `TODO` | `vercel.json` |
+| [`TASK-028`](#task-028) | E2E / Integration テストの導入 | P1 | `TODO` | `tests/`, `package.json`, `.github/workflows/ci.yml` |
+| [`TASK-029`](#task-029) | Content Collectionsの日付形式・slug重複検証 | P2 | `TODO` | `src/content.config.ts` |
+| [`TASK-030`](#task-030) | 記事画像のastro:assetsレスポンシブ最適化 | P2 | `TODO` | `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro` |
+| [`TASK-031`](#task-031) | 記事ページのインラインスクリプト分割 | P2 | `TODO` | `src/pages/posts/[slug].astro` |
+| [`TASK-032`](#task-032) | アクセシビリティ実測と残課題の修正（Lighthouse・axe） | P2 | `TODO` | `src/styles/global.css`, `src/components/` |
 
 ---
 
@@ -81,6 +87,105 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ## 🚀 Active Tasks
+
+### [TASK-027] CSPをReport-OnlyからEnforceへ移行
+- Status: `TODO`
+- Priority: P1
+- Target Files: `vercel.json`
+- Verification Command: 本番デプロイ後にブラウザDevToolsのConsoleでCSP違反がないことを確認
+- User Context: 現在CSPはReport-Onlyで実害を防いでいない。unsafe-inlineの除去とenforceで実効的なXSS防御にする。
+- Specifications:
+  - [ ] `script-src`から`unsafe-inline`を除去し、nonceまたはhash方式へ移行する
+  - [ ] `unsafe-eval`を除去する（Highcharts等が要求する場合は個別hash対応）
+  - [ ] Report-Onlyを外してenforceモードにする
+  - [ ] GA4・Vercel Analytics・Speed Insightsの読み込みが引き続き動作すること
+- Acceptance Criteria:
+  - [ ] CSPがenforceモードで全ページ正常表示されること
+  - [ ] ブラウザConsoleにCSP違反が出ないこと
+
+---
+
+### [TASK-028] E2E / Integration テストの導入
+- Status: `TODO`
+- Priority: P1
+- Target Files: `tests/`, `package.json`, `.github/workflows/ci.yml`, `playwright.config.ts`
+- Verification Command: `pnpm test`
+- User Context: 現在テストが一切なく、修正による不具合を検知できない。主要画面の表示とAPI応答を自動検証する。
+- Specifications:
+  - [ ] Playwright（またはVitest + happy-dom）を導入する
+  - [ ] トップページ・記事詳細・About・Talks の基本表示テスト
+  - [ ] PV API・note API のレスポンス形式テスト
+  - [ ] CIパイプラインにテスト実行を追加する
+- Acceptance Criteria:
+  - [ ] `pnpm test` で主要ページとAPIの正常性が検証されること
+  - [ ] CIでテスト失敗時にPRがブロックされること
+
+---
+
+### [TASK-029] Content Collectionsの日付形式・slug重複検証
+- Status: `TODO`
+- Priority: P2
+- Target Files: `src/content.config.ts`
+- Verification Command: `pnpm exec astro check && pnpm build`
+- User Context: 日付が単なるstringで形式揺れや未来日を検出できない。slugの重複もビルド時に気付けない。
+- Specifications:
+  - [ ] `date`をYYYY-MM-DD形式のrefineバリデーションにする
+  - [ ] `updatedDate`にも同じバリデーションを適用する
+  - [ ] slugの重複をビルド時に検出する仕組みを入れる
+- Acceptance Criteria:
+  - [ ] 不正な日付形式の記事がビルドエラーになること
+  - [ ] 型検査とビルドが成功すること
+
+---
+
+### [TASK-030] 記事画像のastro:assetsレスポンシブ最適化
+- Status: `TODO`
+- Priority: P2
+- Target Files: `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro`
+- Verification Command: `pnpm build` でWebP/AVIF出力を確認
+- User Context: 記事先頭画像が生画像のまま配信されており、モバイルで不要に大きいサイズを読み込んでいる。
+- Specifications:
+  - [ ] サムネイル画像を`astro:assets`の`<Image>`コンポーネントで出力する
+  - [ ] 適切なsrcsetとsizesを設定する
+  - [ ] WebP/AVIF自動変換を有効にする
+- Acceptance Criteria:
+  - [ ] ビルド出力に最適化済み画像が含まれること
+  - [ ] LCPスコアが悪化しないこと
+
+---
+
+### [TASK-031] 記事ページのインラインスクリプト分割
+- Status: `TODO`
+- Priority: P2
+- Target Files: `src/pages/posts/[slug].astro`
+- Verification Command: `pnpm exec astro check && pnpm build`
+- User Context: 画像拡大・脚注ポップオーバー・コピー・figureなど300行超のインラインスクリプトが1ファイルに集中し、保守しにくい。
+- Specifications:
+  - [ ] 画像拡大ダイアログを独立モジュールへ抽出する
+  - [ ] 脚注ポップオーバーを独立モジュールへ抽出する
+  - [ ] ページ側は初期化呼び出しのみにする
+- Acceptance Criteria:
+  - [ ] posts/[slug].astroのscriptタグが100行以下になること
+  - [ ] 全機能が遷移前後で動作すること
+
+---
+
+### [TASK-032] アクセシビリティ実測と残課題の修正（Lighthouse・axe）
+- Status: `TODO`
+- Priority: P2
+- Target Files: `src/styles/global.css`, `src/components/`
+- Verification Command: Lighthouse Accessibility 90点以上
+- User Context: Biome lintのa11y警告がwarn止まりで放置されている。muted textのコントラスト比、SVGタイトル、セマンティック要素の使い分けを実測ベースで修正する。
+- Specifications:
+  - [ ] 主要ページのLighthouse Accessibilityスコアを計測する
+  - [ ] axe DevToolsで検出された違反を修正する
+  - [ ] ダークテーマのmuted textコントラストを4.5:1以上にする
+  - [ ] 装飾SVGに適切なaria-hidden / titleを付ける
+- Acceptance Criteria:
+  - [ ] 主要ページのLighthouse Accessibilityが90点以上であること
+  - [ ] axeで critical / serious の違反が0件であること
+
+---
 
 ### [TASK-026] 性能・保守性の改善（Island遅延化・外部記事統合・型安全性）
 - Status: `DONE`
