@@ -243,6 +243,13 @@ a:hover {
   padding: 0 var(--spacing-lg);
 }
 
+/* モバイルでは左右余白を詰めてコンテンツ幅を確保する */
+@media (max-width: 500px) {
+  .container {
+    padding-inline: 16px;
+  }
+}
+
 /* ===== Header ===== */
 .header {
   position: sticky;
