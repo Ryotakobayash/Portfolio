@@ -552,6 +552,12 @@ a:hover {
   }
 }
 
+@media (max-width: 500px) {
+  .bento-card {
+    padding: var(--spacing-md);
+  }
+}
+
 .bento-card__title {
   font-size: 0.65rem;
   font-weight: 600;
