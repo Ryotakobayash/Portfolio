@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { resolveSlideImage } from './resolveSlideImage';
 
 interface Props {
   src: string | ImageMetadata;
@@ -8,7 +9,8 @@ interface Props {
   fit?: 'contain' | 'cover';
   bare?: boolean;
 }
-const { src, alt = '', caption, fit = 'contain', bare = false } = Astro.props;
+const { src: rawSrc, alt = '', caption, fit = 'contain', bare = false } = Astro.props;
+const src = resolveSlideImage(rawSrc);
 ---
 <figure class="image-slide" data-fit={fit} data-bare={bare}>
   {typeof src === 'string' ? (

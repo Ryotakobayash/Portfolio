@@ -3,7 +3,8 @@
     "pasteImage.basePath": "${currentFileDir}",
     "pasteImage.forceUnixStyleSeparator": true,
     "pasteImage.defaultName": "Y-MM-DD-HH-mm-ss",
-    "pasteImage.insertPattern": "![](${imageFilePath})",
+    // talks（MDX スライド）用。パス文字列のまま渡せば resolveSlideImage が最適化対象の画像に解決する
+    "pasteImage.insertPattern": "<ImageSlide src=\"${imageFilePath}\" alt=\"\" />",
 
     // ブログ記事（Markdown / MDX）執筆時に、LLM・エディタによる勝手な文章提案（Ghost Text）を抑止
     "[markdown]": {
