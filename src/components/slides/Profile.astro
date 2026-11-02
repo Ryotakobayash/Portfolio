@@ -43,7 +43,8 @@ const src = resolveSlideImage(photo);
   <div class="profile-body">
     <div class="profile-head">
       {handle && <span class="profile-handle">{handle}</span>}
-      <span class="profile-name">{name}</span>
+      {/* 見出し移動で名前にたどり着けるよう h3 にする */}
+      <h3 class="profile-name">{name}</h3>
       {(role || org) && (
         <span class="profile-role">
           {role}
@@ -118,7 +119,9 @@ const src = resolveSlideImage(photo);
     color: var(--color-primary);
   }
 
-  .profile-name {
+  /* Slide 共通の h3 スタイルより優先させる */
+  .profile .profile-name {
+    margin: 0;
     font-size: 4cqi;
     font-weight: 900;
     line-height: 1.1;
