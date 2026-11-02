@@ -1,0 +1,95 @@
+---
+import { Image } from 'astro:assets';
+import { resolveSlideImage } from './resolveSlideImage';
+
+interface Item {
+  src: string | ImageMetadata;
+  label?: string;
+  alt?: string;
+}
+
+interface Props {
+  items: Item[];
+  gap?: string;
+  bare?: boolean;
+}
+const { items, gap = '4cqi', bare = true } = Astro.props;
+---
+<div
+  class="image-grid"
+  data-bare={bare}
+  style={`--grid-cols: ${items.length}; --grid-gap: ${gap}`}
+>
+  {items.map((item) => {
+    const src = resolveSlideImage(item.src);
+    const alt = item.alt ?? item.label ?? '';
+    return (
+      <figure class="image-grid-item">
+        {item.label && <figcaption>{item.label}</figcaption>}
+        <div class="image-grid-frame">
+          {typeof src === 'string' ? (
+            <img src={src} alt={alt} loading="lazy" decoding="async" />
+          ) : (
+            <Image src={src} alt={alt} loading="lazy" decoding="async" />
+          )}
+        </div>
+      </figure>
+    );
+  })}
+</div>
+
+<style>
+  /* スライドの残り高さいっぱいに広がり、画像はその枠内に収まるよう縮小する */
+  .image-grid {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .image-grid-item {
+    margin: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5cqi;
+  }
+
+  .image-grid-item figcaption {
+    font-size: 2.2cqi;
+    font-weight: 700;
+    color: var(--color-text);
+    text-align: center;
+  }
+
+  .image-grid-frame {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-grid-frame img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    margin: 0;
+    border: 1px solid var(--color-border);
+  }
+
+  .image-grid[data-bare="true"] .image-grid-frame img {
+    border: none;
+  }
+
+  @media (max-width: 600px) {
+    .image-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
