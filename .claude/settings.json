@@ -40,5 +40,20 @@
       "/Users/r002908/Workspace/Portfolio/src/pages/posts",
       "/Users/r002908/Workspace/Portfolio/src/pages/slides"
     ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/hooks/textlint-content.mjs\"",
+            "timeout": 30,
+            "statusMessage": "textlint で校正中..."
+          }
+        ]
+      }
+    ]
   }
 }

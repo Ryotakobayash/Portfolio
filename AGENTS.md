@@ -26,6 +26,7 @@
   - `"図表タイトル"` を指定すると、`src/components/CustomImage.astro` により自動で「図1: 図表タイトル」という連番 `<figcaption>` が出力されます。
   - タイトルを省略した場合は `alt` がキャプションとして使われます。
 - **詳細ガイド:** [docs/article-workflow.md](docs/article-workflow.md) を参照。
+- **校正:** AI が `src/content/posts/` や `src/content/talks/` の本文を書いた・書き換えたときは、`proofread-ja` スキルの手順で textlint（AI 的な言い回しの検出）をかける。編集のたびに PostToolUse フックが指摘を返すので、Claude が書いた箇所だけを言い換え、ユーザーが書いた既存の文章は件数を伝えるにとどめる。
 
 # Git Commit Rules (Strict)
 - 変更やタスクが完了・検証できたタイミングで、**ユーザーからのコミット指示を待たずに自律的に Git コミットを作成してください**。

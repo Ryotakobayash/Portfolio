@@ -1,0 +1,11 @@
+{
+  "plugins": {
+    "mdx": true
+  },
+  "rules": {
+    "preset-ai-words-ja": true,
+    "prh": {
+      "rulePaths": [".textlint/prh.yml"]
+    }
+  }
+}

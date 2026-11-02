@@ -16,6 +16,7 @@
     "new:post": "node scripts/new-post.mjs",
     "lint": "biome lint src/",
     "lint:fix": "biome lint src/ --fix",
+    "lint:text": "textlint \"src/content/**/*.{md,mdx}\" \"docs/**/*.md\"",
     "a11y:talks": "node scripts/a11y-talks.mjs"
   },
   "dependencies": {
@@ -54,6 +55,10 @@
     "@types/three": "^0.184.0",
     "playwright": "1.56.1",
     "sharp": "0.35.4",
+    "textlint": "15.8.0",
+    "textlint-plugin-mdx": "1.1.0",
+    "textlint-rule-preset-ai-words-ja": "1.1.0",
+    "textlint-rule-prh": "6.1.0",
     "typescript": "5.9.3"
   }
 }
