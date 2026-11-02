@@ -48,3 +48,6 @@ storageState.json
 
 # 生成レポート
 /reports/
+
+# Claude Code の個人設定（マシン固有のパスなどを含むため公開しない）
+.claude/settings.local.json
