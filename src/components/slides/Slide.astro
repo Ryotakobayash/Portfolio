@@ -1,10 +1,12 @@
 ---
 interface Props {
   class?: string;
+  /** 余白をなくし、中身（画像など）をスライド全面に広げる */
+  bleed?: boolean;
 }
-const { class: className } = Astro.props;
+const { class: className, bleed = false } = Astro.props;
 ---
-<section class:list={['slide', className]} data-slide>
+<section class:list={['slide', className]} data-slide data-bleed={bleed}>
   <slot name="backdrop" />
   <div class="slide-body">
     <slot />
@@ -25,6 +27,10 @@ const { class: className } = Astro.props;
     background: var(--color-bg);
     border: 1px solid var(--color-border);
     overflow: hidden;
+  }
+
+  .slide[data-bleed="true"] {
+    padding: 0;
   }
 
   .slide.is-active {

@@ -49,6 +49,18 @@ const src = resolveSlideImage(rawSrc);
     object-fit: cover;
   }
 
+  /* <Slide bleed> の中ではスライド全面に敷く */
+  :global(.slide[data-bleed="true"]) .image-slide {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+  }
+
+  :global(.slide[data-bleed="true"]) .image-slide img {
+    width: 100%;
+    height: 100%;
+  }
+
   .image-slide[data-bare="true"] img {
     border: none;
   }
