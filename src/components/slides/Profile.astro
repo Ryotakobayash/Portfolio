@@ -1,0 +1,207 @@
+---
+import { Image } from 'astro:assets';
+import { resolveSlideImage } from './resolveSlideImage';
+
+interface Fact {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  photo: string | ImageMetadata;
+  name: string;
+  handle?: string;
+  role?: string;
+  org?: string;
+  badges?: string[];
+  facts?: Fact[];
+  tags?: string[];
+  tagsLabel?: string;
+}
+const {
+  photo,
+  name,
+  handle,
+  role,
+  org,
+  badges = [],
+  facts = [],
+  tags = [],
+  tagsLabel = 'Interests',
+} = Astro.props;
+const src = resolveSlideImage(photo);
+---
+<div class="profile">
+  <div class="profile-photo">
+    {typeof src === 'string' ? (
+      <img src={src} alt={`${name}の写真`} loading="lazy" decoding="async" />
+    ) : (
+      <Image src={src} alt={`${name}の写真`} loading="lazy" decoding="async" />
+    )}
+  </div>
+
+  <div class="profile-body">
+    <div class="profile-head">
+      {handle && <span class="profile-handle">{handle}</span>}
+      <span class="profile-name">{name}</span>
+      {(role || org) && (
+        <span class="profile-role">
+          {role}
+          {role && org && <span class="profile-at"> @ </span>}
+          {org}
+        </span>
+      )}
+      {badges.length > 0 && (
+        <ul class="profile-badges">
+          {badges.map((badge) => <li>{badge}</li>)}
+        </ul>
+      )}
+    </div>
+
+    {(facts.length > 0 || tags.length > 0) && (
+      <dl class="profile-facts">
+        {facts.map((fact) => (
+          <div>
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
+        {tags.length > 0 && (
+          <div>
+            <dt>{tagsLabel}</dt>
+            <dd>
+              <ul class="profile-tags">
+                {tags.map((tag) => <li>{tag}</li>)}
+              </ul>
+            </dd>
+          </div>
+        )}
+      </dl>
+    )}
+  </div>
+</div>
+
+<style>
+  .profile {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 4cqi;
+    align-items: center;
+  }
+
+  .profile-photo img {
+    width: 100%;
+    height: auto;
+    max-height: 60cqb;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+    margin: 0;
+  }
+
+  .profile-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3cqi;
+    min-width: 0;
+  }
+
+  .profile-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8cqi;
+  }
+
+  .profile-handle {
+    font-family: var(--font-mono);
+    font-size: 1.5cqi;
+    letter-spacing: 0.12em;
+    color: var(--color-primary);
+  }
+
+  .profile-name {
+    font-size: 4cqi;
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+  }
+
+  .profile-role {
+    font-size: 2cqi;
+    color: var(--color-text-secondary);
+  }
+
+  .profile-at {
+    color: var(--color-text-muted);
+  }
+
+  /* スライド共通の ul スタイル（▶ マーカー等）を打ち消す */
+  .profile ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8cqi;
+  }
+
+  .profile ul > li {
+    margin: 0;
+    padding: 0.3em 0.8em;
+    line-height: 1.4;
+  }
+
+  .profile ul > li::before {
+    content: none;
+  }
+
+  .profile-badges {
+    margin-top: 0.6cqi !important;
+  }
+
+  .profile-badges > li {
+    font-size: 1.6cqi;
+    font-weight: 700;
+    color: var(--color-bg);
+    background: var(--color-accent-2);
+  }
+
+  .profile-facts {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1cqi;
+  }
+
+  .profile-facts {
+    gap: 1.6cqi;
+  }
+
+  .profile-facts > div {
+    display: grid;
+    grid-template-columns: 9cqi 1fr;
+    gap: 2cqi;
+    align-items: center;
+  }
+
+  .profile-facts dt {
+    font-family: var(--font-mono);
+    font-size: 1.3cqi;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .profile-facts dd {
+    margin: 0;
+    font-size: 1.9cqi;
+    color: var(--color-text);
+  }
+
+  .profile-tags > li {
+    font-size: 1.5cqi;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    background: var(--color-primary-light);
+  }
+</style>
