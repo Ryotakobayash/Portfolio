@@ -67,12 +67,10 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
       <div class="ctrl-right">
         {mode === 'audience' && (
           <>
-            <button
-              class="ctrl-btn"
-              id="sr-preview-btn"
-              aria-pressed="false"
-              aria-controls="sr-preview"
-            >
+            <button class="ctrl-btn" id="notes-view-btn" aria-pressed="false" aria-controls="notes-view">
+              ノート
+            </button>
+            <button class="ctrl-btn" id="sr-preview-btn" aria-pressed="false" aria-controls="sr-preview">
               読み上げ内容
             </button>
             <button class="ctrl-btn" id="fullscreen-btn" aria-label="全画面表示の切り替え">
@@ -89,10 +87,18 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
       </div>
     </nav>
     {mode === 'audience' && (
-      <section class="sr-preview" id="sr-preview" aria-labelledby="sr-preview-title" hidden>
-        <div class="sr-preview-header">
+      <section class="viewer-panel" id="notes-view" aria-labelledby="notes-view-title" hidden>
+        <div class="viewer-panel-header">
+          <h2 class="panel-label" id="notes-view-title">ノート</h2>
+        </div>
+        <div class="notes-content" id="notes-view-content"></div>
+      </section>
+    )}
+    {mode === 'audience' && (
+      <section class="viewer-panel sr-preview" id="sr-preview" aria-labelledby="sr-preview-title" hidden>
+        <div class="viewer-panel-header">
           <h2 class="panel-label" id="sr-preview-title">読み上げ内容のプレビュー</h2>
-          <p class="sr-preview-note">
+          <p class="viewer-panel-note">
             このスライドでスクリーンリーダーが読み上げる内容を、読み上げ順に並べています（DOM から近似したものです）。
           </p>
         </div>
@@ -203,8 +209,21 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
 
   .ctrl-right {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
     align-items: center;
     gap: var(--spacing-sm);
+  }
+
+  /* 狭い画面ではボタン群を2段目に回し、横にはみ出さないようにする */
+  @media (max-width: 720px) {
+    .slide-controls {
+      flex-wrap: wrap;
+    }
+
+    .ctrl-right {
+      flex: 1 1 100%;
+    }
   }
 
   .ctrl-btn {
@@ -350,30 +369,30 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     color: var(--color-text-muted);
   }
 
-  /* ===== 読み上げ内容のプレビュー ===== */
-  .sr-preview {
+  /* ===== スライド下のパネル（ノート・読み上げ内容） ===== */
+  .viewer-panel {
     border: 1px solid var(--color-border);
     background: var(--color-bg-card);
     padding: var(--spacing-md) var(--spacing-lg);
   }
 
-  .sr-preview[hidden] {
+  .viewer-panel[hidden] {
     display: none;
   }
 
-  .sr-preview-header {
+  .viewer-panel-header {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
     margin-bottom: var(--spacing-md);
   }
 
-  .sr-preview-header h2 {
+  .viewer-panel-header h2 {
     margin: 0;
     line-height: 1.4;
   }
 
-  .sr-preview-note {
+  .viewer-panel-note {
     margin: 0;
     font-size: 0.75rem;
     color: var(--color-text-muted);
@@ -640,35 +659,55 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
 
   let lastAnnounced = -1;
 
-  // ===== 読み上げ内容のプレビュー（聴衆画面のみ） =====
-  const SR_PREVIEW_KEY = 'slides-sr-preview';
-  const srPreview = document.getElementById('sr-preview');
-  const srPreviewBtn = document.getElementById('sr-preview-btn');
+  // ===== スライド下のパネル（聴衆画面のみ） =====
+  // ボタンで開閉し、開閉状態は localStorage に保存する。開いている間は表示中スライドに追従する
+  function setupPanel(buttonId: string, panelId: string, storageKey: string, render: (panel: HTMLElement) => void) {
+    const panel = document.getElementById(panelId);
+    const button = document.getElementById(buttonId);
+    if (!panel || !button) return () => {};
 
-  function updateSrPreview() {
-    const content = document.getElementById('sr-preview-content');
-    if (!srPreview || srPreview.hidden || !content || !slides[current]) return;
-    renderSrPreview(content, announcement(current), describeForScreenReader(slides[current]));
-  }
+    const update = () => {
+      if (!panel.hidden) render(panel);
+    };
+    const setOpen = (open: boolean) => {
+      panel.hidden = !open;
+      button.setAttribute('aria-pressed', String(open));
+      try {
+        localStorage.setItem(storageKey, open ? 'on' : 'off');
+      } catch {
+        // ストレージが使えない環境では開閉状態を保存しない
+      }
+      update();
+    };
 
-  function setSrPreview(open: boolean) {
-    if (!srPreview || !srPreviewBtn) return;
-    srPreview.hidden = !open;
-    srPreviewBtn.setAttribute('aria-pressed', String(open));
+    button.addEventListener('click', () => setOpen(panel.hidden), { signal });
     try {
-      localStorage.setItem(SR_PREVIEW_KEY, open ? 'on' : 'off');
+      if (localStorage.getItem(storageKey) === 'on') setOpen(true);
     } catch {
-      // ストレージが使えない環境では開閉状態を保存しない
+      // 読み取れない場合は閉じたまま
     }
-    updateSrPreview();
+    return update;
   }
 
-  srPreviewBtn?.addEventListener('click', () => setSrPreview(srPreview?.hidden ?? false), { signal });
-  try {
-    if (localStorage.getItem(SR_PREVIEW_KEY) === 'on') setSrPreview(true);
-  } catch {
-    // 読み取れない場合は閉じたまま
-  }
+  const updateNotesView = setupPanel('notes-view-btn', 'notes-view', 'slides-notes-view', () => {
+    const content = document.getElementById('notes-view-content');
+    if (!content || !slides[current]) return;
+    const notes = slides[current].querySelector<HTMLElement>('[data-notes]');
+    if (notes && notes.innerHTML.trim()) {
+      content.replaceChildren(...Array.from(notes.childNodes, (node) => node.cloneNode(true)));
+    } else {
+      const empty = document.createElement('span');
+      empty.className = 'notes-empty';
+      empty.textContent = 'このスライドにノートはありません。';
+      content.replaceChildren(empty);
+    }
+  });
+
+  const updateSrPreview = setupPanel('sr-preview-btn', 'sr-preview', 'slides-sr-preview', () => {
+    const content = document.getElementById('sr-preview-content');
+    if (!content || !slides[current]) return;
+    renderSrPreview(content, announcement(current), describeForScreenReader(slides[current]));
+  });
 
   function updateUI() {
     const counter = document.getElementById('slide-counter');
@@ -680,6 +719,7 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
       status.textContent = announcement(current);
     }
     lastAnnounced = current;
+    updateNotesView();
     updateSrPreview();
 
     const dotsEl = document.getElementById('slide-dots');
