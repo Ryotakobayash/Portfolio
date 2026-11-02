@@ -65,6 +65,8 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-030`](#task-030) | 記事画像のastro:assetsレスポンシブ最適化 | P2 | `TODO` | `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro` |
 | [`TASK-031`](#task-031) | 記事ページのインラインスクリプト分割 | P2 | `TODO` | `src/pages/posts/[slug].astro` |
 | [`TASK-032`](#task-032) | アクセシビリティ実測と残課題の修正（Lighthouse・axe） | P2 | `TODO` | `src/styles/global.css`, `src/components/` |
+| [`TASK-033`](#task-033) | サイト全体のFX（CRT装飾）機能の削除 | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css`, `src/components/CRTOverlay.astro` |
+| [`TASK-034`](#task-034) | talks・スライドのa11y修正と読み上げ内容の確認手段 | P1 | `IN_PROGRESS` | `src/pages/talks.astro`, `src/pages/slides/[slug].astro`, `src/components/slides/`, `scripts/` |
 
 ---
 
@@ -184,6 +186,45 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 - Acceptance Criteria:
   - [ ] posts/[slug].astroのscriptタグが100行以下になること
   - [ ] 全機能が遷移前後で動作すること
+
+---
+
+### [TASK-033] サイト全体のFX（CRT装飾）機能の削除
+- Status: `DONE`
+- Completed: 2026-11-02
+- Priority: P1
+- Target Files: `src/layouts/BaseLayout.astro`, `src/styles/global.css`, `src/components/CRTOverlay.astro`, `src/components/AmbientGlow.astro`
+- Verification Command: `pnpm build`
+- User Context: CRT風の装飾とFXトグルが閲覧の邪魔になるため、機能ごと削除する（TASK-005 / TASK-012 / TASK-014 の撤回）。
+- Specifications:
+  - [x] CRTOverlay コンポーネントとヘッダーの FX トグルを削除する
+  - [x] `data-fx` / `data-crt` 属性と localStorage の `site-fx` 参照を削除する
+  - [x] CRT 用 CSS 変数・トグルスタイル・未使用の `.crt` / `crt-pulse` を削除する
+  - [x] AmbientGlow は従来の FX: OFF 相当の濃さ（opacity 0.15）に固定する
+- Acceptance Criteria:
+  - [x] `src/` 配下に FX / CRT 関連のコードが残っていないこと
+  - [x] `pnpm build` が成功すること
+
+---
+
+### [TASK-034] talks・スライドのa11y修正と読み上げ内容の確認手段
+- Status: `IN_PROGRESS`
+- Priority: P1
+- Target Files: `src/pages/talks.astro`, `src/pages/slides/[slug].astro`, `src/components/slides/`, `src/styles/global.css`, `scripts/`
+- Verification Command: `pnpm a11y:talks`
+- User Context: axe と アクセシビリティツリーでの調査結果に基づき、コントラストと読み上げの問題を修正する。読み上げ内容は、スクリーンリーダー利用者でなくても確認できる手段を用意する。
+- Specifications:
+  - [ ] ライトテーマの `--color-accent-2` をコントラスト比 4.5:1 以上にする
+  - [ ] SlideAscii（ASCII 背景）を読み上げ対象から外す
+  - [ ] スライド切り替え時に「n / 総数 見出し」を aria-live で通知する
+  - [ ] スライドのリストマーカー（▸ など）を読み上げ対象から外す
+  - [ ] スライドページに視覚的に非表示の h1（デッキタイトル）を置く
+  - [ ] talks 一覧のカードリンク名をタイトルのみにし、Upcoming / Archive を h2 にする
+  - [ ] 操作ボタンの記号・言語、新規タブで開くリンクの通知を整える
+  - [ ] axe 検査と読み上げ内容（アクセシビリティツリー）の書き出しを行うスクリプトを追加する
+- Acceptance Criteria:
+  - [ ] talks 一覧と全スライドで axe の serious 以上の違反が 0 件であること（両テーマ）
+  - [ ] 読み上げ内容をテキストで確認できること
 
 ---
 

@@ -1,7 +1,6 @@
 ---
 import { ClientRouter, fade } from 'astro:transitions';
 import '../styles/global.css';
-import CRTOverlay from '../components/CRTOverlay.astro';
 import AmbientGlow from '../components/AmbientGlow.astro';
 import { SITE_NAME, SITE_NAME_UPPER } from '../consts';
 
@@ -69,25 +68,13 @@ const isActive = (path: string) => {
 
     <ClientRouter />
 
-    <!-- Dark mode & Visual effects (FX) script (run before render to prevent flash) -->
+    <!-- Dark mode script (run before render to prevent flash) -->
     <script is:inline>
       (function() {
         // Theme
         const storedTheme = localStorage.getItem('theme');
         const theme = storedTheme || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
-
-        // Visual Effects / FX (a11y: prefers-reduced-motion fallback)
-        const storedFx = localStorage.getItem('site-fx') || localStorage.getItem('crt-effects');
-        if (storedFx) {
-          document.documentElement.setAttribute('data-fx', storedFx);
-          document.documentElement.setAttribute('data-crt', storedFx);
-        } else {
-          const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          const initialFx = prefersReduced ? 'off' : 'on';
-          document.documentElement.setAttribute('data-fx', initialFx);
-          document.documentElement.setAttribute('data-crt', initialFx);
-        }
       })();
     </script>
 
@@ -109,10 +96,6 @@ const isActive = (path: string) => {
       <AmbientGlow />
     </div>
 
-    <CRTOverlay />
-
-
-
     <header class="header">
       <div class="container header-content">
         <a
@@ -131,10 +114,6 @@ const isActive = (path: string) => {
           <a href="/talks" class={`nav-link ${isActive('/talks') ? 'nav-link--accent' : ''}`} aria-current={isActive('/talks') ? 'page' : undefined}>Talks</a>
         </nav>
         <div class="header-actions">
-          <button id="fx-toggle" class="fx-toggle" role="switch" aria-checked="true" aria-label="視覚効果・装飾（FX）の切り替え">
-            <span class="fx-on-text">FX: ON</span>
-            <span class="fx-off-text">FX: OFF</span>
-          </button>
           <button id="theme-toggle" class="theme-toggle" aria-label="表示テーマを切り替える">
             <span class="sun-icon">LIGHT</span>
             <span class="moon-icon">DARK</span>
@@ -176,80 +155,6 @@ const isActive = (path: string) => {
         const stored = localStorage.getItem('theme');
         const theme = stored || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
-      }
-
-      function initFx() {
-        const stored = localStorage.getItem('site-fx') || localStorage.getItem('crt-effects');
-        let fxState = stored;
-        if (!fxState) {
-          const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          fxState = prefersReduced ? 'off' : 'on';
-        }
-        document.documentElement.setAttribute('data-fx', fxState);
-        document.documentElement.setAttribute('data-crt', fxState);
-        updateFxToggleUI(fxState);
-      }
-
-      function updateFxToggleUI(state: string) {
-        const toggle = document.getElementById('fx-toggle');
-        if (!toggle) return;
-        const isChecked = state === 'on';
-        toggle.setAttribute('aria-checked', isChecked ? 'true' : 'false');
-      }
-
-      function setupFxToggle() {
-        const toggle = document.getElementById('fx-toggle');
-        if (!toggle) return;
-
-        const current = document.documentElement.getAttribute('data-fx') || 'on';
-        updateFxToggleUI(current);
-
-        let powerTimeout: number | undefined;
-
-        toggle.addEventListener('click', () => {
-          const current = document.documentElement.getAttribute('data-fx') || 'on';
-          const next = current === 'on' ? 'off' : 'on';
-
-          if (powerTimeout) {
-            window.clearTimeout(powerTimeout);
-            powerTimeout = undefined;
-          }
-
-          if (next === 'on') {
-            document.documentElement.setAttribute('data-fx', 'on');
-            document.documentElement.setAttribute('data-crt', 'on');
-            localStorage.setItem('site-fx', 'on');
-            updateFxToggleUI('on');
-
-            document.body.classList.remove('crt-powering-off');
-            document.body.classList.add('crt-powering-on');
-            powerTimeout = window.setTimeout(() => {
-              document.body.classList.remove('crt-powering-on');
-            }, 600);
-          } else {
-            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (prefersReducedMotion) {
-              document.documentElement.setAttribute('data-fx', 'off');
-              document.documentElement.setAttribute('data-crt', 'off');
-              localStorage.setItem('site-fx', 'off');
-              updateFxToggleUI('off');
-              document.body.classList.remove('crt-powering-on', 'crt-powering-off');
-              return;
-            }
-
-            // OFF時は収束ビームを表示してから属性を切り替える
-            document.body.classList.remove('crt-powering-on');
-            document.body.classList.add('crt-powering-off');
-            updateFxToggleUI('off');
-
-            powerTimeout = window.setTimeout(() => {
-              document.documentElement.setAttribute('data-fx', 'off');
-              document.documentElement.setAttribute('data-crt', 'off');
-              localStorage.setItem('site-fx', 'off');
-              document.body.classList.remove('crt-powering-off');
-            }, 420);
-          }
-        });
       }
 
       function setupThemeToggle() {
@@ -311,14 +216,12 @@ const isActive = (path: string) => {
       // astro:page-load は初回ロード時とページ遷移後に発火する
       document.addEventListener('astro:page-load', () => {
         setupThemeToggle();
-        setupFxToggle();
       });
 
       // astro:after-swap は新しいHTMLに入れ替わった直後（表示前）に発火
-      // ここでテーマとFX属性を再適用しないと、一瞬デフォルトに戻るチラつきが起きる
+      // ここでテーマ属性を再適用しないと、一瞬デフォルトに戻るチラつきが起きる
       document.addEventListener('astro:after-swap', () => {
         initTheme();
-        initFx();
       });
 
       // /slides/[slug] への遷移開始時にスケルトンを被せる（現在ページの overlay に対して）

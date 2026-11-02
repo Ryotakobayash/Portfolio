@@ -87,9 +87,8 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     display: none;
   }
 
-  /* スライド画面では四隅に乗るシャドウ系オーバーレイを抑止する。
+  /* スライド画面では背景の光彩（ambient-glow）を抑止する。
      View Transitions のスナップショットで再フェードして見えるチラつきを避けるのが狙い。 */
-  :global(body:has(.slide-viewer) .crt-vignette),
   :global(body:has(.slide-viewer) .ambient-glow) {
     display: none;
   }
