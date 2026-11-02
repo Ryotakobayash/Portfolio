@@ -67,6 +67,14 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
       <div class="ctrl-right">
         {mode === 'audience' && (
           <>
+            <button
+              class="ctrl-btn"
+              id="sr-preview-btn"
+              aria-pressed="false"
+              aria-controls="sr-preview"
+            >
+              読み上げ内容
+            </button>
             <button class="ctrl-btn" id="fullscreen-btn" aria-label="全画面表示の切り替え">
               FULLSCREEN <span aria-hidden="true">⛶</span>
             </button>
@@ -80,6 +88,17 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
         </button>
       </div>
     </nav>
+    {mode === 'audience' && (
+      <section class="sr-preview" id="sr-preview" aria-labelledby="sr-preview-title" hidden>
+        <div class="sr-preview-header">
+          <h2 class="panel-label" id="sr-preview-title">読み上げ内容のプレビュー</h2>
+          <p class="sr-preview-note">
+            このスライドでスクリーンリーダーが読み上げる内容を、読み上げ順に並べています（DOM から近似したものです）。
+          </p>
+        </div>
+        <div id="sr-preview-content"></div>
+      </section>
+    )}
   </div>
 </BaseLayout>
 
@@ -331,6 +350,81 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     color: var(--color-text-muted);
   }
 
+  /* ===== 読み上げ内容のプレビュー ===== */
+  .sr-preview {
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .sr-preview[hidden] {
+    display: none;
+  }
+
+  .sr-preview-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .sr-preview-header h2 {
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .sr-preview-note {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .sr-preview :global(.sr-preview-list) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sr-preview :global(.sr-preview-row) {
+    display: grid;
+    grid-template-columns: 7.5em 1fr;
+    gap: var(--spacing-md);
+    align-items: baseline;
+    padding: 4px 0 4px calc(var(--depth, 0) * 1.25em);
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .sr-preview :global(.sr-preview-role) {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .sr-preview :global(.sr-preview-text) {
+    color: var(--color-text);
+    overflow-wrap: anywhere;
+  }
+
+  .sr-preview :global(.sr-preview-row[data-tone="muted"] .sr-preview-text) {
+    color: var(--color-text-muted);
+  }
+
+  .sr-preview :global(.sr-preview-row[data-tone="warn"] .sr-preview-role),
+  .sr-preview :global(.sr-preview-row[data-tone="warn"] .sr-preview-text) {
+    color: var(--color-accent);
+  }
+
+  .ctrl-btn[aria-pressed="true"] {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
   .next-preview-frame {
     --preview-scale: 0.25;
     position: relative;
@@ -469,6 +563,8 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
 </style>
 
 <script>
+  import { describeForScreenReader, renderSrPreview, slideLabel } from '../../components/slides/srPreview';
+
   let cleanupSlideViewer: (() => void) | undefined;
 
   function setupSlideViewer() {
@@ -537,22 +633,42 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     }
   }
 
-  // 読み上げ用のスライド名。見出しがなければ画像の alt、それもなければ空
-  function slideLabel(slide: Element | undefined): string {
-    if (!slide) return '';
-    const heading = slide.querySelector('h1, h2, h3');
-    if (heading) {
-      // 見出しアンカー（#）の文字を除いた本文だけを使う
-      const clone = heading.cloneNode(true) as HTMLElement;
-      clone.querySelectorAll('.heading-anchor').forEach((a) => a.remove());
-      const text = clone.textContent?.trim();
-      if (text) return text;
-    }
-    const img = slide.querySelector('img[alt]:not([alt=""])');
-    return img?.getAttribute('alt') ?? '';
+  function announcement(index: number): string {
+    const label = slideLabel(slides[index]);
+    return `スライド ${index + 1} / ${total}${label ? `：${label}` : ''}`;
   }
 
   let lastAnnounced = -1;
+
+  // ===== 読み上げ内容のプレビュー（聴衆画面のみ） =====
+  const SR_PREVIEW_KEY = 'slides-sr-preview';
+  const srPreview = document.getElementById('sr-preview');
+  const srPreviewBtn = document.getElementById('sr-preview-btn');
+
+  function updateSrPreview() {
+    const content = document.getElementById('sr-preview-content');
+    if (!srPreview || srPreview.hidden || !content || !slides[current]) return;
+    renderSrPreview(content, announcement(current), describeForScreenReader(slides[current]));
+  }
+
+  function setSrPreview(open: boolean) {
+    if (!srPreview || !srPreviewBtn) return;
+    srPreview.hidden = !open;
+    srPreviewBtn.setAttribute('aria-pressed', String(open));
+    try {
+      localStorage.setItem(SR_PREVIEW_KEY, open ? 'on' : 'off');
+    } catch {
+      // ストレージが使えない環境では開閉状態を保存しない
+    }
+    updateSrPreview();
+  }
+
+  srPreviewBtn?.addEventListener('click', () => setSrPreview(srPreview?.hidden ?? false), { signal });
+  try {
+    if (localStorage.getItem(SR_PREVIEW_KEY) === 'on') setSrPreview(true);
+  } catch {
+    // 読み取れない場合は閉じたまま
+  }
 
   function updateUI() {
     const counter = document.getElementById('slide-counter');
@@ -561,10 +677,10 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     // 初回表示では読み上げず、スライドが切り替わったときだけ通知する
     const status = document.getElementById('slide-status');
     if (status && lastAnnounced !== -1 && lastAnnounced !== current) {
-      const label = slideLabel(slides[current]);
-      status.textContent = `スライド ${current + 1} / ${total}${label ? `：${label}` : ''}`;
+      status.textContent = announcement(current);
     }
     lastAnnounced = current;
+    updateSrPreview();
 
     const dotsEl = document.getElementById('slide-dots');
     if (dotsEl) {

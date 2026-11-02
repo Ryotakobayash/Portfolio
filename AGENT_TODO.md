@@ -67,6 +67,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-032`](#task-032) | アクセシビリティ実測と残課題の修正（Lighthouse・axe） | P2 | `TODO` | `src/styles/global.css`, `src/components/` |
 | [`TASK-033`](#task-033) | サイト全体のFX（CRT装飾）機能の削除 | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css`, `src/components/CRTOverlay.astro` |
 | [`TASK-034`](#task-034) | talks・スライドのa11y修正と読み上げ内容の確認手段 | P1 | `DONE` | `src/pages/talks.astro`, `src/pages/slides/[slug].astro`, `src/components/slides/`, `scripts/` |
+| [`TASK-035`](#task-035) | スライド画面で読み上げ内容をプレビューする機能 | P1 | `DONE` | `src/pages/slides/[slug].astro`, `src/components/slides/srPreview.ts` |
 
 ---
 
@@ -226,6 +227,24 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 - Acceptance Criteria:
   - [x] talks 一覧と全スライドで axe の serious 以上の違反が 0 件であること（両テーマ）
   - [x] 読み上げ内容をテキストで確認できること
+
+---
+
+### [TASK-035] スライド画面で読み上げ内容をプレビューする機能
+- Status: `DONE`
+- Completed: 2026-11-02
+- Priority: P1
+- Target Files: `src/pages/slides/[slug].astro`, `src/components/slides/srPreview.ts`
+- Verification Command: `pnpm build`
+- User Context: 読み上げ内容を、スクリーンリーダーを使う人も使わない人も Web サイト上で確認できるようにしたい（TASK-034 のレポート出力に加えて）。
+- Specifications:
+  - [x] 聴衆画面に「読み上げ内容」トグルボタン（aria-pressed）を置く
+  - [x] 表示中スライドの読み上げ内容（役割と名前）を読み上げ順にパネルへ表示する
+  - [x] スライド切り替え時の通知文もあわせて表示する
+  - [x] 開閉状態を localStorage に保存する（使えない環境では保存しない）
+- Acceptance Criteria:
+  - [x] スライドを送るとプレビューが追従すること
+  - [x] パネルを開いた状態で axe の違反が 0 件であること
 
 ---
 
