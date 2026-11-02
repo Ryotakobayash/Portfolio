@@ -92,7 +92,7 @@ Vercel Speed Insights の RES 向上およびフォント由来の CLS 解消を
 - API: GA4 の WIF 認証を src/utils/ga4.ts に集約(4重コピー解消)。PV 系 API に CDN キャッシュ(s-maxage=3600)を付与、error.message のクライアント返却と SA メールのハードコードを撤去、OG 画像のフォント取得 URL に fonts.gstatic.com 検証を追加
 - 配信: vercel.json にセキュリティヘッダー5種(X-Frame-Options / nosniff / Referrer-Policy / HSTS / Permissions-Policy)を追加
 - フロント: AmbientGlow / CRTOverlay / OrbitalBackground / DotGrid / RelatedPosts を .astro 化(island を持たないページで React ランタイム不要に)、prefers-reduced-motion 対応を実装。NetworkGraph を client:media 化して二重ハイドレーション解消。three.js チャンクを React.lazy + requestIdleCallback で遅延ロード化し dpr 上限・タブ非表示時の描画停止を追加(AsciiBackground は SlideAsciiCanvas の薄いラッパーに統合)。ArticleTreemap の未使用 PV フェッチを削除して treemap API の二重呼び出しを解消。1.1MB PNG サムネイルを WebP(158KB)化。StickyToc を IntersectionObserver 化。検索 UI を client:idle 化。テーマ検出3箇所を useTheme に統合、未使用 CSS クラス8個と変数十数個を削除
-- 運用上の注意: Vercel の環境変数に GCP_SERVICE_ACCOUNT_EMAIL が設定されていることを要確認(ハードコードのフォールバックを削除したため、未設定だと本番 PV がダミーデータに落ちる)
+- 運用上の注意: Vercel の環境変数に GCP_SERVICE_ACCOUNT_EMAIL が設定されていることを要確認(ハードコードのフォールバックを削除したため、未設定だと本番の PV がダミーデータで表示される)
 
 ---
 
@@ -121,7 +121,7 @@ Vercel Speed Insights の RES 向上およびフォント由来の CLS 解消を
 Xアカウントへのリンクを設置し、またアクセシビリティ（読みやすさ）向上のために記事詳細ページの本文・コードブロック等のレイアウト幅を調整しました。
 
 - `src/pages/about.astro` の Links セクションに X (Twitter) アカウント（`https://x.com/Re00871489`）のリンクを追加。
-- 記事全体のレイアウトバランスを崩さないよう、ヘッダー、サムネイル画像、数値ボードは元の広がる幅（100%）に維持。
+- 記事全体の見た目の釣り合いを保つため、ヘッダー、サムネイル画像、数値ボードは従来どおり横幅いっぱい（100%）のまま維持。
 - 記事本文の文章（段落、リスト）、見出し、引用、テーブル、およびコードブロックのみ最大幅を `40em` に厳密に制限し、右端が綺麗に揃うように CSS を修正。
 - デスクトップ表示時に、余白に浮く Tufte CSS 風のサイドノート (`sidenote`) が重ならず美しく配置されるようにレイアウト幅を調整。
 
@@ -143,7 +143,7 @@ Xアカウントへのリンクを設置し、またアクセシビリティ（�
 
 - `src/pages/about.astro` に `PVTimeline` コンポーネントを `client:only="react"` で組み込み、「03 · PV Timeline」セクションとして追加（以降のセクションをリナンバリング）。
 - プロットラインに表示される投稿情報にタイトルを渡すため、`postDates` のマッピング処理に `title` を含めるよう修正。
-- `src/components/PVTimeline.tsx` にて、テーマ（`isDark`）変更時に `chart.update(options, true, true)` が走るようにし、ダークモード切り替え時の配色追従バグを修正。
+- `src/components/PVTimeline.tsx` にて、テーマ（`isDark`）変更時に `chart.update(options, true, true)` が実行されるようにし、ダークモード切り替え時の配色追従バグを修正。
 - `astro.config.mjs` で定義している `GA4_PROPERTY_ID` と `GCP_PROJECT_NUMBER` スキーマを `optional: true` に変更し、ローカル開発環境で環境変数が空の場合でも `EnvInvalidVariables` エラーを出さずにダミーデータで安全に動くよう修正。
 - `pnpm build` およびローカル環境での API/HTML 応答疎通を確認。
 
@@ -432,7 +432,7 @@ Astro v6 / React 19 アップグレード後にブログ記事詳細ページで
 **サマリー:**
 
 - `src/components/LifeProgress.tsx` を編集し、年齢/寿命の表示形式を `CreativeLifeCountdown`（CreativeLifeRunway部分）の "Days" セクションと同じスタイル（`fontSize: '2.2rem'`, `fontWeight: 900`, `color: 'var(--color-primary)'`, `fontFamily: 'var(--font-sans)'`）に合わせました。
-- 狭い画面幅でも破綻しないよう、全体を囲むコンテナに `flexWrap: 'wrap'` と `whiteSpace: 'nowrap'` を適用し、リングの横に文字が収まらなかった場合には自然と折り返して表示されるように調整しています。
+- 狭い画面幅でも表示が乱れないよう、全体を囲むコンテナに `flexWrap: 'wrap'` と `whiteSpace: 'nowrap'` を適用し、リングの横に文字が収まらなかった場合には自然と折り返して表示されるように調整しています。
 - ローカル環境（`pnpm run dev`）を開始し、確認可能な状態にしました（現在バックグラウンドで起動中です）。
 
 ### [タスク名: 公開した記事のPVを取得できるようにする]

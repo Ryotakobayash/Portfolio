@@ -257,10 +257,10 @@ A.既存プラットフォームで感じた小さな不満を自分で解決し
 </div>
 </TwoColumn>
 
-> Astro = 骨格 / React = 動く部品。お客さんがサッと見たい部分は軽量にできた。
+> Astro = 骨格 / React = 動くパーツ。お客さんがサッと見たい部分は軽量にできた。
 
 <Notes>
-- 「Astro 主役、React は island」の構図を一望で示すスライド
+- 「Astro 主役、React は island」という関係を1枚で示すスライド
 - お客さんはブログに書いてある情報をみるために仕方なくサイトを開く。自分のやりたいことでストレスを与えたくなかったので、まぁ満足。
 </Notes>
 </Slide>
@@ -355,7 +355,7 @@ A.既存プラットフォームで感じた小さな不満を自分で解決し
 </TwoColumn>
 
 <SlideFootnote slot="footnote">
-**drei** — R3F のヘルパーライブラリ集（`@react-three/drei`）／**Canvas** — Three.js シーンを描画する土台要素／**throw** — JavaScript で例外を投げる動作。投げた瞬間に実行が止まる
+**drei** — R3F のヘルパーライブラリ集（`@react-three/drei`）／**Canvas** — Three.js のシーンを描き込む要素／**throw** — JavaScript で例外を投げる動作。投げた時点で実行が止まる
 </SlideFootnote>
 
 <Notes>
@@ -386,7 +386,7 @@ A.既存プラットフォームで感じた小さな不満を自分で解決し
 
 試した順: rAF 1 つ挟む → VT 完了を待つ → `ResizeObserver`
 
-- **着地点** — `ResizeObserver` で Canvas の実寸が出た瞬間にマウント
+- **着地点** — `ResizeObserver` で Canvas の実寸が取れた時点でマウント
 - **保険** — drei が出す一回限りのエラーは window で `preventDefault`
 
 同じことやる人がいたら参考に。
@@ -395,7 +395,7 @@ A.既存プラットフォームで感じた小さな不満を自分で解決し
 </TwoColumn>
 
 <SlideFootnote slot="footnote">
-drei — R3F のヘルパーライブラリ集（`@react-three/drei`）／ **Canvas** — Three.js シーンを描画する土台要素 ／ **throw** — JavaScript で例外を投げる動作。投げた瞬間に実行が止まる ／ **rAF** — `requestAnimationFrame`。次の描画フレームまで処理を 1 つ遅らせるブラウザ API
+drei — R3F のヘルパーライブラリ集（`@react-three/drei`）／ **Canvas** — Three.js のシーンを描き込む要素 ／ **throw** — JavaScript で例外を投げる動作。投げた時点で実行が止まる ／ **rAF** — `requestAnimationFrame`。次の描画フレームまで処理を 1 つ遅らせるブラウザ API
 </SlideFootnote>
 
 
