@@ -8,7 +8,8 @@ const { title, subtitle, meta } = Astro.props;
 ---
 <div class="slide-title-layout">
   {meta && <div class="slide-meta">{meta}</div>}
-  <h1>{title}</h1>
+  {/* ページの h1 はデッキタイトル（スライドページ側で付与）なので、表紙の見出しは h2 にする */}
+  <h2 class="slide-title-heading">{title}</h2>
   {subtitle && <p class="subtitle">{subtitle}</p>}
 </div>
 
@@ -30,13 +31,14 @@ const { title, subtitle, meta } = Astro.props;
     align-self: flex-start;
   }
 
-  h1 {
-    font-size: clamp(1.8rem, 5vw, 4rem);
+  /* 従来 Slide の共通 h1 スタイルで描画されていた見た目を維持する */
+  .slide-title-layout .slide-title-heading {
+    font-size: 5.5cqi;
     font-weight: 900;
     letter-spacing: -0.02em;
     color: var(--color-text);
-    line-height: 1.05;
-    margin: 0;
+    line-height: 1.1;
+    margin: 0 0 0.3em;
   }
 
   .subtitle {

@@ -66,7 +66,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-031`](#task-031) | 記事ページのインラインスクリプト分割 | P2 | `TODO` | `src/pages/posts/[slug].astro` |
 | [`TASK-032`](#task-032) | アクセシビリティ実測と残課題の修正（Lighthouse・axe） | P2 | `TODO` | `src/styles/global.css`, `src/components/` |
 | [`TASK-033`](#task-033) | サイト全体のFX（CRT装飾）機能の削除 | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css`, `src/components/CRTOverlay.astro` |
-| [`TASK-034`](#task-034) | talks・スライドのa11y修正と読み上げ内容の確認手段 | P1 | `IN_PROGRESS` | `src/pages/talks.astro`, `src/pages/slides/[slug].astro`, `src/components/slides/`, `scripts/` |
+| [`TASK-034`](#task-034) | talks・スライドのa11y修正と読み上げ内容の確認手段 | P1 | `DONE` | `src/pages/talks.astro`, `src/pages/slides/[slug].astro`, `src/components/slides/`, `scripts/` |
 
 ---
 
@@ -208,23 +208,24 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-034] talks・スライドのa11y修正と読み上げ内容の確認手段
-- Status: `IN_PROGRESS`
+- Status: `DONE`
+- Completed: 2026-11-02
 - Priority: P1
 - Target Files: `src/pages/talks.astro`, `src/pages/slides/[slug].astro`, `src/components/slides/`, `src/styles/global.css`, `scripts/`
 - Verification Command: `pnpm a11y:talks`
 - User Context: axe と アクセシビリティツリーでの調査結果に基づき、コントラストと読み上げの問題を修正する。読み上げ内容は、スクリーンリーダー利用者でなくても確認できる手段を用意する。
 - Specifications:
-  - [ ] ライトテーマの `--color-accent-2` をコントラスト比 4.5:1 以上にする
-  - [ ] SlideAscii（ASCII 背景）を読み上げ対象から外す
-  - [ ] スライド切り替え時に「n / 総数 見出し」を aria-live で通知する
-  - [ ] スライドのリストマーカー（▸ など）を読み上げ対象から外す
-  - [ ] スライドページに視覚的に非表示の h1（デッキタイトル）を置く
-  - [ ] talks 一覧のカードリンク名をタイトルのみにし、Upcoming / Archive を h2 にする
-  - [ ] 操作ボタンの記号・言語、新規タブで開くリンクの通知を整える
-  - [ ] axe 検査と読み上げ内容（アクセシビリティツリー）の書き出しを行うスクリプトを追加する
+  - [x] ライトテーマの `--color-accent-2` をコントラスト比 4.5:1 以上にする
+  - [x] SlideAscii（ASCII 背景）を読み上げ対象から外す
+  - [x] スライド切り替え時に「n / 総数 見出し」を aria-live で通知する
+  - [x] スライドのリストマーカー（▸ など）を読み上げ対象から外す
+  - [x] スライドページに視覚的に非表示の h1（デッキタイトル）を置く
+  - [x] talks 一覧のカードリンク名をタイトルのみにし、Upcoming / Archive を h2 にする
+  - [x] 操作ボタンの記号・言語、新規タブで開くリンクの通知を整える
+  - [x] axe 検査と読み上げ内容（アクセシビリティツリー）の書き出しを行うスクリプトを追加する
 - Acceptance Criteria:
-  - [ ] talks 一覧と全スライドで axe の serious 以上の違反が 0 件であること（両テーマ）
-  - [ ] 読み上げ内容をテキストで確認できること
+  - [x] talks 一覧と全スライドで axe の serious 以上の違反が 0 件であること（両テーマ）
+  - [x] 読み上げ内容をテキストで確認できること
 
 ---
 

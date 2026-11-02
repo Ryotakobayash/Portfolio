@@ -45,3 +45,6 @@ storageState.json
 
 # Claude Codeの分離ワークツリー
 .claude/worktrees/
+
+# 生成レポート
+/reports/

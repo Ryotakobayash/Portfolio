@@ -16,7 +16,7 @@ const {
   speed,
 } = Astro.props;
 ---
-<div class="slide-ascii" style={`--ascii-opacity: ${opacity}`}>
+<div class="slide-ascii" style={`--ascii-opacity: ${opacity}`} aria-hidden="true">
   <SlideAsciiCanvas
     client:load
     characters={characters}

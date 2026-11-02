@@ -15,7 +15,8 @@
     "dev:fresh": "pnpm clean && pnpm dev",
     "new:post": "node scripts/new-post.mjs",
     "lint": "biome lint src/",
-    "lint:fix": "biome lint src/ --fix"
+    "lint:fix": "biome lint src/ --fix",
+    "a11y:talks": "node scripts/a11y-talks.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.3.0",
@@ -46,10 +47,12 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.10.2",
     "@biomejs/biome": "^2.5.14",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.184.0",
+    "playwright": "1.56.1",
     "sharp": "0.35.4",
     "typescript": "5.9.3"
   }

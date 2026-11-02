@@ -117,7 +117,7 @@ const allTags = Array.from(tagCount.entries())
 
     {upcomingTalks.length > 0 && (
       <>
-        <div class="section-divider"><span class="section-divider__label">Upcoming</span></div>
+        <h2 class="section-divider"><span class="section-divider__label">Upcoming</span></h2>
         <section class="bento-card">
           <ul class="timeline">
             {upcomingTalks.map((talk) => {
@@ -142,6 +142,7 @@ const allTags = Array.from(tagCount.entries())
                       href={talk.url}
                       target={talk.isExternal ? '_blank' : undefined}
                       rel={talk.isExternal ? 'noopener noreferrer' : undefined}
+                      aria-label={`${talk.title}${!talk.isPublished ? '（準備中）' : ''}${talk.isExternal ? '（新しいタブで開きます）' : ''}`}
                     >
                       {Inner}
                     </a>
@@ -156,7 +157,7 @@ const allTags = Array.from(tagCount.entries())
       </>
     )}
 
-    <div class="section-divider"><span class="section-divider__label">Archive</span></div>
+    <h2 class="section-divider"><span class="section-divider__label">Archive</span></h2>
     <TalkSearch client:idle talks={archive} allTags={allTags} />
   </div>
 </BaseLayout>
@@ -209,6 +210,7 @@ const allTags = Array.from(tagCount.entries())
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--color-text-muted);
+    line-height: 1.4;
     margin: var(--spacing-2xl) 0 var(--spacing-lg);
   }
 

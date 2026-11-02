@@ -10,7 +10,8 @@ const numberLabel =
 ---
 <div class="section-divider">
   {numberLabel && <div class="section-number">{numberLabel}</div>}
-  <h1 class="section-title">{title}</h1>
+  {/* ページの h1 はデッキタイトルなので、章の扉は h2 にする */}
+  <h2 class="section-title">{title}</h2>
   {subtitle && <p class="section-subtitle">{subtitle}</p>}
 </div>
 
@@ -33,13 +34,14 @@ const numberLabel =
     align-self: flex-start;
   }
 
-  .section-title {
-    font-size: 6cqi;
+  /* 従来 Slide の共通 h1 スタイルで描画されていた見た目を維持する */
+  .section-divider .section-title {
+    font-size: 5.5cqi;
     font-weight: 900;
-    line-height: 1.05;
+    line-height: 1.1;
     letter-spacing: -0.02em;
     color: var(--color-text);
-    margin: 0;
+    margin: 0 0 0.3em;
   }
 
   .section-subtitle {

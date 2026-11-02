@@ -18,6 +18,7 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
 
 <BaseLayout title={`${deck.data.title} | Slides`} description={deck.data.description ?? ''}>
   <div class="slide-viewer" data-mode={mode} data-slug={slug}>
+    <h1 class="sr-only">{deck.data.title}</h1>
     <div class="deck-meta">
       {deck.data.event && <span class="deck-event">{deck.data.event}</span>}
       <span class="deck-date">{deck.data.date}</span>
@@ -55,25 +56,26 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     )}
 
     <nav class="slide-controls" id="slide-controls" aria-label="Slide navigation">
-      <button class="ctrl-btn" id="prev-btn" aria-label="Previous slide" disabled>
+      <button class="ctrl-btn" id="prev-btn" aria-label="前のスライド" disabled>
         ← PREV
       </button>
       <div class="ctrl-center">
         <div class="slide-dots" id="slide-dots" aria-hidden="true"></div>
         <span class="slide-counter" id="slide-counter"></span>
+        <span class="sr-only" id="slide-status" aria-live="polite" aria-atomic="true"></span>
       </div>
       <div class="ctrl-right">
         {mode === 'audience' && (
           <>
-            <button class="ctrl-btn" id="fullscreen-btn" aria-label="Toggle fullscreen">
-              FULLSCREEN ⛶
+            <button class="ctrl-btn" id="fullscreen-btn" aria-label="全画面表示の切り替え">
+              FULLSCREEN <span aria-hidden="true">⛶</span>
             </button>
-            <button class="ctrl-btn ctrl-btn--accent" id="open-presenter-btn">
-              OPEN SPEAKER VIEW ↗
+            <button class="ctrl-btn ctrl-btn--accent" id="open-presenter-btn" aria-label="発表者ビューを別ウィンドウで開く">
+              OPEN SPEAKER VIEW <span aria-hidden="true">↗</span>
             </button>
           </>
         )}
-        <button class="ctrl-btn" id="next-btn" aria-label="Next slide">
+        <button class="ctrl-btn" id="next-btn" aria-label="次のスライド">
           NEXT →
         </button>
       </div>
@@ -535,9 +537,34 @@ const mode = Astro.url.searchParams.get('mode') === 'present' ? 'present' : 'aud
     }
   }
 
+  // 読み上げ用のスライド名。見出しがなければ画像の alt、それもなければ空
+  function slideLabel(slide: Element | undefined): string {
+    if (!slide) return '';
+    const heading = slide.querySelector('h1, h2, h3');
+    if (heading) {
+      // 見出しアンカー（#）の文字を除いた本文だけを使う
+      const clone = heading.cloneNode(true) as HTMLElement;
+      clone.querySelectorAll('.heading-anchor').forEach((a) => a.remove());
+      const text = clone.textContent?.trim();
+      if (text) return text;
+    }
+    const img = slide.querySelector('img[alt]:not([alt=""])');
+    return img?.getAttribute('alt') ?? '';
+  }
+
+  let lastAnnounced = -1;
+
   function updateUI() {
     const counter = document.getElementById('slide-counter');
     if (counter) counter.textContent = `${current + 1} / ${total}`;
+
+    // 初回表示では読み上げず、スライドが切り替わったときだけ通知する
+    const status = document.getElementById('slide-status');
+    if (status && lastAnnounced !== -1 && lastAnnounced !== current) {
+      const label = slideLabel(slides[current]);
+      status.textContent = `スライド ${current + 1} / ${total}${label ? `：${label}` : ''}`;
+    }
+    lastAnnounced = current;
 
     const dotsEl = document.getElementById('slide-dots');
     if (dotsEl) {

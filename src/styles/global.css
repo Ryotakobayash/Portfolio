@@ -66,7 +66,7 @@
   --color-primary: #466557; /* WCAG AA: 4.5+ */
   --color-primary-light: rgba(92, 127, 113, 0.1);
   --color-accent: #802520;
-  --color-accent-2: #996b24; /* WCAG AA: 4.5+ */
+  --color-accent-2: #86601f; /* WCAG AA: bg 4.86 / bg-secondary 4.51 */
   --color-accent-3: #995530; /* WCAG AA: 4.5+ */
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -418,6 +418,20 @@ a:hover {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
+}
+
+/* ===== Screen reader only ===== */
+/* 視覚的には隠し、読み上げにだけ届ける */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ===== Main / Page Background ===== */

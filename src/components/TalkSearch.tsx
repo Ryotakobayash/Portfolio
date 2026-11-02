@@ -265,7 +265,7 @@ export function TalkSearch({ talks, allTags }: TalkSearchProps) {
                             <span style={{ color: 'var(--color-border)' }}>/</span>
                             <span style={{ color: 'var(--color-accent-2)', fontWeight: 600 }}>{talk.event}</span>
                             <span style={{ color: 'var(--color-border)' }}>/</span>
-                            <span>{talk.type}{talk.isExternal ? ' ↗' : ''}</span>
+                            <span>{talk.type}{talk.isExternal && <span aria-hidden="true"> ↗</span>}</span>
                             {statusBadge && (
                                 <>
                                     <span style={{ color: 'var(--color-border)' }}>/</span>
@@ -277,9 +277,9 @@ export function TalkSearch({ talks, allTags }: TalkSearchProps) {
                     const body = (
                         <>
                             {meta}
-                            <h2 className="font-bold" style={{ fontSize: '1.05rem', marginBottom: talk.description ? 'var(--spacing-sm)' : 0, letterSpacing: '-0.01em' }}>
+                            <h3 className="font-bold" style={{ fontSize: '1.05rem', marginBottom: talk.description ? 'var(--spacing-sm)' : 0, letterSpacing: '-0.01em' }}>
                                 {talk.title}
-                            </h2>
+                            </h3>
                             {talk.description && (
                                 <p className="text-secondary mb-sm" style={{
                                     fontSize: '0.85rem',
@@ -314,6 +314,7 @@ export function TalkSearch({ talks, allTags }: TalkSearchProps) {
                             href={talk.href}
                             target={talk.isExternal ? '_blank' : undefined}
                             rel={talk.isExternal ? 'noopener noreferrer' : undefined}
+                            aria-label={`${talk.title}${talk.status === 'draft-slides' ? '（準備中）' : ''}${talk.isExternal ? '（新しいタブで開きます）' : ''}`}
                             style={cardStyle}
                             onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; }}
                             onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
