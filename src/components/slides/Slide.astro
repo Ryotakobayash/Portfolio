@@ -264,4 +264,60 @@ const { class: className, bleed = false } = Astro.props;
     color: var(--color-text-secondary);
     text-align: center;
   }
+
+  /* 表: 縦線なし・横線のみ。見出し行の下だけ太く引いて区切る */
+  .slide :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.9cqi;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .slide :global(th),
+  .slide :global(td) {
+    padding: 1.1cqi 1.6cqi;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .slide :global(th:first-child),
+  .slide :global(td:first-child) {
+    padding-left: 0;
+  }
+
+  .slide :global(th:last-child),
+  .slide :global(td:last-child) {
+    padding-right: 0;
+  }
+
+  .slide :global(th) {
+    font-family: var(--font-mono);
+    font-size: 0.7em;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    border-bottom: 2px solid var(--color-text-secondary);
+  }
+
+  .slide :global(td) {
+    color: var(--color-text);
+  }
+
+  .slide :global(tbody tr:last-child td) {
+    border-bottom-color: var(--color-text-secondary);
+  }
+
+  /* Markdown の列揃え指定（:---: など）を尊重する */
+  .slide :global(th[align="center"]),
+  .slide :global(td[align="center"]) {
+    text-align: center;
+  }
+
+  .slide :global(th[align="right"]),
+  .slide :global(td[align="right"]) {
+    text-align: right;
+  }
 </style>
