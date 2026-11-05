@@ -1,10 +1,11 @@
 ---
 interface Props {
   class?: string;
+  label?: string;
 }
-const { class: className } = Astro.props;
+const { class: className, label = '用語' } = Astro.props;
 ---
-<aside class:list={['slide-footnote', className]} aria-label="用語">
+<aside class:list={['slide-footnote', className]} aria-label={label}>
   <slot />
 </aside>
 
