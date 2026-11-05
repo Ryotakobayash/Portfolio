@@ -23,7 +23,6 @@ export function resolveSlideImage(src: string | ImageMetadata): string | ImageMe
   return image.default;
 }
 
-export function getSlideImageWidths(src: ImageMetadata): number[] | undefined {
-  if (src.format === 'gif' || src.format === 'svg') return undefined;
-  return [320, 480, 640, 960, 1280, 1600, 1920, 2560].filter((width) => width < src.width).concat(src.width);
+export function getSlideImageLayout(src: ImageMetadata): 'constrained' | undefined {
+  return src.format === 'gif' || src.format === 'svg' ? undefined : 'constrained';
 }
