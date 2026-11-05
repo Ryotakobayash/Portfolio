@@ -194,39 +194,33 @@ PlaywrightやAIを使ったデザイン改善は世の中にいっぱいある�
 
 <Slide>
 
-## やったこと
+## やったこと：判断材料を作る
 
-**画面にある 465 本のborderを 10 グループに分け、条件を変えながら撮影→比較→議論**
+**問い：この罫線はなくしても困らない？**
 
 <TwoColumn>
   <div>
- ### 大まかな流れ
-  - **条件の壁打ち・スクリプト作成**
-    Claude Code
-  - **Chromium / WebKit を操作**
-    Playwright
-  - **比較方法**
-    HTMLファイル （or Figma）
-  - **最終的な判断**
-    人間
+  ### 大まかな流れ
+  1. 罫線を役割ごとに分ける
+  2. グループごとに消して撮影する
+  3. 現状と比較し、人が判断する
+
+  条件の検討・スクリプト作成は Claude Code と、
+  画面の変更・撮影は Playwright で。
 
   </div>
   <div>
 
-
 ```js
-const GROUPS = [{ id: 'D1', edges: 292 }, /* … */]; // 予想本数
-
-for (const g of GROUPS) {
-  ~~~~ 省略 ~~~~
-  const changed = await page.evaluate((id) => {
-    const hits = collectBorders(id);  // 先に集める
-    hits.forEach(eraseBorder);        // 後で消す（同時だと表がずれる）
-    return hits.length;
-  }, g.id);
-
-  console.log(g.id, changed, '/', g.edges);
-  await page.screenshot({ path: `${g.id}.png`, fullPage: true });
+// 撮影部分のイメージ（処理の定義は省略）
+for (const group of groups) {
+  const page = await context.newPage();
+  await page.goto(url);
+  await page.evaluate(applyBorders, {
+    targets: [group.id], mode: 'erase',
+  });
+  await page.screenshot({ path: `${group.id}.png` });
+  await page.close();
 }
 ```
 
@@ -234,10 +228,10 @@ for (const g of GROUPS) {
 </TwoColumn>
 
 <Notes>
-具体的には画面にある465本くらいのborderを10のグループに分けて、条件を変えながら撮影、比較、議論しました。結構多めだと思います。
+具体的には画面のborderを役割ごとに10グループに分けました。計算上は上下左右を別々に数えて約465辺ありましたが、すべてが実際に描画されるわけではありません。
 業務アプリの中でも、特にborderがたくさん表示されている画面を選んで対象にしました。
-使い分けとしては、条件の壁打ちや撮影用のスクリプト作成はClaude Codeと一緒にやって、ChromiumとWebKitの操作はPlaywrightにやってもらいました。
-結果の出力は主にHTMLファイルです。最終的な判断は人間がやります。
+グループごとに罫線を透明にした画像を撮り、現状と比較します。条件の検討や撮影用のスクリプト作成はClaude Codeと一緒に行い、画面の変更と撮影にはPlaywrightを使いました。
+比較するための画像を用意するところは自動化しますが、消して困るかどうかは人が判断します。
 </Notes>
 
 </Slide>
@@ -276,7 +270,7 @@ for (const g of GROUPS) {
 
 | ステップ | 問い | HTMLレポートの構成 |
 |---|---|---|
-| 1 | そのborderはそもそも必要？ | 要素ごとに非表示にしてみて比較 |
+| 1 | そのborderはそもそも必要？ | グループごとに透明にして比較 |
 | 2 | 色分けは必要？ | 色の違いが情報の認識しやすさを左右していないか検証 |
 | 3 | 何色がいい？ | 候補のパターンを当てはめて比較 |
 
