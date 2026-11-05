@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { resolveSlideImage } from './resolveSlideImage';
+import { getSlideImageWidths, resolveSlideImage } from './resolveSlideImage';
 
 interface Fact {
   label: string;
@@ -36,7 +36,7 @@ const src = resolveSlideImage(photo);
     {typeof src === 'string' ? (
       <img src={src} alt={`${name}の写真`} loading="lazy" decoding="async" />
     ) : (
-      <Image src={src} alt={`${name}の写真`} loading="lazy" decoding="async" />
+      <Image src={src} alt={`${name}の写真`} widths={getSlideImageWidths(src)} sizes="50vw" loading="lazy" decoding="async" />
     )}
   </div>
 

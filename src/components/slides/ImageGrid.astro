@@ -6,6 +6,7 @@ interface Item {
   src: string | ImageMetadata;
   label?: string;
   alt?: string;
+  format?: 'png' | 'webp' | 'avif';
 }
 
 interface Props {
@@ -30,7 +31,7 @@ const { items, gap = '4cqi', bare = true } = Astro.props;
           {typeof src === 'string' ? (
             <img src={src} alt={alt} loading="lazy" decoding="async" />
           ) : (
-            <Image src={src} alt={alt} loading="lazy" decoding="async" />
+            <Image src={src} alt={alt} format={item.format} loading="lazy" decoding="async" />
           )}
         </div>
       </figure>

@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { resolveSlideImage } from './resolveSlideImage';
+import { getSlideImageWidths, resolveSlideImage } from './resolveSlideImage';
 
 interface Props {
   src: string | ImageMetadata;
@@ -8,15 +8,24 @@ interface Props {
   caption?: string;
   fit?: 'contain' | 'cover';
   bare?: boolean;
+  /** 画像の表示寸法がスライドの枠で決まる場合に指定 */
+  responsive?: boolean;
 }
-const { src: rawSrc, alt = '', caption, fit = 'contain', bare = false } = Astro.props;
+const { src: rawSrc, alt = '', caption, fit = 'contain', bare = false, responsive = false } = Astro.props;
 const src = resolveSlideImage(rawSrc);
 ---
 <figure class="image-slide" data-fit={fit} data-bare={bare}>
   {typeof src === 'string' ? (
     <img src={src} alt={alt} loading="lazy" decoding="async" />
   ) : (
-    <Image src={src} alt={alt} loading="lazy" decoding="async" />
+    <Image
+      src={src}
+      alt={alt}
+      widths={responsive || fit === 'cover' ? getSlideImageWidths(src) : undefined}
+      sizes={responsive || fit === 'cover' ? '100vw' : undefined}
+      loading="lazy"
+      decoding="async"
+    />
   )}
   {caption && <figcaption>{caption}</figcaption>}
 </figure>
