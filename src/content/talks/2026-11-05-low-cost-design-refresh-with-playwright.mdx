@@ -21,12 +21,14 @@ import ImageSlide from '../../components/slides/ImageSlide.astro';
 import Profile from '../../components/slides/Profile.astro';
 import ImageGrid from '../../components/slides/ImageGrid.astro';
 import Section from '../../components/slides/Section.astro';
+import SlideAscii from '../../components/slides/SlideAscii.astro';
 import BigText from '../../components/slides/BigText.astro';
 import Notes from '../../components/slides/Notes.astro';
 import AnimatedEmoji from '../../components/AnimatedEmoji.astro';
 import profilePhoto from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-05-16-17-54-24.png';
 
 <Slide>
+  <SlideAscii slot="backdrop" />
   <SlideTitle
     title="Playwrightで軽量に進めるデザイン改善"
     meta="2026-11-05 · 新卒N年目の勉強会&交流会！"
