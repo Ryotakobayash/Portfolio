@@ -1,0 +1,308 @@
+---
+title: "Playwrightで軽量に進めるデザイン刷新"
+date: "2026-11-05"
+event: "新卒N年目の勉強会&交流会！ 〜若手エンジニアのAIの使い方・向き合い方〜"
+description: "Figmaでの作業を飛ばし、Playwrightで実画面に当てながらkintoneのデザイン改善を検討した話と、AIとの向き合い方"
+tags:
+  - playwright
+  - AI
+  - デザイン
+published: true
+externalUrl: https://fresh-engineers.connpass.com/event/409436/
+slug: low-cost-design-refresh-with-playwright
+---
+
+import Slide from '../../components/slides/Slide.astro';
+import SlideTitle from '../../components/slides/SlideTitle.astro';
+import SlideFootnote from '../../components/slides/SlideFootnote.astro';
+import TwoColumn from '../../components/slides/TwoColumn.astro';
+import Columns from '../../components/slides/Columns.astro';
+import ImageSlide from '../../components/slides/ImageSlide.astro';
+import Profile from '../../components/slides/Profile.astro';
+import ImageGrid from '../../components/slides/ImageGrid.astro';
+import Section from '../../components/slides/Section.astro';
+import BigText from '../../components/slides/BigText.astro';
+import Notes from '../../components/slides/Notes.astro';
+import AnimatedEmoji from '../../components/AnimatedEmoji.astro';
+import profilePhoto from '../../assets/talks/2026-05-19-astro-meetup-japan/2026-05-16-17-54-24.png';
+
+<Slide>
+  <SlideTitle
+    title="Playwrightで軽量に進めるデザイン刷新"
+    meta="2026-11-05 · 新卒N年目の勉強会&交流会！"
+  />
+</Slide>
+
+<Slide>
+
+## 自己紹介
+
+<Profile
+  photo={profilePhoto}
+  handle="@kobaryo"
+  name="Kobayashi Ryota"
+  role="プロダクトデザイナー"
+  org="サイボウズ"
+  badges={['25卒', '新卒2年目']}
+  facts={[
+    { label: 'Product', value: 'kintone / 性能・利用状況ボード' },
+  ]}
+  tags={['情報の可視化', 'a11y', 'Web標準']}
+/>
+
+</Slide>
+
+<Slide>
+
+## 今日のLTで話すこと
+
+### AIの使い方の話：
+- **kintoneのデザイン改善でのAIの使い方**
+- **Figmaで頑張る以外の選択肢として、Playwrightを使って改善検討した。**
+
+### 向き合い方の話：
+- **生産性向上は対象範囲が大きいほど価値が高い（会社 ＞ 部署 ＞ チーム ＞ 自分）**
+- **AIで治具を作る**
+
+<Notes>
+デザインシステムを生成！みたいな話が多いが今回は改善に焦点を当てた話。
+割と思いつきでやっている方法だから、技術的に詰め切れていないところが結構あると思う。アドバイスが欲しい。
+</Notes>
+</Slide>
+
+<Slide>
+  <Section number={1} title="AIの使い方" subtitle="Figmaを飛ばして、実画面でデザイン検討する" />
+</Slide>
+
+<Slide bleed>
+
+<ImageSlide src="../../assets/talks/2026-11-05-low-cost-design-refresh-with-playwright/2026-11-02-12-34-16.png" alt="東京駅に掲出されたkintoneの広告「AI、チームで使えてますか？」" fit="cover" bare />
+
+<Notes>
+
+話に入る前に製品を軽く紹介しておきます。
+東京駅の写真です。広告をみたことある人は結構いるはず。
+
+kintoneはエンジニアではない社員でもノーコードで業務アプリを作れるサービス。
+元々の情報を蓄積されていく性質がAIと相性がよく、最近開発も楽しいです。
+今日はこの製品でやっているデザイン改善の話。
+
+</Notes>
+
+</Slide>
+
+<Slide>
+
+## デザイン改善のあるある
+
+### 1.デザインデータがない
+
+### 2.新機能開発の方が事業貢献度高くて、改善は優先度低め
+
+### 3.Figmaで色々調整しても実装でズレる（Figmaの性質起因）
+
+
+<BigText size="md" align="start" accent>
+  <AnimatedEmoji emoji="🤔" />「後回しになりがちだけど、なんとか上手く進められないだろうか？」
+</BigText>
+
+</Slide>
+
+<Slide>
+
+## アプローチ
+
+<BigText size="md" align="center" accent>
+  <AnimatedEmoji emoji="💡"/>「実装を変更→スクショで比較しよう！」
+</BigText>
+
+<Columns cols={3}>
+  <div>
+  ### 1. 見たい条件を考える（人間）
+  例：「この色とこの色の間くらいでいい感じの色を探したい…」
+  </div>
+  <div>
+
+  ### 2 変更＆撮影（AI）
+  実画面（ローカルの検証環境）に、検討したい CSS を注入する。
+  computed style を数値で取り出して比べる。
+  条件を振って、同じ画面を一括でスクリーンショット。
+  </div>
+  <div>
+
+  ### 3. 議論する（人間）
+
+  「これくらいの変化ならユーザーにも負担が少なそう！
+  コントラストも〜〜で大丈夫そう！」
+
+  </div>
+</Columns>
+
+<BigText size="26px" align="start" accent>
+→「変えてよいか」を決める材料づくりに使っているところがミソ。
+
+</BigText>
+
+
+<Notes>
+</Notes>
+
+</Slide>
+
+<Slide>
+
+# 事例:作成の過程で色がバラついている`border-color`を整理したい
+
+</Slide>
+
+<Slide>
+
+## やったこと
+
+**画面にある 465 本のborderを 10 グループに分け、条件を変えながら撮影→比較→議論**
+
+<TwoColumn>
+  <div>
+ ### 分担
+  - **条件の壁打ち・スクリプト作成**
+    Claude Code
+  - **Chromium / WebKit を操作**
+    Playwright
+  - **比較方法**
+    HTMLファイル （or Figma）
+  - **最終的な判断**
+    人間
+
+  </div>
+  <div>
+
+```js
+const GROUPS = [{ id: 'D1', edges: 292 }, /* … */]; // 予想本数
+
+for (const g of GROUPS) {
+  ~~~~ 省略 ~~~~
+  const changed = await page.evaluate((id) => {
+    const hits = collectBorders(id);  // 先に集める
+    hits.forEach(eraseBorder);        // 後で消す（同時だと表がずれる）
+    return hits.length;
+  }, g.id);
+
+  console.log(g.id, changed, '/', g.edges);
+  await page.screenshot({ path: `${g.id}.png`, fullPage: true });
+}
+```
+
+  </div>
+</TwoColumn>
+
+</Slide>
+
+<Slide>
+
+## 苦労ポイントと対策①
+
+### 判断を諦めそうになっちゃう。
+  - よくいう問題だけど、AIの提案に流されそうになる。
+  - 定量的に語りづらい性質もあり顕著
+
+### 対策としてやっていたこと。
+
+<BigText size="md" align="center" accent>
+  事前に問いと検証方法を詰める。
+  レポートの構成を問いに対応させる。
+</BigText>
+
+</Slide>
+
+<Slide>
+
+## 苦労ポイントと対策②
+
+「流されないぞ」と覚悟を決めるだけでは再現性がない。
+検証に使うHTMLを問いと対応させる。
+
+**今回の場合**
+
+| ステップ | 問い | HTMLレポートの構成 |
+|---|---|---|
+| 1 | そのborderはそもそも必要？ | 要素ごとに非表示にしてみて比較 |
+| 2 | 色分けは必要？ | 色の違いが情報の認識しやすさを左右していないか検証 |
+| 3 | 何色がいい？ | 候補のパターンを当てはめて比較 |
+
+</Slide>
+
+<Slide bleed>
+
+<ImageSlide src="../../assets/talks/2026-11-05-low-cost-design-refresh-with-playwright/2026-11-05-03-09-34.png" alt="境界線の色分けを判断するための検証画面。左にグループごとの入力欄、右に対象箇所を青く示した変更前の画面が並ぶ。" fit="contain" bare/>
+
+<Notes>
+3段階の検証の一部。borderの色分けが情報の識別に必要かを検討するパート。
+</Notes>
+
+</Slide>
+
+
+<Slide>
+
+## どんな価値があったか
+
+### **1.調査→デザインデータ作成が体感 1/3〜1/10**
+
+開発チームに環境を用意してもらったり、デザインデータ作成分を省略できる影響。
+
+### 2.サンプルデータを用意しやすく実利用に近い状態で検証できる
+
+デザインを検討するときに大切なのが実際の利用に近い画面で考えること。Figmaだとサンプルデータの流し込みも苦労することが多いので便利だった。
+
+### 3.他の人に引き継ぎやすい
+
+属人化しがちな調査・デザイン整理タスクを誰でも引き継げる状態になる。
+検証時の記録がスクリプトとして残るのも<AnimatedEmoji emoji="👍" />。
+
+<Notes>
+1はデザインデータを手作業で作るところから始めた場合の話。FigmaMCPやプラグインで起こしたとしても、変更・比較用データの作成が節約できるのでこれくらいと予想。
+</Notes>
+
+
+</Slide>
+
+<Slide>
+  <Section number={2} title="向き合い方?" />
+</Slide>
+
+<Slide>
+
+## ~~向き合い方~~→大切にしている考え方
+
+### AIで治具を作る
+
+### 生産性向上は対象範囲が大きいほど価値が高い（会社 ＞ 部署 ＞ チーム ＞ 自分）
+
+
+
+デザインハーネスなどキラキラしたやつ（価値が高いもの）にすぐ挑戦したくなるが、投資効果がすぐに得られるわけじゃないし、それをやらせてもらうだけの信頼が必要（やる人に）。
+まずは治具を作るところから始めて、チームくらいには貢献したって言えるようになるところを目指したいね。素朴に。
+
+<SlideFootnote slot="footnote" label="参考資料">
+参考：<a href="https://www.ryota5884.com/posts/20260313_joinlog_AfterEMconfEvent">イベント参加ログ：EMカンファレンス アフターイベント</a> ／ <a href="https://x.com/teppeis/status/1991036819665007049?a=w_0eZC16LT2FDmI8T0c&s=20">参考ポスト（X）</a>
+</SlideFootnote>
+
+<Notes>
+今回作ったのは、判断をAIに任せる仕組みではなく、人が比較・判断するための治具
+対象が広いほど投資・運用コストも増える
+
+</Notes>
+
+
+</Slide>
+
+<Slide>
+
+## 終わり
+
+<ImageGrid items={[
+  { label: '個人サイト', src: '../../assets/talks/2026-11-05-low-cost-design-refresh-with-playwright/2026-11-02-12-42-12.png', alt: '個人サイトのQRコード' },
+  { label: 'SNS', src: '../../assets/talks/2026-11-05-low-cost-design-refresh-with-playwright/2026-11-02-12-41-16.png', alt: 'SNSのQRコード' },
+]} />
+
+</Slide>
