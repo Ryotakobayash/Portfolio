@@ -45,11 +45,9 @@ const src = `https://fonts.gstatic.com/s/e/notoemoji/latest/${codepoints}/512.${
 />
 
 <style>
-  /* スライド側の `.slide :global(img) { border, max-width, margin, width: auto, height: auto }`
-     は :global で詳細度 (0,1,1) かつ scoping 無しのため、こちらは img.animated-emoji を選択し
-     詳細度を底上げ、加えて壊れて困る箱型プロパティだけ !important で確定させる。 */
+  /* スライド内の画像スタイルより優先し、本番と開発時の読み込み順の違いを吸収する。 */
   img.animated-emoji {
-    display: inline-block;
+    display: inline-block !important;
     width: var(--ae-size, 1em) !important;
     height: var(--ae-size, 1em) !important;
     max-width: none !important;
