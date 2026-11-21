@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Highcharts from 'highcharts';
-import { HighchartsReact, type HighchartsReactRefObject } from '../utils/highchartsReact';
+import { HighchartsReact, highchartsAccessibilityReady, type HighchartsReactRefObject } from '../utils/highchartsReact';
 import { useTheme } from '../hooks/useTheme';
 
 interface PostMeta {
@@ -32,19 +32,16 @@ export default function LocalArticleNetworkGraph({
     const isDark = useTheme();
     const [graphReady, setGraphReady] = useState(false);
 
-    // Highcharts networkgraph モジュールをクライアント側で動的にロード
+    // Highcharts networkgraph モジュールをクライアント側で動的にロードする。
+    // シミュレーション中に accessibility モジュールが後から組み込まれるとエラーになるので、両方そろってから描画する
     useEffect(() => {
-        import('highcharts/modules/networkgraph')
-            .then((networkMod) => {
-                const initNetwork = (networkMod as any).default || networkMod;
-                if (typeof initNetwork === 'function') {
-                    initNetwork(Highcharts);
-                }
-                setGraphReady(true);
-            })
-            .catch(() => {
-                setGraphReady(true);
-            });
+        const loadNetwork = import('highcharts/modules/networkgraph').then((networkMod) => {
+            const initNetwork = (networkMod as any).default || networkMod;
+            if (typeof initNetwork === 'function') {
+                initNetwork(Highcharts);
+            }
+        });
+        Promise.allSettled([loadNetwork, highchartsAccessibilityReady]).then(() => setGraphReady(true));
     }, []);
 
     // グラフ用データ（ノードとエッジ）の構築
