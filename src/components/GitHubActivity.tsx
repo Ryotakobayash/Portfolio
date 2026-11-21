@@ -45,6 +45,8 @@ export function GitHubActivity({ username = 'Ryotakobayash' }: { username?: stri
         <div style={{ width: '100%', minWidth: 0 }}>
             <div style={{ overflowX: 'auto', padding: '4px 0' }}>
                 <svg
+                    role="img"
+                    aria-label={`GitHub のコントリビューション ヒートマップ（直近${weeks.length}週間）`}
                     width={svgWidth}
                     height={svgHeight}
                     style={{ display: 'block', minWidth: svgWidth, margin: '0 auto' }}

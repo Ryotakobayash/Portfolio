@@ -47,7 +47,7 @@ export default function LifeProgress({ birthYear, expectedAge }: Props) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 {/* Ring */}
                 <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
-                    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+                    <svg aria-hidden="true" width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
                         {/* 背景リング */}
                         <circle
                             cx={size / 2} cy={size / 2} r={radius}

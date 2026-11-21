@@ -43,7 +43,9 @@ const SearchInput = ({ query, setQuery, resetPage }: { query: string; setQuery: 
 );
 
 const TagFilter = ({ allTags, selectedTags, toggleTag }: { allTags: string[]; selectedTags: Set<string>; toggleTag: (tag: string) => void }) => (
-    <div className="flex flex-wrap gap-sm mb-md" role="group" aria-label="タグで絞り込み">
+    // ボタン群のまとまりは role="group" ではなく fieldset + legend で表す（見た目は従来どおり）
+    <fieldset className="flex flex-wrap gap-sm mb-md" style={{ border: 0, padding: 0, marginTop: 0, marginInline: 0, minWidth: 0 }}>
+        <legend className="sr-only">タグで絞り込み</legend>
         {allTags.map((tag: string) => {
             const isActive = selectedTags.has(tag);
             return (
@@ -69,7 +71,7 @@ const TagFilter = ({ allTags, selectedTags, toggleTag }: { allTags: string[]; se
                 </button>
             );
         })}
-    </div>
+    </fieldset>
 );
 
 const Pagination = ({ safePage, totalPages, setCurrentPage }: { safePage: number; totalPages: number; setCurrentPage: (fn: (p: number) => number) => void }) => {

@@ -44,6 +44,7 @@
   --color-accent: #cc4444; /* WCAG AA: 4.5+ */
   /* 暗い赤 */
   --color-accent-2: #c99040;
+  --color-hatena: #00a4de; /* はてなブランド色。暗背景ではそのままで AA を満たす */
   /* 暗い黄 */
   --color-accent-3: #d17855; /* WCAG AA: 4.5+ */
   /* オレンジ */
@@ -67,6 +68,7 @@
   --color-primary-light: rgba(92, 127, 113, 0.1);
   --color-accent: #802520;
   --color-accent-2: #86601f; /* WCAG AA: bg 4.86 / bg-secondary 4.51 */
+  --color-hatena: #006a90; /* はてなブランド色を暗くしたもの。WCAG AA: bg 5.20 / bg-secondary 4.82 */
   --color-accent-3: #995530; /* WCAG AA: 4.5+ */
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);

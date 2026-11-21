@@ -30,7 +30,7 @@ export function PopularPosts() {
 
     if (source === 'loading') {
         return (
-            <div style={{ display: 'flex', flexDirection: 'column' }} aria-label="人気記事を読み込み中">
+            <div style={{ display: 'flex', flexDirection: 'column' }} role="status" aria-label="人気記事を読み込み中">
                 {[1, 2, 3, 4, 5].map((index) => (
                     <div
                         key={index}

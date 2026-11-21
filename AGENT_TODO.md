@@ -64,7 +64,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-029`](#task-029) | Content Collectionsの日付形式・slug重複検証 | P2 | `DONE` | `src/content.config.ts` |
 | [`TASK-030`](#task-030) | 記事画像のastro:assetsレスポンシブ最適化 | P2 | `DONE` | `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro` |
 | [`TASK-031`](#task-031) | 記事ページのインラインスクリプト分割 | P2 | `DONE` | `src/pages/posts/[slug].astro` |
-| [`TASK-032`](#task-032) | アクセシビリティ実測と残課題の修正（Lighthouse・axe） | P2 | `TODO` | `src/styles/global.css`, `src/components/` |
+| [`TASK-032`](#task-032) | アクセシビリティ実測と残課題の修正（Lighthouse・axe） | P2 | `IN_PROGRESS` | `src/styles/global.css`, `src/components/` |
 | [`TASK-033`](#task-033) | サイト全体のFX（CRT装飾）機能の削除 | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css`, `src/components/CRTOverlay.astro` |
 | [`TASK-034`](#task-034) | talks・スライドのa11y修正と読み上げ内容の確認手段 | P1 | `DONE` | `src/pages/talks.astro`, `src/pages/slides/[slug].astro`, `src/components/slides/`, `scripts/` |
 | [`TASK-035`](#task-035) | スライド画面で読み上げ内容をプレビューする機能 | P1 | `DONE` | `src/pages/slides/[slug].astro`, `src/components/slides/srPreview.ts` |
@@ -252,19 +252,20 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-032] アクセシビリティ実測と残課題の修正（Lighthouse・axe）
-- Status: `TODO`
+- Status: `IN_PROGRESS`
+- Progress (2026-11-21): axe は `pnpm a11y:pages` で主要8ページ×両テーマの違反0件を確認済み。Lighthouse 計測のみ未実施（Lighthouse CLI 未導入のため）
 - Priority: P2
 - Target Files: `src/styles/global.css`, `src/components/`
 - Verification Command: Lighthouse Accessibility 90点以上
 - User Context: Biome lintのa11y警告がwarn止まりで放置されている。muted textのコントラスト比、SVGタイトル、セマンティック要素の使い分けを実測ベースで修正する。
 - Specifications:
   - [ ] 主要ページのLighthouse Accessibilityスコアを計測する
-  - [ ] axe DevToolsで検出された違反を修正する
-  - [ ] ダークテーマのmuted textコントラストを4.5:1以上にする
-  - [ ] 装飾SVGに適切なaria-hidden / titleを付ける
+  - [x] axe DevToolsで検出された違反を修正する
+  - [x] ダークテーマのmuted textコントラストを4.5:1以上にする
+  - [x] 装飾SVGに適切なaria-hidden / titleを付ける
 - Acceptance Criteria:
   - [ ] 主要ページのLighthouse Accessibilityが90点以上であること
-  - [ ] axeで critical / serious の違反が0件であること
+  - [x] axeで critical / serious の違反が0件であること
 
 ---
 
