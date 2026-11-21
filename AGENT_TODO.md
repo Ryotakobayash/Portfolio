@@ -60,7 +60,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-025`](#task-025) | 第2段階の残り（reduced-motion・更新日対応） | P1 | `DONE` | `src/components/QuadtreeThumbnail.tsx`, `src/content.config.ts`, `src/components/ArticlePerformance.tsx` |
 | [`TASK-026`](#task-026) | 性能・保守性の改善（Island遅延化・外部記事統合・型安全性） | P2 | `DONE` | `src/pages/*.astro`, `src/utils/note.ts`, `src/utils/treemapUtils.ts` |
 | [`TASK-027`](#task-027) | CSPをReport-OnlyからEnforceへ移行 | P1 | `TODO` | `vercel.json` |
-| [`TASK-028`](#task-028) | E2E / Integration テストの導入 | P1 | `TODO` | `tests/`, `package.json`, `.github/workflows/ci.yml` |
+| [`TASK-028`](#task-028) | E2E / Integration テストの導入 | P1 | `IN_PROGRESS` | `tests/`, `package.json`, `.github/workflows/ci.yml` |
 | [`TASK-029`](#task-029) | Content Collectionsの日付形式・slug重複検証 | P2 | `DONE` | `src/content.config.ts` |
 | [`TASK-030`](#task-030) | 記事画像のastro:assetsレスポンシブ最適化 | P2 | `DONE` | `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro` |
 | [`TASK-031`](#task-031) | 記事ページのインラインスクリプト分割 | P2 | `DONE` | `src/pages/posts/[slug].astro` |
@@ -126,18 +126,19 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-028] E2E / Integration テストの導入
-- Status: `TODO`
+- Status: `IN_PROGRESS`
+- Progress (2026-11-21): Playwright Test で主要ページ・API のテスト（11件）と CI の e2e ジョブを追加済み。残りは GitHub のブランチ保護で `e2e` を必須チェックにする設定のみ（リポジトリ設定のためユーザー作業）
 - Priority: P1
 - Target Files: `tests/`, `package.json`, `.github/workflows/ci.yml`, `playwright.config.ts`
 - Verification Command: `pnpm test`
 - User Context: 現在テストが一切なく、修正による不具合を検知できない。主要画面の表示とAPI応答を自動検証する。
 - Specifications:
-  - [ ] Playwright（またはVitest + happy-dom）を導入する
-  - [ ] トップページ・記事詳細・About・Talks の基本表示テスト
-  - [ ] PV API・note API のレスポンス形式テスト
-  - [ ] CIパイプラインにテスト実行を追加する
+  - [x] Playwright（またはVitest + happy-dom）を導入する
+  - [x] トップページ・記事詳細・About・Talks の基本表示テスト
+  - [x] PV API・note API のレスポンス形式テスト
+  - [x] CIパイプラインにテスト実行を追加する
 - Acceptance Criteria:
-  - [ ] `pnpm test` で主要ページとAPIの正常性が検証されること
+  - [x] `pnpm test` で主要ページとAPIの正常性が検証されること
   - [ ] CIでテスト失敗時にPRがブロックされること
 
 ---

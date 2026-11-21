@@ -18,7 +18,8 @@
     "lint:fix": "biome lint src/ --fix",
     "lint:text": "textlint \"src/content/**/*.{md,mdx}\" \"docs/**/*.md\"",
     "a11y:talks": "node scripts/a11y-talks.mjs",
-    "a11y:pages": "node scripts/a11y-pages.mjs"
+    "a11y:pages": "node scripts/a11y-pages.mjs",
+    "test": "playwright test"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.3.0",
@@ -51,6 +52,7 @@
     "@astrojs/check": "0.9.10",
     "@axe-core/playwright": "4.10.2",
     "@biomejs/biome": "^2.5.14",
+    "@playwright/test": "1.56.1",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.184.0",
