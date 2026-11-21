@@ -18,6 +18,8 @@ export default defineConfig({
   output: 'server',
   // Astro 6と同じHTML空白処理を維持し、インライン要素間の意図しない結合を防ぐ
   compressHTML: true,
+  // コンテンツの slug 重複や、同じURLを生成するルートの衝突を警告で済ませずビルドエラーにする
+  prerenderConflictBehavior: 'error',
   env: {
     schema: {
       GA4_PROPERTY_ID: envField.string({ context: 'server', access: 'secret', optional: true }),

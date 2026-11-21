@@ -61,7 +61,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-026`](#task-026) | 性能・保守性の改善（Island遅延化・外部記事統合・型安全性） | P2 | `DONE` | `src/pages/*.astro`, `src/utils/note.ts`, `src/utils/treemapUtils.ts` |
 | [`TASK-027`](#task-027) | CSPをReport-OnlyからEnforceへ移行 | P1 | `TODO` | `vercel.json` |
 | [`TASK-028`](#task-028) | E2E / Integration テストの導入 | P1 | `TODO` | `tests/`, `package.json`, `.github/workflows/ci.yml` |
-| [`TASK-029`](#task-029) | Content Collectionsの日付形式・slug重複検証 | P2 | `TODO` | `src/content.config.ts` |
+| [`TASK-029`](#task-029) | Content Collectionsの日付形式・slug重複検証 | P2 | `DONE` | `src/content.config.ts` |
 | [`TASK-030`](#task-030) | 記事画像のastro:assetsレスポンシブ最適化 | P2 | `TODO` | `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro` |
 | [`TASK-031`](#task-031) | 記事ページのインラインスクリプト分割 | P2 | `TODO` | `src/pages/posts/[slug].astro` |
 | [`TASK-032`](#task-032) | アクセシビリティ実測と残課題の修正（Lighthouse・axe） | P2 | `TODO` | `src/styles/global.css`, `src/components/` |
@@ -143,18 +143,19 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-029] Content Collectionsの日付形式・slug重複検証
-- Status: `TODO`
+- Status: `DONE`
+- Completed: 2026-11-21
 - Priority: P2
 - Target Files: `src/content.config.ts`
 - Verification Command: `pnpm exec astro check && pnpm build`
 - User Context: 日付が単なるstringで形式揺れや未来日を検出できない。slugの重複もビルド時に気付けない。
 - Specifications:
-  - [ ] `date`をYYYY-MM-DD形式のrefineバリデーションにする
-  - [ ] `updatedDate`にも同じバリデーションを適用する
-  - [ ] slugの重複をビルド時に検出する仕組みを入れる
+  - [x] `date`をYYYY-MM-DD形式のrefineバリデーションにする
+  - [x] `updatedDate`にも同じバリデーションを適用する
+  - [x] slugの重複をビルド時に検出する仕組みを入れる
 - Acceptance Criteria:
-  - [ ] 不正な日付形式の記事がビルドエラーになること
-  - [ ] 型検査とビルドが成功すること
+  - [x] 不正な日付形式の記事がビルドエラーになること
+  - [x] 型検査とビルドが成功すること
 
 ---
 
