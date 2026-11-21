@@ -63,7 +63,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-028`](#task-028) | E2E / Integration テストの導入 | P1 | `TODO` | `tests/`, `package.json`, `.github/workflows/ci.yml` |
 | [`TASK-029`](#task-029) | Content Collectionsの日付形式・slug重複検証 | P2 | `DONE` | `src/content.config.ts` |
 | [`TASK-030`](#task-030) | 記事画像のastro:assetsレスポンシブ最適化 | P2 | `TODO` | `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro` |
-| [`TASK-031`](#task-031) | 記事ページのインラインスクリプト分割 | P2 | `TODO` | `src/pages/posts/[slug].astro` |
+| [`TASK-031`](#task-031) | 記事ページのインラインスクリプト分割 | P2 | `DONE` | `src/pages/posts/[slug].astro` |
 | [`TASK-032`](#task-032) | アクセシビリティ実測と残課題の修正（Lighthouse・axe） | P2 | `TODO` | `src/styles/global.css`, `src/components/` |
 | [`TASK-033`](#task-033) | サイト全体のFX（CRT装飾）機能の削除 | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css`, `src/components/CRTOverlay.astro` |
 | [`TASK-034`](#task-034) | talks・スライドのa11y修正と読み上げ内容の確認手段 | P1 | `DONE` | `src/pages/talks.astro`, `src/pages/slides/[slug].astro`, `src/components/slides/`, `scripts/` |
@@ -176,18 +176,19 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-031] 記事ページのインラインスクリプト分割
-- Status: `TODO`
+- Status: `DONE`
+- Completed: 2026-11-21
 - Priority: P2
 - Target Files: `src/pages/posts/[slug].astro`
 - Verification Command: `pnpm exec astro check && pnpm build`
 - User Context: 画像拡大・脚注ポップオーバー・コピー・figureなど300行超のインラインスクリプトが1ファイルに集中し、保守しにくい。
 - Specifications:
-  - [ ] 画像拡大ダイアログを独立モジュールへ抽出する
-  - [ ] 脚注ポップオーバーを独立モジュールへ抽出する
-  - [ ] ページ側は初期化呼び出しのみにする
+  - [x] 画像拡大ダイアログを独立モジュールへ抽出する
+  - [x] 脚注ポップオーバーを独立モジュールへ抽出する
+  - [x] ページ側は初期化呼び出しのみにする
 - Acceptance Criteria:
-  - [ ] posts/[slug].astroのscriptタグが100行以下になること
-  - [ ] 全機能が遷移前後で動作すること
+  - [x] posts/[slug].astroのscriptタグが100行以下になること
+  - [x] 全機能が遷移前後で動作すること
 
 ---
 
