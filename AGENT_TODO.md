@@ -59,7 +59,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-024`](#task-024) | Biome lint と GitHub Actions CI の導入 | P0 | `DONE` | `biome.json`, `.github/workflows/ci.yml`, `package.json` |
 | [`TASK-025`](#task-025) | 第2段階の残り（reduced-motion・更新日対応） | P1 | `DONE` | `src/components/QuadtreeThumbnail.tsx`, `src/content.config.ts`, `src/components/ArticlePerformance.tsx` |
 | [`TASK-026`](#task-026) | 性能・保守性の改善（Island遅延化・外部記事統合・型安全性） | P2 | `DONE` | `src/pages/*.astro`, `src/utils/note.ts`, `src/utils/treemapUtils.ts` |
-| [`TASK-027`](#task-027) | CSPをReport-OnlyからEnforceへ移行 | P1 | `TODO` | `vercel.json` |
+| [`TASK-027`](#task-027) | CSPをReport-OnlyからEnforceへ移行 | P1 | `IN_PROGRESS` | `vercel.json`, `scripts/csp-headers.mjs` |
 | [`TASK-028`](#task-028) | E2E / Integration テストの導入 | P1 | `IN_PROGRESS` | `tests/`, `package.json`, `.github/workflows/ci.yml` |
 | [`TASK-029`](#task-029) | Content Collectionsの日付形式・slug重複検証 | P2 | `DONE` | `src/content.config.ts` |
 | [`TASK-030`](#task-030) | 記事画像のastro:assetsレスポンシブ最適化 | P2 | `DONE` | `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro` |
@@ -109,15 +109,16 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ## 🚀 Active Tasks
 
 ### [TASK-027] CSPをReport-OnlyからEnforceへ移行
-- Status: `TODO`
+- Status: `IN_PROGRESS`
+- Progress (2026-11-21): ビルド後に `scripts/csp-headers.mjs` が全インラインスクリプトの sha256 を集め、`.vercel/output/config.json` に enforce の CSP を書き込む方式で実装済み（ClientRouter 非対応の Astro 組み込み CSP は使わない）。ローカルで Build Output を再現したサーバーで全56ページ＋SSRスライドを巡回し、インラインスクリプトの違反0件を確認。残りは本番デプロイ後の Console 確認のみ
 - Priority: P1
-- Target Files: `vercel.json`
+- Target Files: `vercel.json`, `scripts/csp-headers.mjs`, `astro.config.mjs`, `package.json`
 - Verification Command: 本番デプロイ後にブラウザDevToolsのConsoleでCSP違反がないことを確認
 - User Context: 現在CSPはReport-Onlyで実害を防いでいない。unsafe-inlineの除去とenforceで実効的なXSS防御にする。
 - Specifications:
-  - [ ] `script-src`から`unsafe-inline`を除去し、nonceまたはhash方式へ移行する
-  - [ ] `unsafe-eval`を除去する（Highcharts等が要求する場合は個別hash対応）
-  - [ ] Report-Onlyを外してenforceモードにする
+  - [x] `script-src`から`unsafe-inline`を除去し、nonceまたはhash方式へ移行する
+  - [x] `unsafe-eval`を除去する（Highcharts等が要求する場合は個別hash対応）
+  - [x] Report-Onlyを外してenforceモードにする
   - [ ] GA4・Vercel Analytics・Speed Insightsの読み込みが引き続き動作すること
 - Acceptance Criteria:
   - [ ] CSPがenforceモードで全ページ正常表示されること

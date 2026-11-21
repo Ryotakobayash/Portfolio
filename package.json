@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/csp-headers.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "clean": "rm -rf .astro dist node_modules/.vite",

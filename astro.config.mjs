@@ -81,6 +81,12 @@ export default defineConfig({
     ],
   }),
   vite: {
+    build: {
+      // CSP をハッシュ方式で enforce するため、処理済みスクリプトはページに埋め込まず外部ファイルにする。
+      // 埋め込むとページごとに内容が変わり、SSR ページのハッシュをビルド時に集められない。
+      // 画像・CSS などは Vite の既定（undefined）のまま。
+      assetsInlineLimit: (filePath) => (/\.(m?js|ts)$/.test(filePath) ? false : undefined),
+    },
     // 開発時にR3F・Drei・Threeを別chunkへ分割せず、Canvasコンテキストを共有する
     optimizeDeps: {
       include: [
