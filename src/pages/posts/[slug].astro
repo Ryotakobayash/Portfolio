@@ -10,6 +10,8 @@ import CustomImage from '../../components/CustomImage.astro';
 import QuadtreeThumbnail from '../../components/QuadtreeThumbnail';
 import LocalArticleNetworkGraph from '../../components/LocalArticleNetworkGraph';
 import { SITE_NAME } from '../../consts';
+import { Picture } from 'astro:assets';
+import { resolveThumbnail, thumbnailUrl } from '../../utils/thumbnails';
 
 export const prerender = true;
 
@@ -28,6 +30,14 @@ interface Props {
 const { post } = Astro.props;
 const slug = (post.data.slug || post.id);
 const { Content, headings } = await render(post);
+
+// サムネイルは astro:assets で AVIF/WebP のレスポンシブ画像にする（記事カラムは最大 約780px）
+const thumbnailImage = resolveThumbnail(post.data.thumbnail);
+const thumbnailWidths = thumbnailImage
+  ? [480, 800, 1200, 1600].filter((w) => w <= thumbnailImage.width)
+  : [];
+// 四分木アニメーションはピクセルを読むだけなので、縮小済みの WebP で十分
+const thumbnailOverlaySrc = await thumbnailUrl(post.data.thumbnail, 800);
 
 const body = post.body || '';
 const charCount = body.length;
@@ -85,16 +95,32 @@ const allPostsMeta = allPosts.map((p) => ({
         <a href="/posts" class="back-link">← Posts</a>
         {post.data.thumbnail && (
           <div class="article-thumbnail-wrapper">
-            <img
-              src={post.data.thumbnail}
-              alt={post.data.title}
-              class="article-thumbnail-img"
-              fetchpriority="high"
-              decoding="async"
-            />
+            {thumbnailImage ? (
+              <Picture
+                src={thumbnailImage}
+                alt={post.data.title}
+                formats={['avif', 'webp']}
+                widths={thumbnailWidths}
+                width={thumbnailWidths.at(-1)}
+                fallbackFormat="webp"
+                sizes="(min-width: 1024px) 780px, 100vw"
+                class="article-thumbnail-img"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              />
+            ) : (
+              <img
+                src={post.data.thumbnail}
+                alt={post.data.title}
+                class="article-thumbnail-img"
+                fetchpriority="high"
+                decoding="async"
+              />
+            )}
             <QuadtreeThumbnail
               client:load
-              src={post.data.thumbnail}
+              src={thumbnailOverlaySrc}
               alt={post.data.title}
               animateOnLoad={true}
               ssrImageOverlay={true}
@@ -309,7 +335,8 @@ const allPostsMeta = allPosts.map((p) => ({
     background-color: var(--color-bg-secondary);
   }
 
-  .article-thumbnail-img {
+  /* <Picture> が出力する <img> にはページのスコープ属性が付かないため :global で当てる */
+  .article-thumbnail-wrapper :global(.article-thumbnail-img) {
     position: absolute;
     inset: 0;
     width: 100%;

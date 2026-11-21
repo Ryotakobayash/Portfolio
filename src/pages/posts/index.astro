@@ -3,17 +3,19 @@ export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getPublishedPosts } from '../../utils/posts';
 import PostSearch from '../../components/PostSearch';
+import { thumbnailUrl } from '../../utils/thumbnails';
 
 const posts = await getPublishedPosts();
-const sortedPosts = posts
-  .map((post) => ({
+const sortedPosts = (await Promise.all(posts
+  .map(async (post) => ({
     slug: (post.data.slug || post.id),
     title: post.data.title,
     date: post.data.date,
     excerpt: post.data.excerpt || '',
     tags: post.data.tags || [],
-    thumbnail: post.data.thumbnail || '',
-  }))
+    // 一覧カード用に縮小した WebP を渡す
+    thumbnail: await thumbnailUrl(post.data.thumbnail, 640),
+  }))))
   .sort((a, b) => (a.date < b.date ? 1 : -1));
 
 // 全タグリスト（出現回数順）

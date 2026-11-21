@@ -58,8 +58,13 @@ tags:                      # タグ一覧（配列）
   - "Tech"
   - "Astro"
 draft: true                # 執筆中は true、公開時に false または行削除
+thumbnail: /thumbnails/xxx.png  # 任意。実ファイルは src/assets/thumbnails/ に置く
 ---
 ```
+
+- `date` / `updatedDate` は YYYY-MM-DD 以外の形式（`2026/03/01` など）や存在しない日付だとビルドエラーになります。
+- `slug` が他の記事と重複してもビルドエラーになります。
+- `thumbnail` の画像はビルド時に AVIF / WebP へ変換・リサイズされます（`src/utils/thumbnails.ts`）。
 
 > [!IMPORTANT]
 > **未公開記事の Git 管理について**  

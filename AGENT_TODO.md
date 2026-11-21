@@ -62,7 +62,7 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 | [`TASK-027`](#task-027) | CSPをReport-OnlyからEnforceへ移行 | P1 | `TODO` | `vercel.json` |
 | [`TASK-028`](#task-028) | E2E / Integration テストの導入 | P1 | `TODO` | `tests/`, `package.json`, `.github/workflows/ci.yml` |
 | [`TASK-029`](#task-029) | Content Collectionsの日付形式・slug重複検証 | P2 | `DONE` | `src/content.config.ts` |
-| [`TASK-030`](#task-030) | 記事画像のastro:assetsレスポンシブ最適化 | P2 | `TODO` | `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro` |
+| [`TASK-030`](#task-030) | 記事画像のastro:assetsレスポンシブ最適化 | P2 | `DONE` | `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro` |
 | [`TASK-031`](#task-031) | 記事ページのインラインスクリプト分割 | P2 | `DONE` | `src/pages/posts/[slug].astro` |
 | [`TASK-032`](#task-032) | アクセシビリティ実測と残課題の修正（Lighthouse・axe） | P2 | `TODO` | `src/styles/global.css`, `src/components/` |
 | [`TASK-033`](#task-033) | サイト全体のFX（CRT装飾）機能の削除 | P1 | `DONE` | `src/layouts/BaseLayout.astro`, `src/styles/global.css`, `src/components/CRTOverlay.astro` |
@@ -160,18 +160,19 @@ AIエージェントはタスク着手時にまずこのテーブルを走査し
 ---
 
 ### [TASK-030] 記事画像のastro:assetsレスポンシブ最適化
-- Status: `TODO`
+- Status: `DONE`
+- Completed: 2026-11-21
 - Priority: P2
 - Target Files: `src/pages/posts/[slug].astro`, `src/components/CustomImage.astro`
 - Verification Command: `pnpm build` でWebP/AVIF出力を確認
 - User Context: 記事先頭画像が生画像のまま配信されており、モバイルで不要に大きいサイズを読み込んでいる。
 - Specifications:
-  - [ ] サムネイル画像を`astro:assets`の`<Image>`コンポーネントで出力する
-  - [ ] 適切なsrcsetとsizesを設定する
-  - [ ] WebP/AVIF自動変換を有効にする
+  - [x] サムネイル画像を`astro:assets`の`<Image>`コンポーネントで出力する
+  - [x] 適切なsrcsetとsizesを設定する
+  - [x] WebP/AVIF自動変換を有効にする
 - Acceptance Criteria:
-  - [ ] ビルド出力に最適化済み画像が含まれること
-  - [ ] LCPスコアが悪化しないこと
+  - [x] ビルド出力に最適化済み画像が含まれること
+  - [x] LCPスコアが悪化しないこと
 
 ---
 
