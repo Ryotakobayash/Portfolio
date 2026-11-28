@@ -7,7 +7,7 @@ Vercel の **Preview Deployment**（本番とは別の URL にサイトを丸ご
 
 - 本番（`VERCEL_ENV=production`）では、`published: true` のスライドだけが `/slides/[slug]` で表示される。
 - Preview Deployment（`VERCEL_ENV=preview`）と開発サーバーでは、`published` がなくても表示される。
-- 判定は `src/utils/env.ts` の `isProductionDeploy()` に集約している。`VERCEL_ENV` がない環境（ローカルの `pnpm build` など）は本番扱いになり、未公開スライドは隠れる。
+- 判定は `src/utils/env.ts` の `isProductionDeploy()` に集約している（テスト: `pnpm test:unit`）。`VERCEL_ENV` がない環境（ローカルの `pnpm build` など）は本番扱いになり、未公開スライドは隠れる。
 - Preview Deployment には Vercel が `X-Robots-Tag: noindex` を付けるため、検索エンジンには載らない。
 
 ### URL の種類
@@ -39,13 +39,18 @@ gh pr create --draft           # 任意。PR 上でコメントをもらえる
 ```sh
 pnpm dlx vercel login   # 初回だけ
 pnpm dlx vercel link    # 初回だけ。既存の Vercel プロジェクトを選ぶ（.vercel/ に保存、Git 管理外）
-pnpm dlx vercel deploy  # 手元のファイルから Preview Deployment を作り、URL を表示する
+pnpm preview:deploy     # 手元のファイルから Preview Deployment を作り、URL を表示する
 ```
+
+`pnpm preview:deploy`（`scripts/preview-deploy.mjs`）は `vercel deploy` を呼ぶラッパーで、次の場合は何もせずに止まる。
+
+- `--prod` や `--target production` など、本番に出すオプションが付いている
+- `.vercelignore` がない、または `.env` を除外していない
 
 - 良い点：**原稿が GitHub に一切出ない。** コミットやブランチも不要。
 - 悪い点：PR でのコメントはできない。指摘は Slack などでもらうか、Vercel Comments（プレビュー画面上のコメント機能）を使う。
 - アップロードしないファイルは `.vercelignore` に書いてある。CLI はデフォルトで `.env` をアップロードしてしまうので、このファイルは消さないこと。
-- `--prod` は付けない（付けると本番に出る）。
+- `pnpm dlx vercel deploy` を直接使う場合は `--prod` を付けない（付けると本番に出る）。
 
 ## 使い分け
 

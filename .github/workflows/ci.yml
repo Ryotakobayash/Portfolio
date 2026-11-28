@@ -24,6 +24,9 @@ jobs:
       - name: Lint
         run: pnpm biome lint src/
 
+      - name: Unit tests
+        run: pnpm test:unit
+
       - name: Type check
         run: pnpm exec astro check
 

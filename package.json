@@ -19,7 +19,9 @@
     "lint:text": "textlint \"src/content/**/*.{md,mdx}\" \"docs/**/*.md\"",
     "a11y:talks": "node scripts/a11y-talks.mjs",
     "a11y:pages": "node scripts/a11y-pages.mjs",
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:unit": "node --test \"tests/unit/**/*.test.ts\"",
+    "preview:deploy": "node scripts/preview-deploy.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.3.0",
