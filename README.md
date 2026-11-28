@@ -72,3 +72,4 @@ src/
 - 執筆フロー: [docs/article-workflow.md](docs/article-workflow.md)
 - 設計判断: [docs/adr/](docs/adr/)
 - 公開制御: 記事は`draft`、登壇資料は`published`（opt-in）
+- 登壇スライドの公開前レビュー: Vercel の Preview Deployment を使う。手順は[docs/talk-preview-review.md](docs/talk-preview-review.md)

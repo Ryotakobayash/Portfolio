@@ -1,0 +1,27 @@
+# `vercel deploy`（CLI）で手元から Preview Deployment を作るときに、アップロードしないファイル。
+# Git 連携のデプロイには影響しない。詳細は docs/talk-preview-review.md を参照。
+
+# 秘密情報（CLI はデフォルトで .env をアップロードしてしまう）
+.env*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_rsa.*
+auth.json
+storageState.json
+.npmrc
+
+# ビルド成果物・生成物（Vercel 側でビルドし直すため不要）
+/dist/
+/.astro/
+/reports/
+/test-results/
+/playwright-report/
+
+# ローカル設定
+.claude/
+.idea/
+.obsidian/

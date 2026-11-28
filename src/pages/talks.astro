@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_NAME } from '../consts';
 import TalkSearch, { type TalkMeta } from '../components/TalkSearch';
 import { getAllTalks, talkSlug, hasSlideBody } from '../utils/talks';
+import { isProductionDeploy } from '../utils/env';
 
 const allEntries = await getAllTalks();
 
@@ -18,7 +19,8 @@ interface UpcomingTalk {
 }
 
 const today = new Date().toISOString().slice(0, 10);
-const isProd = import.meta.env.PROD;
+// 本番公開環境では未公開スライドへのリンクを出さない（Preview Deployment では出す）
+const isProd = isProductionDeploy();
 
 const upcomingTalks: UpcomingTalk[] = allEntries
   .filter((entry) => entry.data.date >= today)

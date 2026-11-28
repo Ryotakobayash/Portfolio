@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { isProductionDeploy } from './env';
 
 export type TalkEntry = CollectionEntry<'talks'>;
 
@@ -9,13 +10,15 @@ export async function getAllTalks(): Promise<TalkEntry[]> {
 
 /**
  * Talks whose slide pages are accessible in the current environment.
- * In production, only entries with `published: true` are reachable at /slides/[slug];
- * everything else 404s. Failsafe: missing the flag keeps the slide non-public.
- * In dev, everything is previewable so drafts can be checked locally.
+ * 本番公開環境では `published: true` のものだけが /slides/[slug] で表示され、それ以外は 404 になる。
+ * フラグがなければ非公開のまま（フェイルセーフ）。
+ * 開発サーバーと Vercel の Preview Deployment ではすべて表示し、公開前のレビューに使う。
+ * 判定の詳細は `isProductionDeploy()` と docs/talk-preview-review.md を参照。
  */
 export async function getPublishedTalks(): Promise<TalkEntry[]> {
+    const hideDrafts = isProductionDeploy();
     return await getCollection('talks', ({ data }) => {
-        return import.meta.env.PROD ? data.published === true : true;
+        return hideDrafts ? data.published === true : true;
     });
 }
 
